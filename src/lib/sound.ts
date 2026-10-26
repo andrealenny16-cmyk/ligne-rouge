@@ -3,9 +3,10 @@
 import type { Usage } from "./types";
 
 /**
- * Synthèse d'un démarrage + accélération en Web Audio API (aucun fichier externe).
- * Route : plus grave et filtré. Circuit : plus aigu, saturé, avec pétarades au lever de pied.
- * Émet `lignerouge:sound` sur window ({ playing, usage }) pour synchroniser les animations.
+ * Son d'échappement : vrais enregistrements dans public/sounds/{voiture|moto}-{route|circuit}.mp3
+ * (voir public/sounds/CREDITS.md), lus via Web Audio. Si le fichier manque, synthèse d'un démarrage
+ * + accélération en secours. Émet `lignerouge:sound` sur window ({ playing, usage }) pour synchroniser
+ * les animations (pot qui vibre, braises qui accélèrent).
  */
 
 let ctx: AudioContext | null = null;
@@ -37,14 +38,75 @@ function distortion(c: AudioContext, amount: number) {
   return ws;
 }
 
-export function playExhaust(usage: Usage): number {
-  if (playing) return 0;
-  if (typeof window === "undefined") return 0;
+function audioContext() {
+  if (typeof window === "undefined") return null;
   const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-  if (!AC) return 0;
+  if (!AC) return null;
   ctx ??= new AC();
-  const c = ctx;
-  if (c.state === "suspended") void c.resume();
+  if (ctx.state === "suspended") void ctx.resume();
+  return ctx;
+}
+
+function emit(isOn: boolean, usage: Usage) {
+  playing = isOn;
+  window.dispatchEvent(new CustomEvent(SOUND_EVENT, { detail: { playing: isOn, usage } }));
+}
+
+const buffers = new Map<string, Promise<AudioBuffer | null>>();
+
+function loadRecording(c: AudioContext, url: string) {
+  if (!buffers.has(url)) {
+    buffers.set(
+      url,
+      fetch(url)
+        .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
+        .then((b) => c.decodeAudioData(b))
+        .catch(() => null),
+    );
+  }
+  return buffers.get(url)!;
+}
+
+/** Joue le vrai son du pot (voiture ou moto, route ou circuit), ou la synthèse si l'enregistrement manque. */
+export async function playExhaust(usage: Usage, vehicle: "voiture" | "moto" = "voiture"): Promise<number> {
+  if (playing) return 0;
+  const c = audioContext();
+  if (!c) return 0;
+  playing = true; // verrou pendant le chargement
+  const buffer = await loadRecording(c, `/sounds/${vehicle}-${usage}.mp3`);
+  if (!buffer) {
+    playing = false;
+    return playSynth(usage);
+  }
+
+  const src = c.createBufferSource();
+  src.buffer = buffer;
+  const comp = c.createDynamicsCompressor();
+  comp.threshold.value = -14;
+  comp.ratio.value = 4;
+  const gain = c.createGain();
+  const t0 = c.currentTime;
+  const dur = Math.min(buffer.duration, 9);
+  gain.gain.setValueAtTime(0.0001, t0);
+  gain.gain.exponentialRampToValueAtTime(1, t0 + 0.05);
+  gain.gain.setValueAtTime(1, t0 + dur - 0.6);
+  gain.gain.linearRampToValueAtTime(0, t0 + dur);
+  src.connect(comp).connect(gain).connect(c.destination);
+  src.start(t0);
+  src.stop(t0 + dur);
+  emit(true, usage);
+  src.onended = () => {
+    gain.disconnect();
+    emit(false, usage);
+  };
+  return dur;
+}
+
+/** Démarrage + accélération synthétisés (secours sans fichier audio). */
+function playSynth(usage: Usage): number {
+  if (playing) return 0;
+  const c = audioContext();
+  if (!c) return 0;
 
   const circuit = usage === "circuit";
   const cyl = circuit ? 4 : 4;

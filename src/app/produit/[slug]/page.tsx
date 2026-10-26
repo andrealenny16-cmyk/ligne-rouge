@@ -97,7 +97,7 @@ export default async function ProductPage({ params }: Props) {
           ) : null}
 
           <div className="mt-6">
-            <SoundButton usage={p.usage} />
+            <SoundButton usage={p.usage} vehicle={p.vehicle_type} />
           </div>
 
           <BuyBox product={p} loggedIn={!!user} isFavorite={!!fav.data} />

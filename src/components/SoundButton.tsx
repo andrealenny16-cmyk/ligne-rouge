@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { playExhaust, SOUND_EVENT } from "@/lib/sound";
 import type { Usage } from "@/lib/types";
 
-export default function SoundButton({ usage, className = "" }: { usage: Usage; className?: string }) {
+export default function SoundButton({ usage, vehicle = "voiture", className = "" }: { usage: Usage; vehicle?: "voiture" | "moto"; className?: string }) {
   const [on, setOn] = useState(false);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function SoundButton({ usage, className = "" }: { usage: Usage; c
   return (
     <button
       type="button"
-      onClick={() => playExhaust(usage)}
+      onClick={() => void playExhaust(usage, vehicle)}
       disabled={on}
       aria-label={`Écouter le son ${usage === "circuit" ? "circuit" : "route"}`}
       className={`group inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/5 py-2 pl-2 pr-5 text-sm font-semibold backdrop-blur transition hover:border-bronze/60 hover:bg-white/10 disabled:cursor-wait ${className}`}
