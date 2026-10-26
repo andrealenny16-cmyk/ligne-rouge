@@ -56,10 +56,10 @@ export default async function AdminDashboard() {
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-6">
         <div className="col-span-2">
-          <KpiCard accent label="Chiffre d'affaires total" value={formatPrice(k.revenue)} sub={`${formatPrice(last30)} sur les 30 derniers jours`} />
+          <KpiCard accent label="Chiffre d'affaires total" value={formatPrice(Math.round(Number(k.revenue)))} sub={`${formatPrice(last30)} sur les 30 derniers jours`} />
         </div>
         <KpiCard label="Commandes" value={formatNumber(k.orders_count)} sub="hors annulées" />
-        <KpiCard label="Panier moyen" value={formatPrice(k.avg_basket)} />
+        <KpiCard label="Panier moyen" value={formatPrice(Math.round(Number(k.avg_basket)))} />
         <KpiCard label="Clients" value={formatNumber(k.customers)} />
         <KpiCard label="Conversion" value={`${formatNumber(k.conversion_rate ?? 0)} %`} sub="commandes / vues produit" />
       </div>
