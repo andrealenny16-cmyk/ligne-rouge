@@ -73,13 +73,13 @@ export default async function ProductPage({ params }: Props) {
           <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-4">
             {[
               ["Sortie", p.tip_diameter_mm ? `Ø ${p.tip_diameter_mm} mm` : "—"],
-              ["Matériau", p.material],
+              ["Matériau", p.material.charAt(0).toUpperCase() + p.material.slice(1)],
               ["Puissance", `+${p.hp_gain} ch`],
               ["Niveau", `${p.db_level}${p.db_level_max ? `–${p.db_level_max}` : ""} dB`],
             ].map(([k, v]) => (
               <div key={k} className="bg-night px-3 py-2.5">
                 <dt className="font-mono text-[0.6rem] uppercase tracking-widest text-white/45">{k}</dt>
-                <dd className="font-semibold capitalize">{v}</dd>
+                <dd className="font-semibold">{v}</dd>
               </div>
             ))}
           </dl>
