@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="carbon relative mt-24 border-t border-white/10">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-4 md:px-8">
         <div className="md:col-span-2">
-          <Logo />
+          <Logo className="h-16" />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/55">
             Échappements titane, inox et carbone conçus en France pour voitures et motos. Homologués route ou pensés pour la piste.
           </p>

@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
 export const metadata: Metadata = {
-  title: { default: "DÉCIBEL Performance — Échappements titane voiture & moto", template: "%s · DÉCIBEL Performance" },
+  title: { default: "LIGNE ROUGE — Échappements titane voiture & moto", template: "%s · LIGNE ROUGE" },
   description:
     "Lignes complètes, silencieux et embouts en titane, inox et carbone. Homologués route ou 100 % circuit. Le son. La puissance.",
 };
