@@ -1,7 +1,7 @@
 import type { Product, Usage, VehicleMake, VehicleModel } from "./types";
 
 /* Logique métier du « Configurateur Son & Perf », utilisée seule (sans clé API)
-   ou pour préparer et contrôler la réponse de Claude. */
+   ou pour préparer et contrôler la réponse du modèle d'IA. */
 
 const norm = (s: string) =>
   s

@@ -384,7 +384,7 @@ create table public.ai_configurator_logs (
   matched_model_id      integer references public.vehicle_models (id) on delete set null,
   response              text not null,
   recommended_products  uuid[] not null default '{}',
-  engine                text not null check (engine in ('claude', 'regles')),
+  engine                text not null check (engine in ('ia', 'regles')),
   created_at            timestamptz not null default now()
 );
 create index ai_logs_user_id_idx on public.ai_configurator_logs (user_id);

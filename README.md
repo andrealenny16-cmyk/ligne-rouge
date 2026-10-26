@@ -18,7 +18,7 @@ lignes complètes, silencieux et embouts en titane, inox et carbone. Deux gammes
 | Public | **Site en une page qui défile** (menu = ancres : Accueil, Voiture, Moto, Conseil IA, section active surlignée) : hero 3D photoréaliste (sélecteur Moto/Voiture et Ville/Circuit : 4 pots 3D différents marqués LIGNE ROUGE qui suivent le curseur, vis et écrous éjectés par les sorties, quincaillerie repoussée par la souris, vraie photo de circuit), recherche « Trouve le pot de ta caisse », univers **Voiture** puis **Moto** séparés, la piste, conseil IA intégré, avis. Fiches produit (photos du pot, jauges, compatibilité, avis, autres pots du même univers), boutique filtrable (filtres dans l'URL) |
 | Client | Inscription / connexion Supabase Auth, panier **persisté en base**, code promo, case obligatoire « usage circuit », commande via la fonction SQL `checkout()`, suivi des commandes, **Mon garage**, favoris, adresses |
 | Admin | Accès protégé (middleware + vérification serveur du rôle), KPIs (CA, commandes, panier moyen, clients, conversion, paniers en cours), courbe CA 30 j, top produits, route vs circuit, véhicules les plus demandés, stock bas, gestion des statuts de commande, des prix/promos/stocks |
-| IA | Configurateur « Son & Perf » : reconnaissance du véhicule en base, filtrage des pots compatibles, recommandation Claude (ou moteur à règles sans clé), règle « jamais de circuit pour un usage route » contrôlée côté serveur, journalisation |
+| IA | Configurateur « Son & Perf » : reconnaissance du véhicule en base, filtrage des pots compatibles, recommandation par IA (ou moteur à règles sans clé), règle « jamais de circuit pour un usage route » contrôlée côté serveur, journalisation |
 
 ## Stack
 
@@ -75,7 +75,7 @@ Points clés :
 
 ## Skills utilisées et valeur ajoutée
 
-Les skills Claude Code sont versionnées dans `.claude/skills/` et ont servi pendant tout le développement.
+Les skills du projet sont versionnées dans `.claude/skills/` (exigence du sujet).
 
 | Skill | Rôle | Valeur ajoutée concrète |
 |---|---|---|
@@ -100,7 +100,7 @@ Variables d'environnement :
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL du projet Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé publishable / anon |
-| `ANTHROPIC_API_KEY` | Optionnelle : active les recommandations Claude du configurateur |
+| `ANTHROPIC_API_KEY` | Optionnelle : active les recommandations IA du configurateur |
 
 Base de données : exécuter dans l'ordre les fichiers de `supabase/migrations/`, puis `supabase/seed_demo_orders.sql`
 (crée le compte admin, les clients de démo et ~40 commandes sur 30 jours).

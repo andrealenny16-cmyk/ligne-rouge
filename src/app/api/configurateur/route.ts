@@ -7,7 +7,7 @@ import { PRODUCT_SELECT, type Product } from "@/lib/types";
 
 /* Skill IA du site : « Configurateur Son & Perf »
    1. retrouve le modèle en base et les produits compatibles
-   2. demande une recommandation à Claude (si ANTHROPIC_API_KEY)
+   2. demande une recommandation au modèle d'IA (si ANTHROPIC_API_KEY)
    3. sinon, ou si la réponse est invalide : moteur à règles
    4. journalise l'échange dans ai_configurator_logs */
 
@@ -38,12 +38,12 @@ export async function POST(req: Request) {
 
   const allowed = allowedProducts(products, intent);
   let rec: Recommendation | null = null;
-  let engine: "claude" | "regles" = "regles";
+  let engine: "ia" | "regles" = "regles";
 
   if (process.env.ANTHROPIC_API_KEY && allowed.length) {
     try {
-      rec = await askClaude(vehicle, wish, label, intent.usage, allowed);
-      if (rec) engine = "claude";
+      rec = await askModel(vehicle, wish, label, intent.usage, allowed);
+      if (rec) engine = "ia";
     } catch (e) {
       console.error("configurateur: repli sur les règles", e);
     }
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
   });
 }
 
-async function askClaude(vehicle: string, wish: string, label: string | null, usage: "route" | "circuit", candidates: Product[]): Promise<Recommendation | null> {
+async function askModel(vehicle: string, wish: string, label: string | null, usage: "route" | "circuit", candidates: Product[]): Promise<Recommendation | null> {
   const client = new Anthropic();
   const specs = candidates.map((p) => ({
     slug: p.slug,

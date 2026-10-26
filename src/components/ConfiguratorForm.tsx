@@ -9,7 +9,7 @@ import type { Product } from "@/lib/types";
 import { UsageBadge } from "./ui";
 
 type Result = {
-  engine: "claude" | "regles";
+  engine: "ia" | "regles";
   vehicle: string | null;
   usage: "route" | "circuit";
   recommendation: Recommendation | null;
@@ -89,7 +89,7 @@ export default function ConfiguratorForm({ compact = false, initialVehicle = "" 
         <div className="mt-6 space-y-4" aria-live="polite">
           <p className="font-mono text-[0.65rem] tracking-widest text-neutral-400">
             {res.vehicle ? `VÉHICULE RECONNU : ${res.vehicle.toUpperCase()}` : "VÉHICULE NON RECONNU"} · USAGE {res.usage.toUpperCase()} ·{" "}
-            {res.engine === "claude" ? "RECOMMANDATION CLAUDE" : "MOTEUR À RÈGLES"}
+            {res.engine === "ia" ? "RECOMMANDATION IA" : "MOTEUR À RÈGLES"}
           </p>
 
           {res.product && res.recommendation ? (

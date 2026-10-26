@@ -18,7 +18,7 @@ export default function ConfigurateurPage() {
         {[
           ["1. Identification", "Ton texte est rapproché des 18 modèles de notre base (marque, nom, génération)."],
           ["2. Compatibilité", "Seuls les pots validés sur ton véhicule sont proposés, filtrés selon route ou circuit."],
-          ["3. Recommandation", "Claude rédige le conseil à partir des specs réelles. Sans clé API, un moteur à règles prend le relais."],
+          ["3. Recommandation", "L'IA rédige le conseil à partir des specs réelles. Sans clé API, un moteur à règles prend le relais."],
         ].map(([t, d]) => (
           <div key={t} className="rounded-3xl border border-black/10 p-5">
             <p className="font-display text-2xl uppercase">{t}</p>
