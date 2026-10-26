@@ -43,7 +43,7 @@ function Univers({ type, products }: { type: VehicleType; products: Product[] })
         <p className="font-mono text-xs tracking-[0.3em] text-white/70">
           {u.n} · UNIVERS {u.title.toUpperCase()} · {list.length} RÉFÉRENCES · DÈS {formatPrice(Math.min(...list.map(finalPrice)))}
         </p>
-        <h2 className="mt-2 font-display text-6xl uppercase italic leading-[0.85] md:text-8xl">
+        <h2 className="mt-2 font-display text-[2.7rem] uppercase italic leading-[0.85] sm:text-6xl md:text-8xl">
           Échappements <span className="text-heat">{u.title}</span>
         </h2>
         <p className="mt-3 max-w-xl text-white/75">{u.pitch}</p>

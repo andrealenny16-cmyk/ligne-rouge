@@ -1,6 +1,6 @@
 ---
 name: add-product
-description: Procédure complète pour ajouter un nouveau pot d'échappement LIGNE ROUGE au catalogue (seed SQL, variantes, images, compatibilité véhicules, illustrations SVG maison). À utiliser dès qu'on ajoute ou duplique un produit.
+description: Procédure complète pour ajouter un nouveau pot d'échappement LIGNE ROUGE au catalogue (seed SQL, variantes, photos réelles du pot, compatibilité véhicules). À utiliser dès qu'on ajoute ou duplique un produit.
 ---
 
 # Ajouter un pot au catalogue
