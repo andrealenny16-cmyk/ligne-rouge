@@ -3,11 +3,9 @@
 import Image, { type ImageProps } from "next/image";
 import { useState } from "react";
 
-export type ProductView = "34" | "profil" | "monte";
-
-/** Photo produit réelle dans public/photos/ (crédits : public/photos/CREDITS.md). */
-export function productPhoto(slug: string, view: ProductView = "34") {
-  return `/photos/${slug}-${view}.jpg`;
+/** Photo produit unique dans public/photos/ (crédits : public/photos/CREDITS.md). */
+export function productPhoto(slug: string) {
+  return `/photos/${slug}-34.jpg`;
 }
 
 /** Image qui bascule sur un repli éventuel, ou se masque, si la photo est absente. */

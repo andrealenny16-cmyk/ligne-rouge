@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ConfiguratorForm from "@/components/ConfiguratorForm";
-import ProductCard from "@/components/ProductCard";
+import Photo from "@/components/Photo";
+import ProductCard, { productImage } from "@/components/ProductCard";
 import ViewTracker from "@/components/ViewTracker";
 import BuyBox from "@/components/product/BuyBox";
 import CompatChecker from "@/components/product/CompatChecker";
-import Gallery from "@/components/product/Gallery";
 import ReviewForm from "@/components/product/ReviewForm";
 import { CircuitWarning, Gauge, Page, Stars, UsageBadge } from "@/components/ui";
 import { formatDate, formatInstall } from "@/lib/format";
@@ -47,7 +47,6 @@ export default async function ProductPage({ params }: Props) {
 
   const vehicles = ((compat ?? []) as unknown as CompatRow[]).map((c) => c.vehicle_models);
   const avg = reviews?.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
-  const images = [...(p.product_images ?? [])].sort((a, b) => a.position - b.position);
   const garageList = ((garage.data ?? []) as unknown as { id: string; year: number; nickname: string | null; model_id: number; vehicle_models: { name: string; vehicle_makes: { name: string } } }[]).map((g) => ({
     id: g.id,
     model_id: g.model_id,
@@ -63,7 +62,10 @@ export default async function ProductPage({ params }: Props) {
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr]">
-        <Gallery images={images} name={p.name} />
+        {/* Une seule photo, la plus nette : le pot sur fond studio */}
+        <div className="photo relative aspect-[5/4] self-start overflow-hidden rounded-md bg-[#111113]">
+          <Photo src={productImage(p)} alt={`${p.name}, échappement ${typeLabel.toLowerCase()} LIGNE ROUGE`} fill priority quality={95} sizes="(max-width: 1024px) 100vw, 55vw" className="object-contain" />
+        </div>
 
         <div>
           <Link
