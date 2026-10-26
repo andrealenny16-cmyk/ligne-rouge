@@ -29,7 +29,7 @@ Next.js 15 (App Router, TypeScript) · Tailwind CSS 4 · Supabase (Postgres, Aut
 
 Migrations : `supabase/migrations/001_init.sql` (schéma, RLS, fonctions, vues KPI, seed catalogue),
 `002_harden_functions.sql`, `003_split_write_policies.sql` (corrections issues de `get_advisors`),
-`004_rebrand_ligne_rouge.sql` (changement de marque), `005_product_photos.sql` (3 photos par produit).
+`004_rebrand_ligne_rouge.sql` (changement de marque), `005_product_photos.sql` (3 photos par produit), `006_product_specs.sql` (diamètre de sortie et points forts).
 
 ```mermaid
 erDiagram

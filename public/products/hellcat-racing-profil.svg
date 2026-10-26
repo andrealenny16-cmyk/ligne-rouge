@@ -1,8 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
-      <stop offset="0" stop-color="#FBFAF7"/><stop offset="1" stop-color="#E7E2DA"/>
+    <radialGradient id="bg" cx="50%" cy="40%" r="80%">
+      <stop offset="0" stop-color="#1E1E22"/><stop offset="1" stop-color="#070708"/>
     </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#E11D2E" stop-opacity="0.38"/><stop offset="1" stop-color="#E11D2E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.7"/>
+    </linearGradient>
     <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#7E7A72"/><stop offset="0.18" stop-color="#ECEAE4"/>
       <stop offset="0.45" stop-color="#B9B5AC"/><stop offset="0.8" stop-color="#7E7A72"/>
@@ -32,6 +38,9 @@
     </radialGradient>
   </defs>
   <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="420" cy="290" rx="380" ry="230" fill="url(#glow)"/>
+  <rect y="430" width="800" height="170" fill="url(#floor)"/>
+  <line x1="0" y1="470" x2="800" y2="470" stroke="#E11D2E" stroke-opacity="0.18"/>
   <ellipse cx="420" cy="470" rx="330" ry="26" fill="url(#shadow)"/><path d="M 70 168 C 200 168, 250 276, 330 300"
         stroke="url(#ti)" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M 78 256 C 200 256, 250 292, 330 300"
         stroke="url(#ti)" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M 86 344 C 200 344, 250 308, 330 300"

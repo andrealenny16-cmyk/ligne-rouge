@@ -17,7 +17,7 @@ Utiliser le générateur `scripts/gen-product-svg.mjs` :
 node scripts/gen-product-svg.mjs
 ```
 Il lit le tableau `PRODUCTS` en tête de script : ajouter une entrée `{ slug, body: 'hex'|'oval', tips: 1|2|4, finish: 'titane'|'noir'|'bleu'|'inox', tipD }`.
-Style maison : fond blanc cassé `#F4F1EC`, corps métallique en dégradé, embouts carbone tissés, brides titane, collier de fixation, ombre portée douce, « LIGNE ROUGE » gravé sur le corps. Pas de logo tiers.
+Style maison : studio sombre (`#070708`) avec une lumière d'ambiance colorée propre au produit (champ `light`), corps métallique en dégradé, embouts carbone tissés, brides titane, collier de fixation, ombre portée douce, « LIGNE ROUGE » gravé sur le corps. Pas de logo tiers.
 
 ## 3. Seed SQL
 Créer une migration `supabase/migrations/NNN_add_<slug>.sql` (skill `supabase-migrations`) :

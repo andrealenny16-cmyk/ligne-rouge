@@ -6,7 +6,7 @@
   --color-ink: #111111;
   --color-mute: #6b6b6b;
   --color-line: #e5e3df;
-  --color-paper: #edebe7;
+  --color-paper: #0d0d0f;
   --color-cream: #f7f6f3;
   --color-rouge: #c8102e;
   --color-rouge-dark: #9e0b23;
@@ -102,7 +102,8 @@ body {
     margin-bottom: 0.4rem;
   }
 
+  /* Fond des photos produit : studio sombre, comme les visuels de la marque */
   .photo {
-    background: var(--color-paper);
+    background: #0d0d0f;
   }
 }

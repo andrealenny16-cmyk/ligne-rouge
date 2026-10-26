@@ -1,8 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
-      <stop offset="0" stop-color="#FBFAF7"/><stop offset="1" stop-color="#E7E2DA"/>
+    <radialGradient id="bg" cx="50%" cy="40%" r="80%">
+      <stop offset="0" stop-color="#1E1E22"/><stop offset="1" stop-color="#070708"/>
     </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#22C55E" stop-opacity="0.38"/><stop offset="1" stop-color="#22C55E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.7"/>
+    </linearGradient>
     <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#8A8D94"/><stop offset="0.18" stop-color="#F6F6F7"/>
       <stop offset="0.45" stop-color="#C7C9CE"/><stop offset="0.8" stop-color="#8A8D94"/>
@@ -32,14 +38,17 @@
     </radialGradient>
   </defs>
   
+  <ellipse cx="420" cy="290" rx="380" ry="230" fill="url(#glow)"/>
+  <rect y="430" width="800" height="170" fill="url(#floor)"/>
+  <line x1="0" y1="470" x2="800" y2="470" stroke="#22C55E" stroke-opacity="0.18"/>
   
      <g transform="translate(390 300) rotate(-14) skewX(-6)"><g transform="translate(0 0)"><rect x="-340" y="-98" width="170" height="40" rx="8" fill="url(#ti)"/><ellipse cx="-184" cy="-78" rx="10" ry="34" fill="url(#ti)" stroke="#7e7a72"/><rect x="-190" y="-138" width="380" height="120" rx="36" fill="url(#metal)"/><rect x="-190" y="-138" width="380" height="120" rx="36" fill="url(#gloss)"/><rect x="-140" y="-145" width="22" height="134" rx="5" fill="url(#ti)"/>
-  <g transform="translate(10 -66) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
+  <g transform="translate(-10 -66) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
      font-size="18" letter-spacing="3.2399999999999998" text-anchor="middle">
     <text y="1.5" fill="#fff" fill-opacity="0.35">LIGNE ROUGE</text>
     <text fill="#000" fill-opacity="0.38">LIGNE ROUGE</text>
   </g><ellipse cx="190" cy="-78" rx="42" ry="60" fill="url(#carbon)" stroke="url(#ti)" stroke-width="7"/><ellipse cx="190" cy="-78" rx="42" ry="60" fill="url(#gloss)"/></g><g transform="translate(0 0)"><rect x="-340" y="58" width="170" height="40" rx="8" fill="url(#ti)"/><ellipse cx="-184" cy="78" rx="10" ry="34" fill="url(#ti)" stroke="#7e7a72"/><rect x="-190" y="18" width="380" height="120" rx="36" fill="url(#metal)"/><rect x="-190" y="18" width="380" height="120" rx="36" fill="url(#gloss)"/><rect x="-140" y="11" width="22" height="134" rx="5" fill="url(#ti)"/>
-  <g transform="translate(10 90) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
+  <g transform="translate(-10 90) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
      font-size="18" letter-spacing="3.2399999999999998" text-anchor="middle">
     <text y="1.5" fill="#fff" fill-opacity="0.35">LIGNE ROUGE</text>
     <text fill="#000" fill-opacity="0.38">LIGNE ROUGE</text>

@@ -33,9 +33,12 @@ export type Product = {
   promo_price: number | null;
   stock: number;
   is_active: boolean;
+  tip_diameter_mm: number | null;
+  features: string[];
   categories?: { name: string; slug: string } | null;
   product_variants?: Variant[];
   product_images?: ProductImage[];
+  product_compatibility?: { vehicle_models: { name: string; vehicle_makes: { name: string } } }[];
 };
 
 export type VehicleMake = { id: number; name: string; type: VehicleType };
@@ -62,4 +65,4 @@ export const CIRCUIT_WARNING =
   "Usage exclusif sur circuit fermé. Non homologué pour la circulation sur voie publique.";
 
 export const PRODUCT_SELECT =
-  "id, ref, name, slug, vehicle_type, tagline, description, material, usage, db_level, db_level_max, hp_gain, torque_gain, weight_saving_kg, install_minutes, price, promo_price, stock, is_active, categories(name, slug), product_variants(id, product_id, color_name, color_hex, stock), product_images(url, alt, position)";
+  "id, ref, name, slug, vehicle_type, tagline, description, material, usage, db_level, db_level_max, hp_gain, torque_gain, weight_saving_kg, install_minutes, price, promo_price, stock, is_active, tip_diameter_mm, features, categories(name, slug), product_variants(id, product_id, color_name, color_hex, stock), product_images(url, alt, position), product_compatibility(vehicle_models(name, vehicle_makes(name)))";

@@ -70,6 +70,26 @@ export default async function ProductPage({ params }: Props) {
           </div>
           <h1 className="mt-3 font-display font-semibold text-5xl uppercase leading-[0.95] md:text-6xl">{p.name}</h1>
           <p className="mt-2 text-neutral-600">{p.tagline}</p>
+          <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-md border border-line bg-line text-sm sm:grid-cols-4">
+            {[
+              ["Sortie", p.tip_diameter_mm ? `Ø ${p.tip_diameter_mm} mm` : "—"],
+              ["Matériau", p.material],
+              ["Puissance", `+${p.hp_gain} ch`],
+              ["Niveau", `${p.db_level}${p.db_level_max ? `–${p.db_level_max}` : ""} dB`],
+            ].map(([k, v]) => (
+              <div key={k} className="bg-white px-3 py-2.5">
+                <dt className="text-[0.65rem] font-semibold uppercase tracking-wider text-mute">{k}</dt>
+                <dd className="font-semibold capitalize">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          {p.features.length > 0 && (
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {p.features.map((f) => (
+                <li key={f} className="rounded-sm bg-cream px-2.5 py-1 text-xs font-medium">{f}</li>
+              ))}
+            </ul>
+          )}
           {reviews?.length ? (
             <a href="#avis" className="mt-3 inline-flex items-center gap-2 text-sm">
               <Stars rating={avg} /> <span className="text-neutral-500">{avg.toFixed(1)} · {reviews.length} avis</span>

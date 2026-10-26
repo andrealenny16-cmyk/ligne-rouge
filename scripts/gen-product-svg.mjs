@@ -4,12 +4,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const PRODUCTS = [
-  { slug: "titan-gt", body: "oval", tips: 4, finish: "titane", tipD: 44 },
-  { slug: "carbon-fury", body: "oval", tips: 2, finish: "noir", tipD: 46 },
-  { slug: "inferno-r", body: "hex", tips: 4, finish: "bleu", tipD: 50 },
-  { slug: "spectre-s", body: "hex", tips: 2, finish: "noir", tipD: 40, moto: true },
-  { slug: "viper-twin", body: "oval", tips: 2, finish: "inox", tipD: 38, twin: true, moto: true },
-  { slug: "hellcat-racing", body: "hex", tips: 1, finish: "titane", tipD: 62, collector: true, moto: true },
+  { slug: "titan-gt", light: "#E8DCC8", body: "oval", tips: 4, finish: "titane", tipD: 44 },
+  { slug: "carbon-fury", light: "#4A7BFF", body: "oval", tips: 2, finish: "noir", tipD: 46 },
+  { slug: "inferno-r", light: "#3B6BFF", body: "hex", tips: 4, finish: "bleu", tipD: 50 },
+  { slug: "spectre-s", light: "#3B82F6", body: "hex", tips: 2, finish: "noir", tipD: 40, moto: true },
+  { slug: "viper-twin", light: "#22C55E", body: "oval", tips: 2, finish: "inox", tipD: 38, twin: true, moto: true },
+  { slug: "hellcat-racing", light: "#E11D2E", body: "hex", tips: 1, finish: "titane", tipD: 62, collector: true, moto: true },
 ];
 
 const FINISH = {
@@ -19,12 +19,18 @@ const FINISH = {
   inox: { a: "#F6F6F7", b: "#C7C9CE", c: "#8A8D94", heat: false },
 };
 
-function defs(f) {
+function defs(f, light = "#E8DCC8") {
   return `
   <defs>
-    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
-      <stop offset="0" stop-color="#FBFAF7"/><stop offset="1" stop-color="#E7E2DA"/>
+    <radialGradient id="bg" cx="50%" cy="40%" r="80%">
+      <stop offset="0" stop-color="#1E1E22"/><stop offset="1" stop-color="#070708"/>
     </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="${light}" stop-opacity="0.38"/><stop offset="1" stop-color="${light}" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.7"/>
+    </linearGradient>
     <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="${f.c}"/><stop offset="0.18" stop-color="${f.a}"/>
       <stop offset="0.45" stop-color="${f.b}"/><stop offset="0.8" stop-color="${f.c}"/>
@@ -132,7 +138,7 @@ function profile(p) {
       s += tipProfile(tx, cy + o, p.tipD, len);
     });
 
-  return svg(f, `<ellipse cx="420" cy="470" rx="330" ry="26" fill="url(#shadow)"/>${s}`);
+  return svg(f, `<ellipse cx="420" cy="470" rx="330" ry="26" fill="url(#shadow)"/>${s}`, p.light);
 }
 
 // Vue 3/4 avant : corps cylindrique en perspective, face arrière visible
@@ -159,7 +165,7 @@ function threeQuarter(p) {
     }
     s += `<rect x="${-w / 2}" y="${top}" width="${w}" height="${h}" rx="${p.body === "oval" ? h * 0.3 : 12}" fill="url(#gloss)"/>`;
     s += `<rect x="${-w / 2 + 50}" y="${top - 7}" width="22" height="${h + 14}" rx="5" fill="url(#ti)"/>`;
-    s += engraving(10, o + h * 0.1, Math.min(24, h * 0.15));
+    s += engraving(-10, o + h * 0.1, Math.min(24, h * 0.15, w / 16));
     // face arrière (carbone)
     s += `<ellipse cx="${w / 2}" cy="${o}" rx="${rx}" ry="${h / 2}" fill="url(#carbon)" stroke="url(#ti)" stroke-width="7"/>`;
     s += `<ellipse cx="${w / 2}" cy="${o}" rx="${rx}" ry="${h / 2}" fill="url(#gloss)"/>`;
@@ -191,12 +197,16 @@ function threeQuarter(p) {
     f,
     `<ellipse cx="400" cy="485" rx="320" ry="30" fill="url(#shadow)"/>
      <g transform="translate(390 300) rotate(-14) skewX(-6)">${s}</g>`,
+    p.light,
   );
 }
 
-function svg(f, inner) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">${defs(f)}
+function svg(f, inner, light) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">${defs(f, light)}
   <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="420" cy="290" rx="380" ry="230" fill="url(#glow)"/>
+  <rect y="430" width="800" height="170" fill="url(#floor)"/>
+  <line x1="0" y1="470" x2="800" y2="470" stroke="${light}" stroke-opacity="0.18"/>
   ${inner}
 </svg>
 `;
