@@ -1,6 +1,6 @@
 # Répartition du travail — LIGNE ROUGE
 
-Projet réalisé en binôme. Chaque membre commite sur le dépôt partagé avec son propre compte Git
+Projet réalisé à trois. Chaque membre commite sur le dépôt partagé avec son propre compte Git
 (petits commits réguliers, messages en français : `feat: …`, `fix: …`, `chore: …`).
 
 ## Membre A — Données & parcours client
@@ -19,6 +19,12 @@ Projet réalisé en binôme. Chaque membre commite sur le dépôt partagé avec 
 - Boutique et fiches produit : `/boutique`, `/produit/[slug]`, photos `docs/prompts-photos.md`, identité `scripts/gen-brand.mjs`
 - Admin & KPIs : `/admin`, `/admin/commandes`, `/admin/produits`, vues `kpi_*`, skill `kpi-dashboard`
 - Configurateur IA : `/configurateur`, `src/app/api/configurateur/route.ts`, `src/lib/recommend.ts`
+
+## Membre C — Timothé (alertes stock & skills officiels)
+
+- Alertes « Me prévenir du retour » : migration `008_stock_alerts.sql` (table, RLS, trigger `notify_stock_alerts()`, vue `kpi_stock_demand`)
+- Fiche produit (bouton sur coloris épuisé), section « Mes alertes stock » dans `/compte`, carte « Demande en rupture » dans `/admin`
+- Skills officiels : `supabase-postgres-best-practices`, `vercel-react-best-practices`, `web-design-guidelines`, `deploy-to-vercel`
 
 ## Règles communes
 
