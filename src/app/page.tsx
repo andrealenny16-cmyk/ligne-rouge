@@ -3,7 +3,6 @@ import ConfiguratorForm from "@/components/ConfiguratorForm";
 import Hero from "@/components/hero/Hero";
 import Photo from "@/components/Photo";
 import ProductCard from "@/components/ProductCard";
-import SoundButton from "@/components/SoundButton";
 import VehicleSelector from "@/components/VehicleSelector";
 import { Stars } from "@/components/ui";
 import { getProducts, getVehicles } from "@/lib/catalog";
@@ -48,9 +47,6 @@ function Univers({ type, products }: { type: VehicleType; products: Product[] })
         </h2>
         <p className="mt-3 max-w-xl text-white/75">{u.pitch}</p>
         <div className="mt-7 flex flex-wrap items-center gap-3">
-          <span className="font-mono text-[0.65rem] uppercase tracking-[0.25em] text-white/60">Écouter</span>
-          <SoundButton usage="route" vehicle={type} label="En ville" />
-          <SoundButton usage="circuit" vehicle={type} label="Sur circuit" />
           <Link
             href={`/boutique?type=${type}`}
             className="ml-auto inline-flex items-center gap-3 border border-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] transition hover:bg-white hover:text-night"

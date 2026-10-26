@@ -15,7 +15,7 @@ lignes complètes, silencieux et embouts en titane, inox et carbone. Deux gammes
 
 | Espace | Ce qu'on peut faire |
 |---|---|
-| Public | **Site en une page qui défile** (menu = ancres : Accueil, Voiture, Moto, Conseil IA, section active surlignée) : hero 3D photoréaliste (pot qui suit le curseur, vis et écrous éjectés par les sorties, quincaillerie repoussée par la souris, vraie photo de circuit), **4 vrais sons d'échappement WAV** (voiture/moto × ville/circuit), recherche « Trouve le pot de ta caisse », univers **Voiture** puis **Moto** séparés, la piste, conseil IA intégré, avis. Fiches produit (photos du pot, jauges, compatibilité, avis, autres pots du même univers), boutique filtrable (filtres dans l'URL) |
+| Public | **Site en une page qui défile** (menu = ancres : Accueil, Voiture, Moto, Conseil IA, section active surlignée) : hero 3D photoréaliste (pot qui suit le curseur, vis et écrous éjectés par les sorties, quincaillerie repoussée par la souris, vraie photo de circuit), recherche « Trouve le pot de ta caisse », univers **Voiture** puis **Moto** séparés, la piste, conseil IA intégré, avis. Fiches produit (photos du pot, jauges, compatibilité, avis, autres pots du même univers), boutique filtrable (filtres dans l'URL) |
 | Client | Inscription / connexion Supabase Auth, panier **persisté en base**, code promo, case obligatoire « usage circuit », commande via la fonction SQL `checkout()`, suivi des commandes, **Mon garage**, favoris, adresses |
 | Admin | Accès protégé (middleware + vérification serveur du rôle), KPIs (CA, commandes, panier moyen, clients, conversion, paniers en cours), courbe CA 30 j, top produits, route vs circuit, véhicules les plus demandés, stock bas, gestion des statuts de commande, des prix/promos/stocks |
 | IA | Configurateur « Son & Perf » : reconnaissance du véhicule en base, filtrage des pots compatibles, recommandation Claude (ou moteur à règles sans clé), règle « jamais de circuit pour un usage route » contrôlée côté serveur, journalisation |
@@ -108,7 +108,7 @@ Base de données : exécuter dans l'ordre les fichiers de `supabase/migrations/`
 Dans Supabase → Authentication → Sign In / Providers → Email, désactiver **Confirm email** pour que
 l'inscription connecte immédiatement le client.
 
-Photos et sons : vraies photos libres de droits dans `public/photos/` et vrais enregistrements dans `public/sounds/` (sources et licences dans les `CREDITS.md` de chaque dossier). Les 4 sons sont régénérables depuis les enregistrements sources avec `python3 scripts/extract-sounds.py <dossier>` (passage le plus puissant sans saturation, compression douce, WAV non compressé).
+Photos : vraies photos libres de droits dans `public/photos/` (sources et licences dans `public/photos/CREDITS.md`).
 
 Identité (plaque rivetée LIGNE ROUGE) : `node scripts/gen-brand.mjs` régénère `public/brand/`.
 

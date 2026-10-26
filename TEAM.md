@@ -15,7 +15,7 @@ Projet réalisé en binôme. Chaque membre commite sur le dépôt partagé avec 
 ## Membre B — Interface, catalogue, admin & IA
 
 - Design system : `src/app/globals.css`, `src/components/ui.tsx`, skill `ligne-rouge-design-system`
-- Accueil une page `src/app/page.tsx`, hero 3D `src/components/hero/*` (Three.js + GSAP, éjection de quincaillerie), sons `src/lib/sound.ts` + `scripts/extract-sounds.py`, sélecteur véhicule
+- Accueil une page `src/app/page.tsx`, hero 3D `src/components/hero/*` (Three.js + GSAP, éjection de quincaillerie), sélecteur véhicule
 - Boutique et fiches produit : `/boutique`, `/produit/[slug]`, photos `docs/prompts-photos.md`, identité `scripts/gen-brand.mjs`
 - Admin & KPIs : `/admin`, `/admin/commandes`, `/admin/produits`, vues `kpi_*`, skill `kpi-dashboard`
 - Configurateur IA : `/configurateur`, `src/app/api/configurateur/route.ts`, `src/lib/recommend.ts`

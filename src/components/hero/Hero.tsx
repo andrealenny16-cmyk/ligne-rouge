@@ -4,10 +4,8 @@ import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Photo from "@/components/Photo";
-import SoundButton from "@/components/SoundButton";
 import { PillLink } from "@/components/ui";
 import { formatPrice } from "@/lib/format";
-import { SOUND_EVENT } from "@/lib/sound";
 import { createEmitter } from "./emitter";
 import { buildExhaust, buildPart, loadExhaustModel, loadStudio, makeRenderer, materials, partMaterial, type Finish, type PartKind } from "./scene";
 
@@ -187,15 +185,7 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
 
     let switching = false;
     let switchSpin = 0;
-    let soundOn = false;
     let finish: Finish = "route";
-
-    const onSound = (e: Event) => {
-      soundOn = (e as CustomEvent).detail.playing;
-      if (soundOn && !reduced) emitter.burst(26);
-      restartEmbers();
-    };
-    window.addEventListener(SOUND_EVENT, onSound);
 
     apiRef.current = {
       switchTo(next) {
@@ -309,16 +299,14 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
       last = now;
       if (!visible) return;
       const time = now * 0.001;
-      emitter.update(dt, reduced ? 0 : soundOn ? 36 : isMobile ? 2 : 4.5);
+      emitter.update(dt, reduced ? 0 : isMobile ? 2 : 4.5);
       cur.x += (mouse.x - cur.x) * 0.05;
       cur.y += (mouse.y - cur.y) * 0.05;
 
-      // Pot : inclinaison vers le curseur + flottement + vibration pendant le son
-      const shake = soundOn ? 0.025 : 0;
+      // Pot : inclinaison vers le curseur + flottement
       potTilt.rotation.y = THREE.MathUtils.degToRad(cur.x * 40 + switchSpin);
       potTilt.rotation.x = THREE.MathUtils.degToRad(cur.y * 20);
-      potRoot.position.y = (reduced ? 0 : Math.sin((time * Math.PI * 2) / 6) * 20 * pxToWorld * (potCam.position.z / 10)) + (Math.random() - 0.5) * shake * 4;
-      potRoot.position.x = (Math.random() - 0.5) * shake * 4;
+      potRoot.position.y = reduced ? 0 : Math.sin((time * Math.PI * 2) / 6) * 20 * pxToWorld * (potCam.position.z / 10);
       pot.renderer.render(potScene, potCam);
 
       parts.forEach((p) => {
@@ -352,7 +340,7 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
           }
           p.rx += (trx - p.rx) * 0.1;
           p.ry += (tr_y - p.ry) * 0.1;
-          p.angle += 0.2 * speed * (soundOn ? 2.5 : 1);
+          p.angle += 0.2 * speed;
           const dur = p.d.layer === "far" ? 10 + p.i * 2 : DURS[p.i % 9];
           const phase = (time + p.i * 0.7) * ((Math.PI * 2) / dur);
           const floatY = reduced ? 0 : Math.sin(phase) * (p.d.layer === "far" ? 20 : 15);
@@ -396,16 +384,11 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
       const color = blue ? "#6EA8FF" : Math.random() < 0.5 ? "#FF8A3D" : "#FFC27A";
       const size = Math.random() * 4 + 2;
       const dur = Math.random() * 5 + 4;
-      s.style.cssText = `position:absolute;bottom:-10px;left:${Math.random() * 100}%;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 ${size * 3}px ${size}px ${color}88;--drift:${(Math.random() - 0.5) * 80}px;animation:rise ${soundOn ? dur * 0.45 : dur}s linear forwards, flicker ${0.2 + Math.random() * 0.4}s ease-in-out infinite;pointer-events:none;`;
+      s.style.cssText = `position:absolute;bottom:-10px;left:${Math.random() * 100}%;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 ${size * 3}px ${size}px ${color}88;--drift:${(Math.random() - 0.5) * 80}px;animation:rise ${dur}s linear forwards, flicker ${0.2 + Math.random() * 0.4}s ease-in-out infinite;pointer-events:none;`;
       embers.appendChild(s);
       window.setTimeout(() => s.remove(), dur * 1000);
     };
-    const restartEmbers = () => {
-      window.clearInterval(emberTimer);
-      if (reduced) return;
-      emberTimer = window.setInterval(spawn, soundOn ? 60 : isMobile ? 700 : 400);
-    };
-    restartEmbers();
+    if (!reduced) emberTimer = window.setInterval(spawn, isMobile ? 700 : 400);
 
     return () => {
       disposed = true;
@@ -414,7 +397,6 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
       io.disconnect();
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("resize", resize);
-      window.removeEventListener(SOUND_EVENT, onSound);
       gsap.killTweensOf(section);
       [pot, back, front].forEach((r) => r.renderer.dispose());
       apiRef.current = null;
@@ -503,7 +485,6 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <PillLink href="#voiture">Voir la gamme</PillLink>
-            <SoundButton usage={mode} label={mode === "circuit" ? "Écouter · circuit" : "Écouter · ville"} />
           </div>
           <div className="mt-auto hidden items-center gap-4 md:flex">
             <div className="grid h-12 w-12 place-items-center rounded-xl border border-white/15 bg-white/10 backdrop-blur">

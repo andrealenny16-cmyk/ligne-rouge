@@ -27,8 +27,7 @@ cinématographiques ; tout le contenu (sélecteur, catalogue, fiches, panier, co
 | `.speed-lines` | traînées horizontales | décor de vitesse derrière les tuiles et bandeaux |
 
 ## Structure du site : une seule page qui défile
-`src/app/page.tsx` : `#accueil` (hero) → `#trouver` (recherche véhicule) → `#voiture` (univers Voiture : bandeau photo,
-sons « En ville » / « Sur circuit », 3 pots) → `#moto` (idem) → `#piste` → `#conseil` (IA intégrée) → `#avis` → réassurance.
+`src/app/page.tsx` : `#accueil` (hero) → `#trouver` (recherche véhicule) → `#voiture` (univers Voiture : bandeau photo, 3 pots) → `#moto` (idem) → `#piste` → `#conseil` (IA intégrée) → `#avis` → réassurance.
 Le menu (`HeaderNav`) ne contient que ces ancres + compte/panier ; la section visible est surlignée (IntersectionObserver).
 Toute nouvelle section se place dans ce flux avec un `id` et `scroll-mt-24`. Voiture et moto ne sont **jamais mélangées** :
 fiche produit = bandeau « Échappement Voiture/Moto » + « Les autres pots Voiture/Moto » ; boutique groupée par univers.
@@ -43,8 +42,7 @@ fiche produit = bandeau « Échappement Voiture/Moto » + « Les autres pots Voi
   photoréaliste au centre qui suit le curseur (HDRI de studio `public/hdri/studio.hdr`, titane brossé anisotrope,
   carbone verni, soudures, plaque de marque ; un vrai modèle `public/models/exhaust.glb` le remplace s'il existe),
   quincaillerie repoussée par la souris, **vis/écrous/boulons éjectés par les sorties du pot** (`hero/emitter.ts`, gerbe
-  au clic sur le son et au changement de gamme), braises et fumée, bascule chorégraphiée (GSAP). **À conserver.**
-- `SoundButton` (`usage`, `vehicle`, `label`) : joue `public/sounds/{voiture|moto}-{circuit|ville}.wav` (route = ville).
+  au changement de gamme), braises et fumée, bascule chorégraphiée (GSAP). **À conserver.**
 - `PillLink` / `PillButton` : pilule noire + pastille bronze « + » ; `variant="heat"` pour l'achat.
 - **Bouton catalogue** (style course) : rectangle blanc ou contour blanc, `text-xs uppercase tracking-[0.2em]`,
   flèche `→` — pour « Trouver mon système », « Gamme circuit ».

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ConfiguratorForm from "@/components/ConfiguratorForm";
 import ProductCard from "@/components/ProductCard";
-import SoundButton from "@/components/SoundButton";
 import ViewTracker from "@/components/ViewTracker";
 import BuyBox from "@/components/product/BuyBox";
 import CompatChecker from "@/components/product/CompatChecker";
@@ -113,9 +112,6 @@ export default async function ProductPage({ params }: Props) {
             </a>
           ) : null}
 
-          <div className="mt-6">
-            <SoundButton usage={p.usage} vehicle={p.vehicle_type} label={`Écouter · ${p.usage === "circuit" ? "sur circuit" : "en ville"}`} />
-          </div>
 
           <BuyBox product={p} loggedIn={!!user} isFavorite={!!fav.data} />
 
