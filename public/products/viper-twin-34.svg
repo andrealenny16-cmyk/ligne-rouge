@@ -35,13 +35,13 @@
   <ellipse cx="400" cy="485" rx="320" ry="30" fill="url(#shadow)"/>
      <g transform="translate(390 300) rotate(-14) skewX(-6)"><g transform="translate(0 0)"><rect x="-340" y="-98" width="170" height="40" rx="8" fill="url(#ti)"/><ellipse cx="-184" cy="-78" rx="10" ry="34" fill="url(#ti)" stroke="#7e7a72"/><rect x="-190" y="-138" width="380" height="120" rx="36" fill="url(#metal)"/><rect x="-190" y="-138" width="380" height="120" rx="36" fill="url(#gloss)"/><rect x="-140" y="-145" width="22" height="134" rx="5" fill="url(#ti)"/>
   <g transform="translate(10 -66) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
-     font-size="24" letter-spacing="4.32" text-anchor="middle">
-    <text y="1.5" fill="#fff" fill-opacity="0.35">DÉCIBEL</text>
-    <text fill="#000" fill-opacity="0.38">DÉCIBEL</text>
+     font-size="18" letter-spacing="3.2399999999999998" text-anchor="middle">
+    <text y="1.5" fill="#fff" fill-opacity="0.35">LIGNE ROUGE</text>
+    <text fill="#000" fill-opacity="0.38">LIGNE ROUGE</text>
   </g><ellipse cx="190" cy="-78" rx="42" ry="60" fill="url(#carbon)" stroke="url(#ti)" stroke-width="7"/><ellipse cx="190" cy="-78" rx="42" ry="60" fill="url(#gloss)"/></g><g transform="translate(0 0)"><rect x="-340" y="58" width="170" height="40" rx="8" fill="url(#ti)"/><ellipse cx="-184" cy="78" rx="10" ry="34" fill="url(#ti)" stroke="#7e7a72"/><rect x="-190" y="18" width="380" height="120" rx="36" fill="url(#metal)"/><rect x="-190" y="18" width="380" height="120" rx="36" fill="url(#gloss)"/><rect x="-140" y="11" width="22" height="134" rx="5" fill="url(#ti)"/>
   <g transform="translate(10 90) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
-     font-size="24" letter-spacing="4.32" text-anchor="middle">
-    <text y="1.5" fill="#fff" fill-opacity="0.35">DÉCIBEL</text>
-    <text fill="#000" fill-opacity="0.38">DÉCIBEL</text>
+     font-size="18" letter-spacing="3.2399999999999998" text-anchor="middle">
+    <text y="1.5" fill="#fff" fill-opacity="0.35">LIGNE ROUGE</text>
+    <text fill="#000" fill-opacity="0.38">LIGNE ROUGE</text>
   </g><ellipse cx="190" cy="78" rx="42" ry="60" fill="url(#carbon)" stroke="url(#ti)" stroke-width="7"/><ellipse cx="190" cy="78" rx="42" ry="60" fill="url(#gloss)"/></g><rect x="190" y="-97" width="80" height="38" fill="url(#carbon)"/><rect x="190" y="-97" width="80" height="38" fill="url(#gloss)"/><ellipse cx="270" cy="-78" rx="7.9799999999999995" ry="22" fill="url(#ti)"/><ellipse cx="271" cy="-78" rx="5.7" ry="16" fill="url(#bore)"/><rect x="190" y="59" width="80" height="38" fill="url(#carbon)"/><rect x="190" y="59" width="80" height="38" fill="url(#gloss)"/><ellipse cx="270" cy="78" rx="7.9799999999999995" ry="22" fill="url(#ti)"/><ellipse cx="271" cy="78" rx="5.7" ry="16" fill="url(#bore)"/></g>
 </svg>

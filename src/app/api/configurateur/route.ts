@@ -103,7 +103,7 @@ async function askClaude(vehicle: string, wish: string, label: string | null, us
       model: MODEL,
       max_tokens: 600,
       system:
-        "Tu es le conseiller technique de DÉCIBEL Performance, fabricant français d'échappements. " +
+        "Tu es le conseiller technique de LIGNE ROUGE, fabricant français d'échappements. " +
         "Tu recommandes UN seul produit parmi la liste fournie, jamais un autre. " +
         "Règle absolue : si le client veut rouler sur route, ne recommande jamais un produit dont usage = circuit. " +
         "Réponds uniquement en JSON valide, sans texte autour, au format " +

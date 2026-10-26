@@ -46,14 +46,14 @@ function engravingTexture() {
   c.width = 1024;
   c.height = 192;
   const g = c.getContext("2d")!;
-  g.font = "900 128px Arial Black, Arial, sans-serif";
+  g.font = "900 92px Arial Black, Arial, sans-serif";
   g.textAlign = "center";
   g.textBaseline = "middle";
-  g.letterSpacing = "18px";
+  g.letterSpacing = "10px";
   g.fillStyle = "rgba(255,255,255,0.5)";
-  g.fillText("DÉCIBEL", 512, 100);
+  g.fillText("LIGNE ROUGE", 512, 100);
   g.fillStyle = "rgba(10,10,12,0.75)";
-  g.fillText("DÉCIBEL", 512, 96);
+  g.fillText("LIGNE ROUGE", 512, 96);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 4;

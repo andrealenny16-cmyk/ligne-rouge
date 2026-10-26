@@ -5,13 +5,13 @@ import type { Usage } from "./types";
 /**
  * Synthèse d'un démarrage + accélération en Web Audio API (aucun fichier externe).
  * Route : plus grave et filtré. Circuit : plus aigu, saturé, avec pétarades au lever de pied.
- * Émet `decibel:sound` sur window ({ playing, usage }) pour synchroniser les animations.
+ * Émet `lignerouge:sound` sur window ({ playing, usage }) pour synchroniser les animations.
  */
 
 let ctx: AudioContext | null = null;
 let playing = false;
 
-export const SOUND_EVENT = "decibel:sound";
+export const SOUND_EVENT = "lignerouge:sound";
 
 export function isPlaying() {
   return playing;

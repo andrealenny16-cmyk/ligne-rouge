@@ -34,14 +34,14 @@
   <rect width="800" height="600" fill="url(#bg)"/>
   <ellipse cx="420" cy="470" rx="330" ry="26" fill="url(#shadow)"/><rect x="60" y="208" width="200" height="44" rx="8" fill="url(#ti)"/><rect x="220" y="194" width="16" height="72" rx="4" fill="url(#ti)" stroke="#7e7a72" stroke-width="1"/><rect x="60" y="348" width="200" height="44" rx="8" fill="url(#ti)"/><rect x="220" y="334" width="16" height="72" rx="4" fill="url(#ti)" stroke="#7e7a72" stroke-width="1"/><rect x="250" y="175" width="340" height="110" rx="35.2" fill="url(#metal)"/><rect x="250" y="175" width="340" height="110" rx="35.2" fill="url(#gloss)"/><rect x="304.4" y="169" width="20" height="122" rx="5" fill="url(#ti)"/><circle cx="314.4" cy="165" r="7" fill="url(#ti)" stroke="#6e6a62"/><rect x="582" y="179" width="26" height="102" rx="6" fill="url(#carbon)"/><rect x="582" y="179" width="26" height="102" rx="6" fill="url(#gloss)"/>
   <g transform="translate(440.4 241) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
-     font-size="22" letter-spacing="3.96" text-anchor="middle">
-    <text y="1.5" fill="#fff" fill-opacity="0.35">DÉCIBEL</text>
-    <text fill="#000" fill-opacity="0.38">DÉCIBEL</text>
+     font-size="17.6" letter-spacing="3.168" text-anchor="middle">
+    <text y="1.5" fill="#fff" fill-opacity="0.35">LIGNE ROUGE</text>
+    <text fill="#000" fill-opacity="0.38">LIGNE ROUGE</text>
   </g><rect x="250" y="315" width="340" height="110" rx="35.2" fill="url(#metal)"/><rect x="250" y="315" width="340" height="110" rx="35.2" fill="url(#gloss)"/><rect x="304.4" y="309" width="20" height="122" rx="5" fill="url(#ti)"/><circle cx="314.4" cy="305" r="7" fill="url(#ti)" stroke="#6e6a62"/><rect x="582" y="319" width="26" height="102" rx="6" fill="url(#carbon)"/><rect x="582" y="319" width="26" height="102" rx="6" fill="url(#gloss)"/>
   <g transform="translate(440.4 381) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
-     font-size="22" letter-spacing="3.96" text-anchor="middle">
-    <text y="1.5" fill="#fff" fill-opacity="0.35">DÉCIBEL</text>
-    <text fill="#000" fill-opacity="0.38">DÉCIBEL</text>
+     font-size="17.6" letter-spacing="3.168" text-anchor="middle">
+    <text y="1.5" fill="#fff" fill-opacity="0.35">LIGNE ROUGE</text>
+    <text fill="#000" fill-opacity="0.38">LIGNE ROUGE</text>
   </g>
   <rect x="606" y="211" width="90" height="38" rx="4" fill="url(#carbon)"/>
   <rect x="606" y="211" width="90" height="38" rx="4" fill="url(#gloss)"/>

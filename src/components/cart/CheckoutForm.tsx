@@ -37,7 +37,7 @@ export default function CheckoutForm({ addresses, promo, circuitAck, total }: { 
         <p className="mt-2 text-sm text-white/60">Paiement simulé pour la démonstration : aucune carte n&apos;est demandée ni débitée.</p>
         <div className="carbon mt-4 flex items-center justify-between rounded-2xl border border-white/10 p-5">
           <span className="font-mono text-sm tracking-widest text-white/70">CARTE DÉMO •••• 0000</span>
-          <span className="font-display text-xl">DÉCIBEL PAY</span>
+          <span className="font-display text-xl">LIGNE ROUGE PAY</span>
         </div>
         {state && !state.ok && <p role="alert" className="mt-4 rounded-2xl bg-alert/15 p-3 text-sm text-[#ff8a92]">{state.error}</p>}
         <PillButton variant="heat" type="submit" disabled={pending || !addresses.length} className="mt-5 w-full justify-between">

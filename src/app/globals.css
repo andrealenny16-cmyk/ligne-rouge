@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Tokens DÉCIBEL — voir .claude/skills/decibel-design-system/SKILL.md */
+/* Tokens LIGNE ROUGE — voir .claude/skills/ligne-rouge-design-system/SKILL.md */
 @theme {
   --color-night: #0a0a0b;
   --color-night-2: #121214;

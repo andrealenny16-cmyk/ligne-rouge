@@ -38,9 +38,9 @@
         stroke="url(#ti)" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M 94 432 C 200 432, 250 324, 330 300"
         stroke="url(#ti)" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M 70 160 L 330 300" stroke="url(#heat)" stroke-width="0"/><rect x="300" y="274" width="80" height="52" rx="10" fill="url(#ti)"/><rect x="300" y="274" width="80" height="52" rx="10" fill="url(#heat)"/><rect x="370" y="225" width="220" height="150" rx="10" fill="url(#metal)"/><rect x="374" y="255" width="212" height="1.6" fill="#fff" fill-opacity="0.45"/><rect x="374" y="342" width="212" height="1.6" fill="#000" fill-opacity="0.35"/><rect x="370" y="225" width="220" height="150" rx="10" fill="url(#gloss)"/><rect x="405.2" y="219" width="20" height="162" rx="5" fill="url(#ti)"/><circle cx="415.2" cy="215" r="7" fill="url(#ti)" stroke="#6e6a62"/><rect x="582" y="229" width="26" height="142" rx="6" fill="url(#carbon)"/><rect x="582" y="229" width="26" height="142" rx="6" fill="url(#gloss)"/>
   <g transform="translate(493.20000000000005 315) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
-     font-size="18.333333333333332" letter-spacing="3.3" text-anchor="middle">
-    <text y="1.5" fill="#fff" fill-opacity="0.35">DÉCIBEL</text>
-    <text fill="#000" fill-opacity="0.38">DÉCIBEL</text>
+     font-size="12.941176470588236" letter-spacing="2.3294117647058825" text-anchor="middle">
+    <text y="1.5" fill="#fff" fill-opacity="0.35">LIGNE ROUGE</text>
+    <text fill="#000" fill-opacity="0.38">LIGNE ROUGE</text>
   </g>
   <rect x="606" y="269" width="70" height="62" rx="4" fill="url(#carbon)"/>
   <rect x="606" y="269" width="70" height="62" rx="4" fill="url(#gloss)"/>

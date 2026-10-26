@@ -1,12 +1,12 @@
 ---
 name: add-product
-description: Procédure complète pour ajouter un nouveau pot d'échappement DÉCIBEL au catalogue (seed SQL, variantes, images, compatibilité véhicules, illustrations SVG maison). À utiliser dès qu'on ajoute ou duplique un produit.
+description: Procédure complète pour ajouter un nouveau pot d'échappement LIGNE ROUGE au catalogue (seed SQL, variantes, images, compatibilité véhicules, illustrations SVG maison). À utiliser dès qu'on ajoute ou duplique un produit.
 ---
 
 # Ajouter un pot au catalogue
 
 ## 1. Fiche produit
-Rassembler : nom en capitales, ref `DB-XX-NN` (XX = initiales, NN = numéro suivant), catégorie, `vehicle_type` (`voiture|moto`), matériau (`titane|inox|carbone`), usage (`route|circuit`), dB, ch, Nm, kg gagnés, minutes de montage, prix TTC, promo éventuelle, stock 3–12, 2 coloris (nom + hex).
+Rassembler : nom en capitales, ref `LR-XX-NN` (XX = initiales, NN = numéro suivant), catégorie, `vehicle_type` (`voiture|moto`), matériau (`titane|inox|carbone`), usage (`route|circuit`), dB, ch, Nm, kg gagnés, minutes de montage, prix TTC, promo éventuelle, stock 3–12, 2 coloris (nom + hex).
 
 Règle métier : un produit `circuit` a toujours un dB ≥ 105 et **ne doit jamais** être présenté comme homologué.
 
@@ -17,7 +17,7 @@ Utiliser le générateur `scripts/gen-product-svg.mjs` :
 node scripts/gen-product-svg.mjs
 ```
 Il lit le tableau `PRODUCTS` en tête de script : ajouter une entrée `{ slug, body: 'hex'|'oval', tips: 1|2|4, finish: 'titane'|'noir'|'bleu'|'inox', tipD }`.
-Style maison : fond blanc cassé `#F4F1EC`, corps métallique en dégradé, embouts carbone tissés, brides titane, collier de fixation, ombre portée douce, « DÉCIBEL » gravé sur le corps. Pas de logo tiers.
+Style maison : fond blanc cassé `#F4F1EC`, corps métallique en dégradé, embouts carbone tissés, brides titane, collier de fixation, ombre portée douce, « LIGNE ROUGE » gravé sur le corps. Pas de logo tiers.
 
 ## 3. Seed SQL
 Créer une migration `supabase/migrations/NNN_add_<slug>.sql` (skill `supabase-migrations`) :
@@ -25,7 +25,7 @@ Créer une migration `supabase/migrations/NNN_add_<slug>.sql` (skill `supabase-m
 with p as (
   insert into public.products (ref, name, slug, category_id, vehicle_type, description, material, usage,
     db_level, hp_gain, torque_gain, weight_saving_kg, install_minutes, price, promo_price, stock)
-  values ('DB-XX-07', 'NOM', 'nom', (select id from public.categories where name = 'Ligne complète'),
+  values ('LR-XX-07', 'NOM', 'nom', (select id from public.categories where name = 'Ligne complète'),
     'voiture', '3–4 phrases : son, matériaux, sensations.', 'titane', 'route', 95, 10, 15, 5.0, 120, 1990, null, 8)
   returning id
 )

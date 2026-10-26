@@ -35,7 +35,7 @@ export default function Footer() {
       </div>
       <div className="cote mx-4 md:mx-8" />
       <p className="mx-auto max-w-7xl px-4 py-6 text-xs text-white/35 md:px-8">
-        © 2026 DÉCIBEL Performance. Les produits « Circuit » sont réservés à un usage sur circuit fermé.
+        © 2026 LIGNE ROUGE. Les produits « Circuit » sont réservés à un usage sur circuit fermé.
       </p>
     </footer>
   );

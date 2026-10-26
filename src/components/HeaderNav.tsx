@@ -53,7 +53,7 @@ function Bar({ cartCount, loggedIn, isAdmin, active }: Props & { active: string 
       }`}
     >
       <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 md:px-[4%]">
-        <Link href="/" aria-label="DÉCIBEL Performance, accueil" className="shrink-0">
+        <Link href="/" aria-label="LIGNE ROUGE, accueil" className="shrink-0">
           <Logo />
         </Link>
 

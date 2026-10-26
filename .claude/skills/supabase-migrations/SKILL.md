@@ -1,9 +1,9 @@
 ---
 name: supabase-migrations
-description: Conventions SQL et process Supabase pour DÉCIBEL (nommage, RLS systématique, fonctions security definer, vues KPI). À charger avant d'écrire ou modifier une migration ou une table.
+description: Conventions SQL et process Supabase pour LIGNE ROUGE (nommage, RLS systématique, fonctions security definer, vues KPI). À charger avant d'écrire ou modifier une migration ou une table.
 ---
 
-# Migrations Supabase — conventions DÉCIBEL
+# Migrations Supabase — conventions LIGNE ROUGE
 
 ## Fichiers
 - Une migration = un fichier `supabase/migrations/NNN_nom_snake.sql` (NNN incrémental : `002_wishlist_alerts.sql`).

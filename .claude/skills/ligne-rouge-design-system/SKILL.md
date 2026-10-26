@@ -1,9 +1,9 @@
 ---
-name: decibel-design-system
-description: Charte visuelle DÉCIBEL Performance (couleurs, typos, composants, animations). À charger avant de créer ou modifier toute page ou composant UI du site.
+name: ligne-rouge-design-system
+description: Charte visuelle LIGNE ROUGE (couleurs, typos, composants, animations). À charger avant de créer ou modifier toute page ou composant UI du site.
 ---
 
-# DÉCIBEL — Design system
+# LIGNE ROUGE — Design system
 
 Ambiance : **atelier racing premium, la nuit**. Sombre, technique, métallique, avec du verre dépoli.
 
@@ -24,7 +24,7 @@ Ne jamais introduire une nouvelle couleur en dur : passer par ces tokens.
 ## Typographie
 - Titres : `font-display` (Anton), **toujours en capitales**, `leading-[0.85]`, tracking léger.
 - Texte : `font-sans` (Inter). Nav : `font-nav` (Manrope).
-- Références produit : `font-mono text-xs text-white/50` → `REF. DB-GT-01`.
+- Références produit : `font-mono text-xs text-white/50` → `REF. LR-GT-01`.
 
 ## Composants (dans `src/components/`)
 - `PillButton` : pilule noire semi-transparente `bg-black/50` + pastille bronze « + » à droite. Variante `heat` pour le CTA principal.

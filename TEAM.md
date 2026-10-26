@@ -1,4 +1,4 @@
-# Répartition du travail — DÉCIBEL Performance
+# Répartition du travail — LIGNE ROUGE
 
 Projet réalisé en binôme. Chaque membre commite sur le dépôt partagé avec son propre compte Git
 (petits commits réguliers, messages en français : `feat: …`, `fix: …`, `chore: …`).
@@ -14,7 +14,7 @@ Projet réalisé en binôme. Chaque membre commite sur le dépôt partagé avec 
 
 ## Membre B — Interface, catalogue, admin & IA
 
-- Design system : `src/app/globals.css`, `src/components/ui.tsx`, skill `decibel-design-system`
+- Design system : `src/app/globals.css`, `src/components/ui.tsx`, skill `ligne-rouge-design-system`
 - Accueil : hero 3D `src/components/hero/*` (Three.js + GSAP), son `src/lib/sound.ts`, sélecteur véhicule
 - Boutique et fiches produit : `/boutique`, `/produit/[slug]`, illustrations `scripts/gen-product-svg.mjs`
 - Admin & KPIs : `/admin`, `/admin/commandes`, `/admin/produits`, vues `kpi_*`, skill `kpi-dashboard`
@@ -22,6 +22,6 @@ Projet réalisé en binôme. Chaque membre commite sur le dépôt partagé avec 
 
 ## Règles communes
 
-- Toute nouvelle page charge la skill `decibel-design-system`.
+- Toute nouvelle page charge la skill `ligne-rouge-design-system`.
 - Toute modification SQL passe par une nouvelle migration (skill `supabase-migrations`).
 - `npm run build` doit passer avant chaque push.

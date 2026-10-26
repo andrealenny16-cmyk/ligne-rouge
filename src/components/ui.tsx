@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { CIRCUIT_WARNING, type Usage } from "@/lib/types";
 
-/* Composants de la charte — .claude/skills/decibel-design-system */
+/* Composants de la charte — .claude/skills/ligne-rouge-design-system */
 
 type PillProps = { children: ReactNode; variant?: "dark" | "heat"; plus?: boolean; className?: string };
 

@@ -1,4 +1,4 @@
-// Génère les illustrations produit DÉCIBEL (vue 3/4 et profil) dans public/products/.
+// Génère les illustrations produit LIGNE ROUGE (vue 3/4 et profil) dans public/products/.
 // Usage : node scripts/gen-product-svg.mjs — voir .claude/skills/add-product/SKILL.md
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -59,8 +59,8 @@ function engraving(x, y, size, rotate = 0) {
   return `
   <g transform="translate(${x} ${y}) rotate(${rotate})" font-family="Arial Black, Arial, sans-serif" font-weight="900"
      font-size="${size}" letter-spacing="${size * 0.18}" text-anchor="middle">
-    <text y="1.5" fill="#fff" fill-opacity="0.35">DÉCIBEL</text>
-    <text fill="#000" fill-opacity="0.38">DÉCIBEL</text>
+    <text y="1.5" fill="#fff" fill-opacity="0.35">LIGNE ROUGE</text>
+    <text fill="#000" fill-opacity="0.38">LIGNE ROUGE</text>
   </g>`;
 }
 
@@ -79,7 +79,7 @@ function bodyProfile(p, f, x, cy, w, h) {
   s += `<circle cx="${x + w * 0.16 + 10}" cy="${top - 10}" r="7" fill="url(#ti)" stroke="#6e6a62"/>`;
   s += `<rect x="${x + w - 8}" y="${top + 4}" width="26" height="${h - 8}" rx="6" fill="url(#carbon)"/>`;
   s += `<rect x="${x + w - 8}" y="${top + 4}" width="26" height="${h - 8}" rx="6" fill="url(#gloss)"/>`;
-  s += engraving(x + w * 0.56, cy + h * 0.1, Math.min(30, h * 0.2, w / 12));
+  s += engraving(x + w * 0.56, cy + h * 0.1, Math.min(24, h * 0.16, w / 17));
   return s;
 }
 
@@ -159,7 +159,7 @@ function threeQuarter(p) {
     }
     s += `<rect x="${-w / 2}" y="${top}" width="${w}" height="${h}" rx="${p.body === "oval" ? h * 0.3 : 12}" fill="url(#gloss)"/>`;
     s += `<rect x="${-w / 2 + 50}" y="${top - 7}" width="22" height="${h + 14}" rx="5" fill="url(#ti)"/>`;
-    s += engraving(10, o + h * 0.1, Math.min(32, h * 0.2));
+    s += engraving(10, o + h * 0.1, Math.min(24, h * 0.15));
     // face arrière (carbone)
     s += `<ellipse cx="${w / 2}" cy="${o}" rx="${rx}" ry="${h / 2}" fill="url(#carbon)" stroke="url(#ti)" stroke-width="7"/>`;
     s += `<ellipse cx="${w / 2}" cy="${o}" rx="${rx}" ry="${h / 2}" fill="url(#gloss)"/>`;

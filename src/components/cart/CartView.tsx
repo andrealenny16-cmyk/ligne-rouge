@@ -82,7 +82,7 @@ export default function CartView({ lines, subtotal, hasCircuit }: { lines: CartL
         <div>
           <span className="label">Code promo</span>
           <div className="flex gap-2">
-            <input className="field uppercase" value={code} onChange={(e) => setCode(e.target.value)} placeholder="DECIBEL10" />
+            <input className="field uppercase" value={code} onChange={(e) => setCode(e.target.value)} placeholder="ROUGE10" />
             <button onClick={apply} disabled={!code.trim()} className="rounded-2xl bg-white/10 px-4 font-semibold disabled:opacity-40">
               OK
             </button>

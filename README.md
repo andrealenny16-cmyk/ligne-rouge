@@ -1,13 +1,13 @@
-# DÉCIBEL Performance
+# LIGNE ROUGE
 
 Site e-commerce d'une marque française (fictive) d'échappements haut de gamme pour **voitures et motos** :
 lignes complètes, silencieux et embouts en titane, inox et carbone. Deux gammes : **Homologué route** et
 **Circuit uniquement**.
 
 - **Site en ligne** : _lien Vercel à compléter après déploiement_
-- **Compte admin de démo** : `admin@decibel.fr` / `Decibel#Admin2026`
-- **Clients de démo** : `julien@demo.decibel.fr` (et sofiane, camille, thomas, lea, nicolas, ines, hugo) / `Demo#Client2026`
-- **Codes promo** : `DECIBEL10` (−10 %), `LAUNCH20` (−20 %)
+- **Compte admin de démo** : `admin@ligne-rouge.fr` / `LigneRouge#Admin2026`
+- **Clients de démo** : `julien@demo.ligne-rouge.fr` (et sofiane, camille, thomas, lea, nicolas, ines, hugo) / `Demo#Client2026`
+- **Codes promo** : `ROUGE10` (−10 %), `LAUNCH20` (−20 %)
 
 > Projet étudiant. Marque, produits, avis et commandes de démonstration sont fictifs. Le paiement est simulé.
 
@@ -78,7 +78,7 @@ Les skills Claude Code sont versionnées dans `.claude/skills/` et ont servi pen
 
 | Skill | Rôle | Valeur ajoutée concrète |
 |---|---|---|
-| `decibel-design-system` | Tokens (bronze `#E8A36B`, alerte `#E11D2E`, dégradé « titane chauffé »), typos, composants (`PillButton`, `UsageBadge`, `Gauge`, `ProductCard`, `CircuitWarning`), règles d'animation | Toutes les pages partagent les mêmes composants : badges route/circuit et avertissement légal identiques partout, aucune couleur codée en dur |
+| `ligne-rouge-design-system` | Tokens (bronze `#E8A36B`, alerte `#E11D2E`, dégradé « titane chauffé »), typos, composants (`PillButton`, `UsageBadge`, `Gauge`, `ProductCard`, `CircuitWarning`), règles d'animation | Toutes les pages partagent les mêmes composants : badges route/circuit et avertissement légal identiques partout, aucune couleur codée en dur |
 | `supabase-migrations` | Conventions de nommage, RLS systématique, `(select auth.uid())`, fonctions `security definer` + `search_path = ''`, process « migration → `get_advisors` » | A guidé les migrations 002 et 003 : les alertes de l'advisor (fonctions trigger exposées en RPC, policies `for all` cumulées) ont été corrigées dans des migrations dédiées |
 | `add-product` | Procédure d'ajout d'un pot : fiche, illustrations SVG via `scripts/gen-product-svg.mjs`, seed SQL, variantes, compatibilité, vérifications | Les 6 produits et leurs 18 visuels ont été produits avec ce process ; ajouter un 7ᵉ pot est reproductible en quelques minutes |
 | `kpi-dashboard` | Chaîne vue SQL `kpi_*` → requête serveur → `KpiCard` / graphique recharts | Les 6 vues KPI et le dashboard suivent le même modèle ; ajouter un indicateur = une vue + une ligne dans `Promise.all` + un composant |

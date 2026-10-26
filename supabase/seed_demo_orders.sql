@@ -1,8 +1,8 @@
 -- =====================================================================
--- DÉCIBEL — données de DÉMONSTRATION pour le dashboard admin
+-- LIGNE ROUGE — données de DÉMONSTRATION pour le dashboard admin
 -- À exécuter une fois après 001_init.sql (console SQL Supabase).
---   * compte admin de démo : admin@decibel.fr / Decibel#Admin2026
---   * 8 clients fictifs     : prenom@demo.decibel.fr / Demo#Client2026
+--   * compte admin de démo : admin@ligne-rouge.fr / LigneRouge#Admin2026
+--   * 8 clients fictifs     : prenom@demo.ligne-rouge.fr / Demo#Client2026
 --   * ~40 commandes réparties sur 30 jours, garages, events, logs IA
 -- Ces commandes ne décrémentent pas le stock (démo uniquement).
 -- =====================================================================
@@ -56,13 +56,13 @@ begin
   perform setseed(0.42);
 
   -- Admin
-  v_admin := pg_temp.create_demo_user('admin@decibel.fr', 'Decibel#Admin2026', 'Admin DÉCIBEL');
+  v_admin := pg_temp.create_demo_user('admin@ligne-rouge.fr', 'LigneRouge#Admin2026', 'Admin LIGNE ROUGE');
   update public.profiles set role = 'admin' where id = v_admin;
 
   -- Clients fictifs + une adresse + un véhicule au garage
   for i in 1 .. array_length(names, 1) loop
     v_uid := pg_temp.create_demo_user(
-      lower(translate(names[i], 'éèÉ', 'eeE')) || '@demo.decibel.fr', 'Demo#Client2026', names[i] || ' (démo)');
+      lower(translate(names[i], 'éèÉ', 'eeE')) || '@demo.ligne-rouge.fr', 'Demo#Client2026', names[i] || ' (démo)');
     v_clients := v_clients || v_uid;
     update public.profiles set created_at = now() - ((30 - i * 3) || ' days')::interval where id = v_uid;
 
@@ -108,7 +108,7 @@ begin
     update public.orders
        set subtotal = v_sub,
            discount = case when i % 7 = 0 then round(v_sub * 0.10, 2) else 0 end,
-           promo_code = case when i % 7 = 0 then 'DECIBEL10' end,
+           promo_code = case when i % 7 = 0 then 'ROUGE10' end,
            total = v_sub - case when i % 7 = 0 then round(v_sub * 0.10, 2) else 0 end
      where id = v_order;
 

@@ -84,7 +84,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
                 </h2>
               </div>
               <p className="max-w-sm text-sm text-white/60">
-                Code <span className="font-mono text-bronze">DECIBEL10</span> : −10 % supplémentaires au panier.
+                Code <span className="font-mono text-bronze">ROUGE10</span> : −10 % supplémentaires au panier.
               </p>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

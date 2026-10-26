@@ -54,7 +54,7 @@ export default async function Boutique({ searchParams }: { searchParams: Promise
 
   return (
     <Page>
-      <PageTitle kicker={model ? "Compatible avec" : "Catalogue DÉCIBEL"} title={title} accent={model ? (sp.year ?? "") : `${products.length}`}>
+      <PageTitle kicker={model ? "Compatible avec" : "Catalogue LIGNE ROUGE"} title={title} accent={model ? (sp.year ?? "") : `${products.length}`}>
         {model
           ? `${products.length} échappement${products.length > 1 ? "s" : ""} testé${products.length > 1 ? "s" : ""} et validé${products.length > 1 ? "s" : ""} sur ce véhicule.`
           : "Lignes complètes, silencieux et embouts. Filtre par véhicule, matériau, usage ou budget."}

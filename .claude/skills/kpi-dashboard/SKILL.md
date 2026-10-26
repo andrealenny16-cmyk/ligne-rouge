@@ -1,6 +1,6 @@
 ---
 name: kpi-dashboard
-description: Comment ajouter un nouvel indicateur au dashboard admin DÉCIBEL (vue SQL kpi_ → requête serveur → carte ou graphique recharts). À utiliser pour toute demande de nouvelle métrique admin.
+description: Comment ajouter un nouvel indicateur au dashboard admin LIGNE ROUGE (vue SQL kpi_ → requête serveur → carte ou graphique recharts). À utiliser pour toute demande de nouvelle métrique admin.
 ---
 
 # Ajouter un KPI au dashboard admin

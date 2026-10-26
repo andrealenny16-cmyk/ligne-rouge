@@ -10,7 +10,7 @@ import { formatPrice } from "@/lib/format";
 import { SOUND_EVENT } from "@/lib/sound";
 import { buildExhaust, buildPart, makeRenderer, materials, partMaterial, type Finish, type PartKind } from "./scene";
 
-/* Hero DÉCIBEL — transposition de la référence « Soda » :
+/* Hero LIGNE ROUGE — transposition de la référence « Soda » :
    fond radial, pot 3D qui suit le curseur, quincaillerie repoussée par la souris,
    étincelles qui montent, cartes de gamme qui déclenchent la chorégraphie GSAP. */
 
