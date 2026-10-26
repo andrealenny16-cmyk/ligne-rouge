@@ -1,26 +1,187 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Tokens DÉCIBEL — voir .claude/skills/decibel-design-system/SKILL.md */
+@theme {
+  --color-night: #0a0a0b;
+  --color-night-2: #121214;
+  --color-bronze: #e8a36b;
+  --color-bronze-dark: #c08457;
+  --color-alert: #e11d2e;
+  --color-legal: #22c55e;
+  --color-titane: #3b82f6;
+  --color-ink: #1a0f07;
+  --color-paper: #f4f1ec;
+
+  --font-display: var(--font-anton), "Impact", sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-nav: var(--font-manrope), system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  --ease-pop: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-night);
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-night);
+  color: #fff;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-bronze);
+  color: var(--color-ink);
+}
+
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Tissage carbone 2x2 subtil */
+  .carbon {
+    background-color: #0d0d0f;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 6px),
+      repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.5) 0 2px, transparent 2px 6px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.2));
+  }
+
+  /* Dégradé « titane chauffé » */
+  .bg-heat {
+    background-image: linear-gradient(90deg, #3b82f6, #8b5cf6, #c08457);
+  }
+  .text-heat {
+    background-image: linear-gradient(90deg, #3b82f6, #8b5cf6, #e8a36b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Reflet métallique qui balaie la carte au survol */
+  .sheen {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .sheen::after {
+    content: "";
+    position: absolute;
+    inset: -50% auto -50% -60%;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transform: skewX(-20deg) translateX(-150%);
+    transition: transform 0.9s ease;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .sheen:hover::after {
+    transform: skewX(-20deg) translateX(520%);
+  }
+
+  /* Ligne de cote technique |——————| */
+  .cote {
+    position: relative;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.14);
+  }
+  .cote::before,
+  .cote::after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    width: 1px;
+    height: 9px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  .cote::before { left: 0; }
+  .cote::after { right: 0; }
+
+  .field {
+    width: 100%;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    color: #fff;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .field:focus {
+    border-color: var(--color-bronze);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .field option {
+    background: #121214;
+  }
+  .label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 0.4rem;
+  }
+}
+
+@keyframes rise {
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 0.8; }
+  100% { transform: translate3d(var(--drift, 20px), -105vh, 0) scale(0.3); opacity: 0; }
+}
+
+@keyframes flicker {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.8); }
+}
+
+@keyframes smoke {
+  0% { transform: translate3d(0, 0, 0) scale(0.6); opacity: 0; }
+  20% { opacity: 0.18; }
+  100% { transform: translate3d(var(--drift, 40px), -40vh, 0) scale(2.4); opacity: 0; }
+}
+
+@keyframes fadeIn { to { opacity: 1; } }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes rumble {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(1.5px, -1px); }
+  50% { transform: translate(-1px, 1.5px); }
+  75% { transform: translate(1px, 1px); }
+}
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

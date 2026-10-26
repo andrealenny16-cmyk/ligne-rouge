@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0" stop-color="#FBFAF7"/><stop offset="1" stop-color="#E7E2DA"/>
+    </radialGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7E7A72"/><stop offset="0.18" stop-color="#ECEAE4"/>
+      <stop offset="0.45" stop-color="#B9B5AC"/><stop offset="0.8" stop-color="#7E7A72"/>
+      <stop offset="1" stop-color="#B9B5AC"/>
+    </linearGradient>
+    <linearGradient id="ti" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8C887F"/><stop offset="0.3" stop-color="#F2F0EA"/>
+      <stop offset="0.6" stop-color="#ABA79E"/><stop offset="1" stop-color="#6E6A62"/>
+    </linearGradient>
+    <linearGradient id="heat" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C08457" stop-opacity="0"/><stop offset="0.3" stop-color="#C08457" stop-opacity="0.55"/>
+      <stop offset="0.6" stop-color="#8B5CF6" stop-opacity="0.55"/><stop offset="1" stop-color="#3B82F6" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.35"/><stop offset="0.35" stop-color="#fff" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.25"/>
+    </linearGradient>
+    <pattern id="carbon" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#161618"/>
+      <rect width="4" height="4" fill="#2E2E33"/><rect x="4" y="4" width="4" height="4" fill="#2E2E33"/>
+    </pattern>
+    <radialGradient id="shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#000" stop-opacity="0.28"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bore" cx="45%" cy="45%" r="60%">
+      <stop offset="0" stop-color="#000"/><stop offset="0.8" stop-color="#1a1a1a"/><stop offset="1" stop-color="#444"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="420" cy="470" rx="330" ry="26" fill="url(#shadow)"/><path d="M 70 168 C 200 168, 250 276, 330 300"
+        stroke="url(#ti)" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M 78 256 C 200 256, 250 292, 330 300"
+        stroke="url(#ti)" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M 86 344 C 200 344, 250 308, 330 300"
+        stroke="url(#ti)" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M 94 432 C 200 432, 250 324, 330 300"
+        stroke="url(#ti)" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M 70 160 L 330 300" stroke="url(#heat)" stroke-width="0"/><rect x="300" y="274" width="80" height="52" rx="10" fill="url(#ti)"/><rect x="300" y="274" width="80" height="52" rx="10" fill="url(#heat)"/><rect x="370" y="225" width="220" height="150" rx="10" fill="url(#metal)"/><rect x="374" y="255" width="212" height="1.6" fill="#fff" fill-opacity="0.45"/><rect x="374" y="342" width="212" height="1.6" fill="#000" fill-opacity="0.35"/><rect x="370" y="225" width="220" height="150" rx="10" fill="url(#gloss)"/><rect x="405.2" y="219" width="20" height="162" rx="5" fill="url(#ti)"/><circle cx="415.2" cy="215" r="7" fill="url(#ti)" stroke="#6e6a62"/><rect x="582" y="229" width="26" height="142" rx="6" fill="url(#carbon)"/><rect x="582" y="229" width="26" height="142" rx="6" fill="url(#gloss)"/>
+  <g transform="translate(493.20000000000005 315) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
+     font-size="18.333333333333332" letter-spacing="3.3" text-anchor="middle">
+    <text y="1.5" fill="#fff" fill-opacity="0.35">DÉCIBEL</text>
+    <text fill="#000" fill-opacity="0.38">DÉCIBEL</text>
+  </g>
+  <rect x="606" y="269" width="70" height="62" rx="4" fill="url(#carbon)"/>
+  <rect x="606" y="269" width="70" height="62" rx="4" fill="url(#gloss)"/>
+  <rect x="666" y="266" width="12" height="68" rx="3" fill="url(#ti)"/>
+</svg>

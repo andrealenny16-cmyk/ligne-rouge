@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0" stop-color="#FBFAF7"/><stop offset="1" stop-color="#E7E2DA"/>
+    </radialGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7E7A72"/><stop offset="0.18" stop-color="#ECEAE4"/>
+      <stop offset="0.45" stop-color="#B9B5AC"/><stop offset="0.8" stop-color="#7E7A72"/>
+      <stop offset="1" stop-color="#B9B5AC"/>
+    </linearGradient>
+    <linearGradient id="ti" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8C887F"/><stop offset="0.3" stop-color="#F2F0EA"/>
+      <stop offset="0.6" stop-color="#ABA79E"/><stop offset="1" stop-color="#6E6A62"/>
+    </linearGradient>
+    <linearGradient id="heat" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C08457" stop-opacity="0"/><stop offset="0.3" stop-color="#C08457" stop-opacity="0.55"/>
+      <stop offset="0.6" stop-color="#8B5CF6" stop-opacity="0.55"/><stop offset="1" stop-color="#3B82F6" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.35"/><stop offset="0.35" stop-color="#fff" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.25"/>
+    </linearGradient>
+    <pattern id="carbon" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#161618"/>
+      <rect width="4" height="4" fill="#2E2E33"/><rect x="4" y="4" width="4" height="4" fill="#2E2E33"/>
+    </pattern>
+    <radialGradient id="shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#000" stop-opacity="0.28"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bore" cx="45%" cy="45%" r="60%">
+      <stop offset="0" stop-color="#000"/><stop offset="0.8" stop-color="#1a1a1a"/><stop offset="1" stop-color="#444"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="485" rx="320" ry="30" fill="url(#shadow)"/>
+     <g transform="translate(390 300) rotate(-14) skewX(-6)"><g transform="translate(0 0)"><rect x="-340" y="-20" width="170" height="40" rx="8" fill="url(#ti)"/><rect x="-340" y="-20" width="170" height="40" rx="8" fill="url(#heat)"/><ellipse cx="-184" cy="0" rx="10" ry="34" fill="url(#ti)" stroke="#7e7a72"/><rect x="-190" y="-85" width="380" height="170" rx="51" fill="url(#metal)"/><rect x="-190" y="-85" width="380" height="170" rx="51" fill="url(#gloss)"/><rect x="-140" y="-92" width="22" height="184" rx="5" fill="url(#ti)"/>
+  <g transform="translate(10 17) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"
+     font-size="32" letter-spacing="5.76" text-anchor="middle">
+    <text y="1.5" fill="#fff" fill-opacity="0.35">DÉCIBEL</text>
+    <text fill="#000" fill-opacity="0.38">DÉCIBEL</text>
+  </g><ellipse cx="190" cy="0" rx="42" ry="85" fill="url(#carbon)" stroke="url(#ti)" stroke-width="7"/><ellipse cx="190" cy="0" rx="42" ry="85" fill="url(#gloss)"/></g><rect x="182.8" y="-73.84" width="80" height="31.68" fill="url(#carbon)"/><rect x="182.8" y="-73.84" width="80" height="31.68" fill="url(#gloss)"/><ellipse cx="262.8" cy="-58" rx="6.6528" ry="18.84" fill="url(#ti)"/><ellipse cx="263.8" cy="-58" rx="4.752" ry="12.84" fill="url(#bore)"/><ellipse cx="262.8" cy="-58" rx="6.6528" ry="18.84" fill="url(#heat)" opacity="0.7"/><rect x="182.8" y="4.16" width="80" height="31.68" fill="url(#carbon)"/><rect x="182.8" y="4.16" width="80" height="31.68" fill="url(#gloss)"/><ellipse cx="262.8" cy="20" rx="6.6528" ry="18.84" fill="url(#ti)"/><ellipse cx="263.8" cy="20" rx="4.752" ry="12.84" fill="url(#bore)"/><ellipse cx="262.8" cy="20" rx="6.6528" ry="18.84" fill="url(#heat)" opacity="0.7"/><rect x="198.8" y="-35.84" width="80" height="31.68" fill="url(#carbon)"/><rect x="198.8" y="-35.84" width="80" height="31.68" fill="url(#gloss)"/><ellipse cx="278.8" cy="-20" rx="6.6528" ry="18.84" fill="url(#ti)"/><ellipse cx="279.8" cy="-20" rx="4.752" ry="12.84" fill="url(#bore)"/><ellipse cx="278.8" cy="-20" rx="6.6528" ry="18.84" fill="url(#heat)" opacity="0.7"/><rect x="198.8" y="42.16" width="80" height="31.68" fill="url(#carbon)"/><rect x="198.8" y="42.16" width="80" height="31.68" fill="url(#gloss)"/><ellipse cx="278.8" cy="58" rx="6.6528" ry="18.84" fill="url(#ti)"/><ellipse cx="279.8" cy="58" rx="4.752" ry="12.84" fill="url(#bore)"/><ellipse cx="278.8" cy="58" rx="6.6528" ry="18.84" fill="url(#heat)" opacity="0.7"/></g>
+</svg>
