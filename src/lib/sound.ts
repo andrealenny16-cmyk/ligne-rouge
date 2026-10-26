@@ -3,7 +3,7 @@
 import type { Usage } from "./types";
 
 /**
- * Son d'échappement : vrais enregistrements public/sounds/voiture.mp3 et moto.mp3
+ * Son d'échappement : 4 vrais enregistrements WAV non compressés, public/sounds/{voiture|moto}-{circuit|ville}.wav
  * (voir public/sounds/CREDITS.md), lus via Web Audio. Si le fichier manque, synthèse d'un démarrage
  * + accélération en secours. Émet `lignerouge:sound` sur window ({ playing, usage }) pour synchroniser
  * les animations (pot qui vibre, braises qui accélèrent).
@@ -52,33 +52,15 @@ function emit(isOn: boolean, usage: Usage) {
   window.dispatchEvent(new CustomEvent(SOUND_EVENT, { detail: { playing: isOn, usage } }));
 }
 
-type Recording = { buffer: AudioBuffer; offset: number };
-const recordings = new Map<string, Promise<Recording | null>>();
-const CLIP = 8; // secondes jouées
+const recordings = new Map<string, Promise<AudioBuffer | null>>();
 
-/** Début de la fenêtre de CLIP secondes la plus énergique (montée en régime, pleine charge). */
-function loudestOffset(buffer: AudioBuffer) {
-  const data = buffer.getChannelData(0);
-  const step = Math.floor(buffer.sampleRate / 4); // blocs de 250 ms
-  const rms: number[] = [];
-  for (let i = 0; i + step <= data.length; i += step) {
-    let sum = 0;
-    for (let j = i; j < i + step; j += 8) sum += data[j] * data[j];
-    rms.push(sum);
-  }
-  const win = Math.min(rms.length, CLIP * 4);
-  let best = 0;
-  let acc = rms.slice(0, win).reduce((a, b) => a + b, 0);
-  let max = acc;
-  for (let k = win; k < rms.length; k++) {
-    acc += rms[k] - rms[k - win];
-    if (acc > max) {
-      max = acc;
-      best = k - win + 1;
-    }
-  }
-  return best / 4;
-}
+/** Volume relatif pour que voiture et moto sonnent aussi fort l'une que l'autre. */
+const LEVEL: Record<string, number> = {
+  "voiture-circuit": 1.35,
+  "voiture-ville": 1.3,
+  "moto-circuit": 1,
+  "moto-ville": 0.8,
+};
 
 function loadRecording(c: AudioContext, url: string) {
   if (!recordings.has(url)) {
@@ -87,47 +69,52 @@ function loadRecording(c: AudioContext, url: string) {
       fetch(url)
         .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
         .then((b) => c.decodeAudioData(b))
-        .then((buffer) => ({ buffer, offset: loudestOffset(buffer) }))
         .catch(() => null),
     );
   }
   return recordings.get(url)!;
 }
 
-/** Joue le vrai son du pot (voiture ou moto, route ou circuit), ou la synthèse si l'enregistrement manque. */
+/** Précharge les enregistrements pour que le son parte sans délai au clic. */
+export function preloadExhaust(vehicle: "voiture" | "moto") {
+  const c = audioContext();
+  if (!c) return;
+  void loadRecording(c, `/sounds/${vehicle}-circuit.wav`);
+  void loadRecording(c, `/sounds/${vehicle}-ville.wav`);
+}
+
+/** Joue le vrai son : voiture ou moto, circuit (gamme circuit) ou ville (gamme route). */
 export async function playExhaust(usage: Usage, vehicle: "voiture" | "moto" = "voiture"): Promise<number> {
   if (playing) return 0;
   const c = audioContext();
   if (!c) return 0;
   playing = true; // verrou pendant le chargement
-  const rec = await loadRecording(c, `/sounds/${vehicle}.mp3`);
-  if (!rec) {
+  const key = `${vehicle}-${usage === "circuit" ? "circuit" : "ville"}`;
+  const buffer = await loadRecording(c, `/sounds/${key}.wav`);
+  if (!buffer) {
     playing = false;
     return playSynth(usage);
   }
 
   const src = c.createBufferSource();
-  src.buffer = rec.buffer;
-  src.playbackRate.value = usage === "circuit" ? 1.08 : 1; // circuit : un poil plus haut perché
-  const comp = c.createDynamicsCompressor();
-  comp.threshold.value = -14;
-  comp.ratio.value = 4;
+  src.buffer = buffer;
   const gain = c.createGain();
-  const t0 = c.currentTime;
-  const dur = Math.min(rec.buffer.duration - rec.offset, CLIP) / src.playbackRate.value;
-  gain.gain.setValueAtTime(0.0001, t0);
-  gain.gain.exponentialRampToValueAtTime(1, t0 + 0.05);
-  gain.gain.setValueAtTime(1, t0 + dur - 0.6);
-  gain.gain.linearRampToValueAtTime(0, t0 + dur);
-  src.connect(comp).connect(gain).connect(c.destination);
-  src.start(t0, rec.offset);
-  src.stop(t0 + dur);
+  gain.gain.value = LEVEL[key] ?? 1;
+  // Limiteur transparent : évite toute saturation si le volume système est fort
+  const limiter = c.createDynamicsCompressor();
+  limiter.threshold.value = -3;
+  limiter.knee.value = 0;
+  limiter.ratio.value = 20;
+  limiter.attack.value = 0.002;
+  limiter.release.value = 0.1;
+  src.connect(gain).connect(limiter).connect(c.destination);
+  src.start();
   emit(true, usage);
   src.onended = () => {
-    gain.disconnect();
+    limiter.disconnect();
     emit(false, usage);
   };
-  return dur;
+  return buffer.duration;
 }
 
 /** Démarrage + accélération synthétisés (secours sans fichier audio). */
