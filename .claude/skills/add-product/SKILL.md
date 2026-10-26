@@ -1,6 +1,6 @@
 ---
 name: add-product
-description: Procédure complète pour ajouter un nouveau pot d'échappement LIGNE ROUGE au catalogue (seed SQL, variantes, photos réelles du pot, compatibilité véhicules). À utiliser dès qu'on ajoute ou duplique un produit.
+description: Procédure complète pour ajouter un nouveau pot d'échappement LIGNE ROUGE au catalogue (seed SQL, variantes, photos du pot, compatibilité véhicules). À utiliser dès qu'on ajoute ou duplique un produit.
 ---
 
 # Ajouter un pot au catalogue
@@ -10,12 +10,12 @@ Rassembler : nom en capitales, ref `LR-XX-NN` (XX = initiales, NN = numéro suiv
 
 Règle métier : un produit `circuit` a toujours un dB ≥ 105 et **ne doit jamais** être présenté comme homologué.
 
-## 2. Photos réelles
-Trois photos par produit dans `public/photos/` : `<slug>-34.jpg` (image principale, 5:4), `<slug>-profil.jpg`,
-`<slug>-monte.jpg`. Sources autorisées : photos libres de droits (Unsplash, licence gratuite y compris commerciale)
-ou shooting maison. Télécharger en `?w=1600&q=78&fm=jpg&fit=crop&ar=5:4`, ajouter l'identifiant et l'auteur dans
-`public/photos/CREDITS.md`. Éviter les logos de marques d'échappement concurrentes bien visibles.
-Aucun visuel dessiné ou généré : le composant `Photo` n'affiche rien si le fichier manque.
+## 2. Photos du pot
+Trois vues **du même pot** par produit dans `public/photos/` : `<slug>-34.jpg` (image principale), `<slug>-profil.jpg`,
+`<slug>-monte.jpg`, au format 5:4 (1200 × 960). Source : la planche produit LIGNE ROUGE fournie par l'équipe (rendus
+studio avec la plaque ovale « Fabriqué en France ») ; on recadre le pot et on complète le fond noir jusqu'au 5:4.
+Noter la source de chaque fichier dans `public/photos/CREDITS.md`. Aucun logo de marque concurrente.
+Le composant `Photo` n'affiche rien si le fichier manque.
 
 ## 3. Seed SQL
 Créer une migration `supabase/migrations/NNN_add_<slug>.sql` (skill `supabase-migrations`) :
