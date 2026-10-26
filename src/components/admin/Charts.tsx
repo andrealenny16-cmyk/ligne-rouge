@@ -37,7 +37,8 @@ export function RevenueChart({ data }: { data: { day: string; revenue: number; o
 }
 
 export function TopProductsChart({ data }: { data: { name: string; revenue: number; units: number; usage: string }[] }) {
-  const rows = data.map((d) => ({ ...d, revenue: Number(d.revenue) }));
+  // Champs explicites : une colonne « ref » serait propagée par recharts comme ref React
+  const rows = data.map((d) => ({ name: d.name, usage: d.usage, units: d.units, revenue: Number(d.revenue) }));
   return (
     <ResponsiveContainer width="100%" height={Math.max(180, rows.length * 44)}>
       <BarChart data={rows} layout="vertical" margin={{ left: 10, right: 16 }}>

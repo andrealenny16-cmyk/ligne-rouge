@@ -54,7 +54,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   };
 
   return (
-    <form onSubmit={submit} className="glass space-y-4 rounded-[32px] p-6 md:p-8">
+    <form onSubmit={submit} method="post" className="glass space-y-4 rounded-[32px] p-6 md:p-8">
       {mode === "signup" && (
         <label className="block">
           <span className="label">Prénom et nom</span>

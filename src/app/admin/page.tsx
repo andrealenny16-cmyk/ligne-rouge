@@ -37,7 +37,7 @@ export default async function AdminDashboard() {
         <KpiCard label="Commandes" value={formatNumber(k.orders_count)} sub="hors annulées" />
         <KpiCard label="Panier moyen" value={formatPrice(k.avg_basket)} />
         <KpiCard label="Clients" value={formatNumber(k.customers)} />
-        <KpiCard label="Conversion" value={`${k.conversion_rate ?? 0} %`} sub="commandes / vues produit" />
+        <KpiCard label="Conversion" value={`${formatNumber(k.conversion_rate ?? 0)} %`} sub="commandes / vues produit" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
