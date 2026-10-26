@@ -4,7 +4,7 @@ import type { materials } from "./scene";
 /* Les 4 pots 3D du hero, tous différents et marqués LIGNE ROUGE :
    moto ville (slip-on hexagonal), moto circuit (ligne 4-en-1 type MotoGP),
    voiture ville (cat-back titane à valve, silencieux transversal, 2 × 2 sorties carbone),
-   voiture circuit (ligne décatalysée bleuie, X-pipe, 2 × 2 sorties titane brûlé).
+   voiture circuit (ligne course 6-en-2, collecteurs apparents, 2 sorties centrales géantes sous diffuseur).
    Axe d'écoulement = +X. Chaque modèle est recentré et normalisé à la même taille. */
 
 export type Vehicle = "moto" | "voiture";
@@ -279,10 +279,9 @@ function hanger(k: Kit, g: THREE.Group, x: number, y: number, z: number) {
 }
 
 /** Tracé d'un tube principal : départ derrière les catas, passage au-dessus du pont, entrée dans le silencieux. */
-function mainPath(s: number, xIn: number, cross = false) {
+function mainPath(s: number, xIn: number) {
   const pts = [V(-7.4, 0, s * 0.3), V(-6.2, 0, s * 0.3)];
-  if (cross) pts.push(V(-4.9, 0, s * 0.11), V(-4.4, 0, s * 0.11));
-  else pts.push(V(-4.6, 0, s * 0.3));
+  pts.push(V(-4.6, 0, s * 0.3));
   pts.push(V(-3.3, 0.04, s * 0.32), V(-2.6, 0.34, s * 0.36), V(-1.9, 0.34, s * 0.42), V(-1.2, 0.05, s * 0.55), V(xIn, 0, s * 0.58));
   return pts;
 }
@@ -319,33 +318,81 @@ function voitureVille(k: Kit): ExhaustModel {
   return { root: normalize(g, 7.2), outlets: outs };
 }
 
-/* ---------- Voiture circuit : ligne décatalysée bleuie, X-pipe, silencieux course, 2 × 2 sorties titane brûlé ---------- */
+/* ---------- Voiture circuit : ligne course 6-en-2 décatalysée, collecteurs apparents, X-pipe,
+   cartouches straight-through rivetées, 2 sorties centrales géantes sous diffuseur carbone ---------- */
 
 function voitureCircuit(k: Kit): ExhaustModel {
   const g = new THREE.Group();
-  const xIn = CAN.x - CAN.depth / 2 + 0.05;
   for (const s of [-1, 1]) {
-    g.add(tube(mainPath(s, xIn, true), 0.12, k.rainbowTube));
-    const flange = new THREE.Mesh(along(new THREE.CylinderGeometry(0.21, 0.21, 0.05, 48)), k.satin);
-    flange.position.set(-7.4, 0, s * 0.3);
-    g.add(flange);
-    clamp(k, g, -3.45, 0.02, s * 0.32, 0.12);
-    hanger(k, g, -6.6, 0.1, s * 0.3);
-    hanger(k, g, -2.2, 0.45, s * 0.39);
+    // bride culasse + 3 primaires de collecteur qui plongent et se rejoignent (3-en-1 par banc)
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.26, 0.86), k.satin);
+    head.position.set(-8.05, 0.62, s * 0.62);
+    g.add(head);
+    [0.32, 0.62, 0.92].forEach((zz, i) => {
+      g.add(
+        tube(
+          [V(-8.0, 0.62, s * zz), V(-7.6, 0.6 - i * 0.04, s * zz), V(-7.15, 0.2, s * (zz * 0.8 + 0.1)), V(-6.75, 0.02, s * 0.52), V(-6.45, 0, s * 0.45)],
+          0.075,
+          k.rainbowTube,
+        ),
+      );
+    });
+    const coll = new THREE.Mesh(along(new THREE.CylinderGeometry(0.14, 0.22, 0.42, 48)), k.rainbowTube);
+    coll.position.set(-6.25, 0, s * 0.43);
+    g.add(coll);
+    weldX(k, g, -6.04, 0.14, 0, s * 0.43);
+    // tube droit Ø 76 avec X-pipe, colliers V-band, remontée au-dessus du pont
+    g.add(
+      tube(
+        [V(-6.05, 0, s * 0.43), V(-5.3, 0, s * 0.36), V(-4.55, 0, s * 0.11), V(-4.15, 0, s * 0.11), V(-3.4, 0.04, s * 0.3), V(-2.7, 0.34, s * 0.32), V(-2.0, 0.34, s * 0.32), V(-1.55, 0.06, s * 0.33), V(-1.3, 0, s * 0.34)],
+        0.13,
+        k.rainbowTube,
+      ),
+    );
+    for (const x of [-5.6, -3.55]) {
+      const vb = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.035, 12, 40).rotateY(Math.PI / 2), k.satin);
+      vb.position.set(x, x < -4 ? 0 : 0.05, s * (x < -4 ? 0.39 : 0.31));
+      g.add(vb);
+    }
+    hanger(k, g, -5.0, 0.1, s * 0.25);
+    hanger(k, g, -2.35, 0.45, s * 0.32);
+    // cartouche straight-through : corps titane brûlé, bagues rivetées
+    const can = new THREE.Mesh(along(new THREE.CylinderGeometry(0.27, 0.27, 1.05, 64)), Object.assign(k.burntBox.clone(), { roughness: 0.4, color: new THREE.Color("#c2c6dc") }));
+    can.position.set(-0.72, 0, s * 0.34);
+    g.add(can);
+    for (const x of [-1.25, -0.2]) {
+      const band = new THREE.Mesh(along(new THREE.CylinderGeometry(0.29, 0.29, 0.08, 64)), k.carbon);
+      band.position.set(x, 0, s * 0.34);
+      g.add(band);
+      for (let i = 0; i < 10; i++) {
+        const a = (i / 10) * Math.PI * 2;
+        const rv = new THREE.Mesh(new THREE.SphereGeometry(0.022, 10, 6), k.titane);
+        rv.position.set(x, Math.sin(a) * 0.29, s * 0.34 + Math.cos(a) * 0.29);
+        g.add(rv);
+      }
+    }
   }
   // jonction X-pipe
-  const x = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 16), k.burntBox);
-  x.position.set(-4.65, 0, 0);
-  x.scale.set(1.9, 0.55, 0.85);
-  g.add(x);
-  const can = ovalCan(CAN.depth * 0.9, CAN.h, 2.7, Object.assign(k.burntBox.clone(), { roughness: 0.48, color: new THREE.Color("#c2c6dc") }));
-  can.position.x = CAN.x;
-  g.add(can);
-  hanger(k, g, CAN.x - 0.15, CAN.h / 2, -1.1);
-  hanger(k, g, CAN.x - 0.15, CAN.h / 2, 1.1);
-  plate(k, g, 1.1, V(CAN.x, CAN.h / 2 + 0.056, 0), Math.PI / 2, -Math.PI / 2);
-  const x0 = CAN.x + (CAN.depth * 0.9) / 2 - 0.12;
-  const outs = [-1.06, -0.66, 0.66, 1.06].map((z) => tipX(k, g, x0, 0.6, 0.19, -0.02, z, k.burntTip, k.titaneSmooth));
+  const xj = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 16), k.burntBox);
+  xj.position.set(-4.35, 0, 0);
+  xj.scale.set(1.7, 0.6, 0.85);
+  g.add(xj);
+  // diffuseur carbone incliné avec ailettes, plaque LIGNE ROUGE dessus
+  const diff = new THREE.Group();
+  diff.position.set(0.12, 0.36, 0);
+  diff.rotation.z = 0.2;
+  const darkCarbon = Object.assign(k.carbon.clone(), { roughness: 0.55, color: new THREE.Color("#2a2a2e") });
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.04, 1.8), darkCarbon);
+  diff.add(deck);
+  for (const z of [-0.74, 0.74]) {
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.3, 0.03), darkCarbon);
+    fin.position.set(0, -0.17, z);
+    diff.add(fin);
+  }
+  plate(k, diff, 0.85, V(0, 0.024, 0), Math.PI / 2, -Math.PI / 2);
+  g.add(diff);
+  // 2 sorties centrales géantes Ø 130 en titane brûlé, double paroi
+  const outs = [-0.34, 0.34].map((z) => tipX(k, g, -0.18, 0.78, 0.29, 0, z, k.burntTip, k.titaneSmooth));
   return { root: normalize(g, 7.2), outlets: outs };
 }
 
