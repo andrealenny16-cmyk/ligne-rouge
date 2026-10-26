@@ -4,8 +4,10 @@ import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Photo from "@/components/Photo";
+import SoundButton from "@/components/SoundButton";
 import { PillLink } from "@/components/ui";
 import { formatPrice } from "@/lib/format";
+import { soundLevel, stopExhaust } from "@/lib/sound";
 import { createEmitter } from "./emitter";
 import { buildModels, type ExhaustModel, type Vehicle } from "./models";
 import { buildPart, loadStudio, makeRenderer, materials, partMaterial, type Finish, type PartKind } from "./scene";
@@ -325,7 +327,9 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
       last = now;
       if (!visible) return;
       const time = now * 0.001;
-      emitter.update(dt, reduced ? 0 : isMobile ? 2 : 4.5);
+      // le pot vibre et crache plus de pièces au rythme du son moteur
+      const lvl = soundLevel();
+      emitter.update(dt, reduced ? 0 : (isMobile ? 2 : 4.5) + lvl * 40);
       cur.x += (mouse.x - cur.x) * 0.05;
       cur.y += (mouse.y - cur.y) * 0.05;
 
@@ -333,6 +337,10 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
       potTilt.rotation.y = THREE.MathUtils.degToRad(cur.x * 40 + switchSpin);
       potTilt.rotation.x = THREE.MathUtils.degToRad(cur.y * 20);
       potRoot.position.y = reduced ? 0 : Math.sin((time * Math.PI * 2) / 6) * 20 * pxToWorld * (potCam.position.z / 10);
+      if (!reduced && lvl > 0) {
+        potRoot.position.x = (Math.random() - 0.5) * lvl * 0.09;
+        potRoot.position.y += (Math.random() - 0.5) * lvl * 0.09;
+      } else potRoot.position.x = 0;
       pot.renderer.render(potScene, potCam);
 
       parts.forEach((p) => {
@@ -426,6 +434,7 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
       gsap.killTweensOf(section);
       [pot, back, front].forEach((r) => r.renderer.dispose());
       apiRef.current = null;
+      stopExhaust();
     };
   }, []);
 
@@ -436,6 +445,7 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
     vehicleRef.current = vehicle;
     modeRef.current = mode;
     apiRef.current?.sync(vehicle, mode);
+    stopExhaust(); // changer de pot coupe le son de l'ancien
   }, [vehicle, mode]);
   const choose = (f: Finish) => setMode(f);
   const chooseVehicle = (v: Vehicle) => setVehicleState(v);
@@ -520,6 +530,7 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <PillLink href={`#${vehicle}`}>Voir les pots {vehicle}</PillLink>
+            <SoundButton vehicle={vehicle} usage={mode} className="text-white" />
           </div>
           <div className="mt-auto hidden items-center gap-4 md:flex">
             <div className="grid h-12 w-12 place-items-center rounded-xl border border-white/15 bg-white/10 backdrop-blur">

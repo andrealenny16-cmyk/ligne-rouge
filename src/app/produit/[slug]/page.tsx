@@ -8,6 +8,7 @@ import ViewTracker from "@/components/ViewTracker";
 import BuyBox from "@/components/product/BuyBox";
 import CompatChecker from "@/components/product/CompatChecker";
 import ReviewForm from "@/components/product/ReviewForm";
+import SoundButton from "@/components/SoundButton";
 import { CircuitWarning, Gauge, Page, Stars, UsageBadge } from "@/components/ui";
 import { formatDate, formatInstall } from "@/lib/format";
 import { getSession } from "@/lib/supabase/server";
@@ -114,6 +115,7 @@ export default async function ProductPage({ params }: Props) {
             </a>
           ) : null}
 
+          <SoundButton vehicle={p.vehicle_type} usage={p.usage} className="mt-5 text-night" />
 
           <BuyBox product={p} loggedIn={!!user} isFavorite={!!fav.data} />
 

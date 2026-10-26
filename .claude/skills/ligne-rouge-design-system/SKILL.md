@@ -9,7 +9,9 @@ Ambiance : **atelier racing premium, la nuit**, croisée avec la rigueur des cat
 (grandes photos plein cadre étalonnées sombres, titres en capitales, un bouton blanc net avec flèche).
 Mots-clés : vitesse, performance, **lumière**. Structure : hero, bandeaux photo et pied de page sombres et
 cinématographiques ; tout le contenu (sélecteur, catalogue, fiches, panier, compte, admin) sur fond clair chaud
-`bg-sand` (`#F4F2EE`) avec cartes blanches. **Uniquement de vraies photos et de vrais sons** (aucun visuel dessiné).
+`bg-sand` (`#F4F2EE`) avec cartes blanches. Photos produit : la planche LIGNE ROUGE (une photo par pot). Sons : synthèse moteur réaliste
+(`scripts/gen-sounds.py` → `public/sounds/*.m4a`), lus par `src/lib/sound.ts` via `SoundButton` (hero + fiche produit) ;
+le pot du hero vibre et éjecte plus de pièces au rythme du son.
 
 ## Tokens (`src/app/globals.css`, `@theme`)
 
