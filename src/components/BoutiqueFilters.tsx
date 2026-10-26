@@ -25,7 +25,7 @@ export default function BoutiqueFilters({ makes, models, current }: Props) {
   const active = Object.entries(current).filter(([, v]) => v).length;
 
   return (
-    <div className={`glass rounded-3xl p-4 transition-opacity md:p-5 ${pending ? "opacity-60" : ""}`}>
+    <div className={`glass rounded-md p-4 transition-opacity md:p-5 ${pending ? "opacity-60" : ""}`}>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-8">
         <label className="col-span-2 md:col-span-1">
           <span className="label">Véhicule</span>
@@ -112,7 +112,7 @@ export default function BoutiqueFilters({ makes, models, current }: Props) {
         </label>
       </div>
       {active > 0 && (
-        <button onClick={() => start(() => router.push(path))} className="mt-3 font-mono text-xs text-bronze hover:underline">
+        <button onClick={() => start(() => router.push(path))} className="mt-3 font-mono text-xs text-rouge hover:underline">
           × Réinitialiser les filtres
         </button>
       )}

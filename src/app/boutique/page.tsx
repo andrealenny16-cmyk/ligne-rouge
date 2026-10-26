@@ -69,9 +69,9 @@ export default async function Boutique({ searchParams }: { searchParams: Promise
           ))}
         </div>
       ) : (
-        <div className="glass mt-8 rounded-3xl p-10 text-center">
-          <p className="font-display text-3xl uppercase">Aucun pot pour ces critères</p>
-          <p className="mt-2 text-white/60">Élargis les filtres ou demande conseil au configurateur.</p>
+        <div className="glass mt-8 rounded-md p-10 text-center">
+          <p className="font-display font-semibold text-3xl uppercase">Aucun pot pour ces critères</p>
+          <p className="mt-2 text-neutral-600">Élargis les filtres ou demande conseil au configurateur.</p>
         </div>
       )}
     </Page>

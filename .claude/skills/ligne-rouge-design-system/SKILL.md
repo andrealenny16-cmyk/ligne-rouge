@@ -1,47 +1,53 @@
 ---
 name: ligne-rouge-design-system
-description: Charte visuelle LIGNE ROUGE (couleurs, typos, composants, animations). À charger avant de créer ou modifier toute page ou composant UI du site.
+description: Charte visuelle LIGNE ROUGE (boutique claire et sobre, photos réelles, rouge de marque). À charger avant de créer ou modifier toute page ou composant UI du site.
 ---
 
 # LIGNE ROUGE — Design system
 
-Ambiance : **atelier racing premium, la nuit**. Sombre, technique, métallique, avec du verre dépoli.
+Le site doit **vendre** et ressembler à la boutique d'un vrai fabricant : fond clair, photos produit réelles,
+typographie nette, un seul accent rouge. **Pas d'animation décorative, pas de 3D, pas d'effet verre ni de dégradé.**
 
-## Tokens (déjà définis dans `src/app/globals.css` via `@theme`)
+## Tokens (définis dans `src/app/globals.css` via `@theme`)
 
 | Token Tailwind | Valeur | Usage |
 |---|---|---|
-| `bg-night` | `#0A0A0B` | fond global |
-| `text-bronze` / `bg-bronze` | `#E8A36B` | accent principal : nav active, pastille « + », carte active, prix |
-| `text-alert` / `bg-alert` | `#E11D2E` | badge Circuit, promos, erreurs |
-| `text-legal` | `#22C55E` | badge Homologué |
-| `.bg-heat` | `linear-gradient(90deg,#3B82F6,#8B5CF6,#C08457)` | dégradé « titane chauffé » : CTA, soulignements, jauges |
-| `.glass` | `rgba(255,255,255,.05)` + bordure `rgba(255,255,255,.1)` + `backdrop-blur` | toutes les cartes |
-| `.carbon` | `repeating-linear-gradient` tissé | fonds de sections, embouts |
+| `bg-white` / `text-ink` | `#FFFFFF` / `#111111` | fond et texte |
+| `text-mute` | `#6B6B6B` | textes secondaires |
+| `border-line` | `#E5E3DF` | filets, bordures de cartes |
+| `bg-paper` (`.photo`) | `#EDEBE7` | fond de toutes les photos produit (même gris que les prompts studio) |
+| `bg-cream` | `#F7F6F3` | sections et encarts discrets |
+| `bg-rouge` / `text-rouge` | `#C8102E` | CTA principal, prix promo, badge circuit, état actif |
+| `text-legal` | `#15803D` | badge homologué |
 
-Ne jamais introduire une nouvelle couleur en dur : passer par ces tokens.
+Ne jamais coder une couleur en dur dans un composant : passer par ces tokens.
 
 ## Typographie
-- Titres : `font-display` (Anton), **toujours en capitales**, `leading-[0.85]`, tracking léger.
-- Texte : `font-sans` (Inter). Nav : `font-nav` (Manrope).
-- Références produit : `font-mono text-xs text-white/50` → `REF. LR-GT-01`.
+- Titres : `font-display font-semibold uppercase` (Barlow Condensed), `leading-[0.95]`.
+- Texte et interface : Inter (`font-sans`). Labels de formulaire : classe `.label`.
+- Pas de police monospace.
 
-## Composants (dans `src/components/`)
-- `PillButton` : pilule noire semi-transparente `bg-black/50` + pastille bronze « + » à droite. Variante `heat` pour le CTA principal.
-- `UsageBadge` : `route` → vert « Homologué », `circuit` → rouge « Circuit ». Toujours afficher sur cartes et fiches.
-- `CircuitWarning` : texte légal exact *« Usage exclusif sur circuit fermé. Non homologué pour la circulation sur voie publique. »* — obligatoire sur fiche produit circuit et au panier.
-- `Gauge` : barre fine, fond `white/10`, remplissage `.bg-heat`, libellé + valeur en mono. Utilisée pour dB, ch, kg.
-- `ProductCard` : `.glass .sheen` (reflet qui balaie au survol), vignette qui se soulève et pivote (`group-hover:-translate-y-3 group-hover:-rotate-6`), badge, ref mono, prix bronze, prix barré si promo.
-- Séparateurs : `.cote` = ligne fine avec tirets aux extrémités, façon cote technique.
+## Photos
+- Toujours via `src/components/Photo.tsx` : `<Photo src="/photos/…jpg" />` bascule sur le visuel provisoire de
+  `public/products/` si la photo n'existe pas encore, ou ne rend rien avec `fallback={null}`.
+- Fichiers attendus, formats et prompts : `docs/prompts-photos.md`. Produit = 3 vues (`-34`, `-profil`, `-monte`).
+- Conteneurs photo : `photo relative aspect-[4/3] overflow-hidden rounded-md` + `object-cover`.
 
-## Animations
-- Micro-interactions : `transition duration-300`, easing `cubic-bezier(0.175,0.885,0.32,1.275)` pour les « pops ».
-- Le hero (seul écran bloqué à 100vh) utilise GSAP + Three.js ; ailleurs, CSS uniquement.
-- Respecter `prefers-reduced-motion` : couper les animations continues.
+## Composants (`src/components/ui.tsx`)
+- `PillLink` / `PillButton` : boutons rectangulaires `rounded-md`, majuscules. `variant="heat"` = rouge (action
+  principale, une seule par écran), `dark` = noir, `outline` = contour.
+- `UsageBadge` : « Homologué route » (contour vert) ou « Circuit uniquement » (rouge plein). Sur chaque carte et fiche.
+- `CircuitWarning` : texte légal exact, obligatoire sur fiche produit circuit et au panier.
+- `Gauge` : barre fine noire sur gris, valeur à droite. dB, ch, Nm, kg.
+- `ProductCard` : photo 3/4, la vue de profil apparaît au survol (fondu simple), catégorie · matériau, nom, specs, prix.
+
+## Mouvement
+- Autorisé : changements de couleur au survol, fondu d'image, zoom très léger (≤ 3 %) sur les grandes tuiles.
+- Interdit : particules, objets qui flottent, rotations, parallaxe, animations en boucle.
 
 ## Checklist nouvelle page
-1. Fond `bg-night`, contenu dans `max-w-7xl mx-auto px-4 md:px-8`.
-2. Titre de page en `font-display` uppercase, taille `text-5xl md:text-7xl`, avec un mot en bronze.
-3. Cartes en `.glass rounded-3xl`.
-4. Mobile d'abord : tester à 375 px, aucune barre de scroll horizontale.
+1. Contenu dans `Page` (`max-w-7xl`, marges latérales 16 px mobile).
+2. Titre `PageTitle` ; au plus un mot en rouge.
+3. Cartes : `bg-white border border-line rounded-md` (ou classe `.glass`, équivalente).
+4. Mobile d'abord : tester à 375 px, aucun scroll horizontal.
 5. Badges route/circuit partout où un produit apparaît.

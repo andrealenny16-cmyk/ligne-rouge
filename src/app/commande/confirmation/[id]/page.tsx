@@ -22,13 +22,13 @@ export default async function ConfirmationPage({ params }: { params: Promise<{ i
     <Page className="max-w-3xl text-center">
       <div className="bg-heat mx-auto grid h-20 w-20 place-items-center rounded-full text-4xl">✓</div>
       <p className="label mt-6">Commande n° {order.id.slice(0, 8).toUpperCase()}</p>
-      <h1 className="font-display text-6xl uppercase leading-none md:text-8xl">
-        Ça va <span className="text-bronze">rugir</span>
+      <h1 className="font-display font-semibold text-5xl uppercase leading-none md:text-7xl">
+        Ça va <span className="text-rouge">rugir</span>
       </h1>
-      <p className="mt-4 text-white/65">
+      <p className="mt-4 text-neutral-600">
         Paiement accepté. Expédition sous 48 h vers {addr.line1}, {addr.zip} {addr.city}.
       </p>
-      <div className="glass mx-auto mt-8 max-w-md space-y-2 rounded-3xl p-6 text-left text-sm">
+      <div className="glass mx-auto mt-8 max-w-md space-y-2 rounded-md p-6 text-left text-sm">
         {order.order_items.map((i, k) => (
           <div key={k} className="flex justify-between">
             <span>{i.quantity} × {i.product_name} · {i.color_name}</span>
@@ -36,9 +36,9 @@ export default async function ConfirmationPage({ params }: { params: Promise<{ i
           </div>
         ))}
         <div className="cote my-3" />
-        <div className="flex justify-between text-lg font-bold">
+        <div className="flex justify-between text-lg font-semibold">
           <span>Total payé</span>
-          <span className="text-bronze">{formatPrice(order.total, true)}</span>
+          <span className="text-rouge">{formatPrice(order.total, true)}</span>
         </div>
       </div>
       <div className="mt-8 flex flex-wrap justify-center gap-3">

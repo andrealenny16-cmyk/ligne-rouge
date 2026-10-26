@@ -19,24 +19,14 @@ export default function SoundButton({ usage, className = "" }: { usage: Usage; c
       onClick={() => playExhaust(usage)}
       disabled={on}
       aria-label={`Écouter le son ${usage === "circuit" ? "circuit" : "route"}`}
-      className={`group inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/5 py-2 pl-2 pr-5 text-sm font-semibold backdrop-blur transition hover:border-bronze/60 hover:bg-white/10 disabled:cursor-wait ${className}`}
+      className={`inline-flex items-center gap-2.5 text-sm font-medium underline-offset-4 hover:underline disabled:cursor-wait disabled:no-underline ${className}`}
     >
-      <span className={`grid h-8 w-8 place-items-center rounded-full ${on ? "bg-heat" : "bg-bronze text-ink"}`}>
-        {on ? (
-          <span className="flex h-3 items-end gap-[2px]" aria-hidden>
-            {[0, 1, 2, 3].map((i) => (
-              <span key={i} className="w-[3px] animate-pulse rounded bg-white" style={{ height: `${40 + ((i * 37) % 60)}%`, animationDelay: `${i * 0.12}s` }} />
-            ))}
-          </span>
-        ) : (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-            <path d="M4 9v6h4l5 4V5L8 9H4Z" />
-            <path d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
-            <path d="M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
-          </svg>
-        )}
+      <span className="grid h-8 w-8 place-items-center rounded-full border border-ink">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+          {on ? <path d="M7 5h3v14H7zM14 5h3v14h-3z" /> : <path d="M8 5v14l11-7L8 5Z" />}
+        </svg>
       </span>
-      {on ? "Ça pousse…" : "Écouter"}
+      {on ? "Lecture du son…" : "Écouter le son (démarrage + accélération)"}
     </button>
   );
 }

@@ -15,7 +15,7 @@ lignes complètes, silencieux et embouts en titane, inox et carbone. Deux gammes
 
 | Espace | Ce qu'on peut faire |
 |---|---|
-| Public | Hero 3D interactif (pot Three.js qui suit le curseur, écrous repoussés par la souris, étincelles, transition route ↔ circuit), son d'échappement synthétisé en Web Audio, sélecteur « Trouve le pot de ta caisse », boutique filtrable (filtres dans l'URL), fiches produit avec jauges, compatibilité, avis |
+| Public | Accueil photo (hero, catégories, gamme, savoir-faire, avis), sélecteur « Trouve le pot de ta caisse », boutique filtrable (filtres dans l'URL), fiches produit avec galerie 3 vues, jauges, compatibilité, avis, son d'échappement synthétisé en Web Audio |
 | Client | Inscription / connexion Supabase Auth, panier **persisté en base**, code promo, case obligatoire « usage circuit », commande via la fonction SQL `checkout()`, suivi des commandes, **Mon garage**, favoris, adresses |
 | Admin | Accès protégé (middleware + vérification serveur du rôle), KPIs (CA, commandes, panier moyen, clients, conversion, paniers en cours), courbe CA 30 j, top produits, route vs circuit, véhicules les plus demandés, stock bas, gestion des statuts de commande, des prix/promos/stocks |
 | IA | Configurateur « Son & Perf » : reconnaissance du véhicule en base, filtrage des pots compatibles, recommandation Claude (ou moteur à règles sans clé), règle « jamais de circuit pour un usage route » contrôlée côté serveur, journalisation |
@@ -23,12 +23,13 @@ lignes complètes, silencieux et embouts en titane, inox et carbone. Deux gammes
 ## Stack
 
 Next.js 15 (App Router, TypeScript) · Tailwind CSS 4 · Supabase (Postgres, Auth, RLS, fonctions SQL) ·
-`@supabase/ssr` · Three.js + GSAP · recharts · `@anthropic-ai/sdk` · Vercel.
+`@supabase/ssr` · recharts · `@anthropic-ai/sdk` · Vercel.
 
 ## Base de données
 
 Migrations : `supabase/migrations/001_init.sql` (schéma, RLS, fonctions, vues KPI, seed catalogue),
-`002_harden_functions.sql`, `003_split_write_policies.sql` (corrections issues de `get_advisors`).
+`002_harden_functions.sql`, `003_split_write_policies.sql` (corrections issues de `get_advisors`),
+`004_rebrand_ligne_rouge.sql` (changement de marque), `005_product_photos.sql` (3 photos par produit).
 
 ```mermaid
 erDiagram
@@ -78,7 +79,7 @@ Les skills Claude Code sont versionnées dans `.claude/skills/` et ont servi pen
 
 | Skill | Rôle | Valeur ajoutée concrète |
 |---|---|---|
-| `ligne-rouge-design-system` | Tokens (bronze `#E8A36B`, alerte `#E11D2E`, dégradé « titane chauffé »), typos, composants (`PillButton`, `UsageBadge`, `Gauge`, `ProductCard`, `CircuitWarning`), règles d'animation | Toutes les pages partagent les mêmes composants : badges route/circuit et avertissement légal identiques partout, aucune couleur codée en dur |
+| `ligne-rouge-design-system` | Boutique claire et sobre : tokens (rouge `#C8102E`, gris photo `#EDEBE7`), typos, composant `Photo` avec repli, composants (`PillButton`, `UsageBadge`, `Gauge`, `ProductCard`, `CircuitWarning`), règles de mouvement | A permis de refondre tout le site d'un thème sombre animé à une boutique réaliste en redéfinissant les tokens : badges route/circuit et avertissement légal identiques partout |
 | `supabase-migrations` | Conventions de nommage, RLS systématique, `(select auth.uid())`, fonctions `security definer` + `search_path = ''`, process « migration → `get_advisors` » | A guidé les migrations 002 et 003 : les alertes de l'advisor (fonctions trigger exposées en RPC, policies `for all` cumulées) ont été corrigées dans des migrations dédiées |
 | `add-product` | Procédure d'ajout d'un pot : fiche, illustrations SVG via `scripts/gen-product-svg.mjs`, seed SQL, variantes, compatibilité, vérifications | Les 6 produits et leurs 18 visuels ont été produits avec ce process ; ajouter un 7ᵉ pot est reproductible en quelques minutes |
 | `kpi-dashboard` | Chaîne vue SQL `kpi_*` → requête serveur → `KpiCard` / graphique recharts | Les 6 vues KPI et le dashboard suivent le même modèle ; ajouter un indicateur = une vue + une ligne dans `Promise.all` + un composant |
@@ -107,7 +108,9 @@ Base de données : exécuter dans l'ordre les fichiers de `supabase/migrations/`
 Dans Supabase → Authentication → Sign In / Providers → Email, désactiver **Confirm email** pour que
 l'inscription connecte immédiatement le client.
 
-Régénérer les illustrations produit : `node scripts/gen-product-svg.mjs`.
+Photos produit : déposer les fichiers dans `public/photos/` (liste et prompts dans `docs/prompts-photos.md`). Tant qu'une photo manque, le site affiche un visuel provisoire généré par `node scripts/gen-product-svg.mjs`.
+
+Identité (plaque rivetée LIGNE ROUGE) : `node scripts/gen-brand.mjs` régénère `public/brand/`.
 
 ## Équipe
 
