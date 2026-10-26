@@ -11,7 +11,12 @@ export function productPhoto(slug: string, view: ProductView = "34") {
 }
 
 /** Image qui bascule sur un repli éventuel, ou se masque, si la photo est absente. */
-export default function Photo({ src, alt, fallback = null, ...rest }: Omit<ImageProps, "src"> & { src: string; fallback?: string | null }) {
+export default function Photo(props: Omit<ImageProps, "src"> & { src: string; fallback?: string | null }) {
+  // Une nouvelle source = un nouvel état (sinon l'ancienne image resterait affichée)
+  return <PhotoInner key={props.src} {...props} />;
+}
+
+function PhotoInner({ src, alt, fallback = null, ...rest }: Omit<ImageProps, "src"> & { src: string; fallback?: string | null }) {
   const [current, setCurrent] = useState(src);
   const [missing, setMissing] = useState(false);
   const backup = fallback;
@@ -20,7 +25,6 @@ export default function Photo({ src, alt, fallback = null, ...rest }: Omit<Image
   return (
     <Image
       {...rest}
-      key={src}
       src={current}
       alt={alt}
       onError={() => (backup && current !== backup ? setCurrent(backup) : setMissing(true))}

@@ -73,11 +73,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
     getVehicles(),
     supabase.from("reviews").select("id, author_name, rating, comment, products(name, slug, vehicle_type)").eq("rating", 5).order("created_at", { ascending: false }).limit(3),
   ]);
-  const from = (usage: string) => Math.min(...products.filter((p) => p.usage === usage).map(finalPrice));
+  const from = (t: VehicleType, usage: string) =>
+    Math.min(...products.filter((p) => p.vehicle_type === t && p.usage === usage).map(finalPrice));
+  const prices = {
+    moto: { route: from("moto", "route"), circuit: from("moto", "circuit") },
+    voiture: { route: from("voiture", "route"), circuit: from("voiture", "circuit") },
+  };
 
   return (
     <>
-      <Hero routeFrom={from("route")} circuitFrom={from("circuit")} />
+      <Hero prices={prices} />
 
       {refus === "admin" && (
         <div className="mx-auto mt-6 max-w-7xl px-4 md:px-8">

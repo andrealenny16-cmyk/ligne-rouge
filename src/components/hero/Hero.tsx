@@ -7,7 +7,8 @@ import Photo from "@/components/Photo";
 import { PillLink } from "@/components/ui";
 import { formatPrice } from "@/lib/format";
 import { createEmitter } from "./emitter";
-import { buildExhaust, buildPart, loadExhaustModel, loadStudio, makeRenderer, materials, partMaterial, type Finish, type PartKind } from "./scene";
+import { buildModels, type ExhaustModel, type Vehicle } from "./models";
+import { buildPart, loadStudio, makeRenderer, materials, partMaterial, type Finish, type PartKind } from "./scene";
 
 /* Hero LIGNE ROUGE — transposition de la référence « Soda » :
    fond radial, pot 3D qui suit le curseur, quincaillerie repoussée par la souris,
@@ -40,9 +41,10 @@ const PARTS: PartDef[] = [
 const DURS = [5, 7, 6, 8, 5.5, 6.5, 9, 11, 10];
 const PARALLAX: Record<Layer, number> = { front: 60, back: -30, far: -15 };
 
-type Api = { switchTo: (f: Finish) => void };
+type Api = { sync: (v: Vehicle, f: Finish) => void };
+export type HeroPrices = Record<Vehicle, Record<Finish, number>>;
 
-export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; circuitFrom: number }) {
+export default function Hero({ prices }: { prices: HeroPrices }) {
   const sectionRef = useRef<HTMLElement>(null);
   const backRef = useRef<HTMLCanvasElement>(null);
   const potRef = useRef<HTMLCanvasElement>(null);
@@ -50,6 +52,7 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
   const embersRef = useRef<HTMLDivElement>(null);
   const apiRef = useRef<Api | null>(null);
   const [mode, setMode] = useState<Finish>("route");
+  const [vehicle, setVehicleState] = useState<Vehicle>("moto");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -70,10 +73,12 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
     const rim = new THREE.DirectionalLight("#E8A36B", 2.5);
     rim.position.set(-6, -2, -4);
     potScene.add(key, rim, new THREE.AmbientLight("#ffffff", 0.25));
-    const exhaust = buildExhaust(mats);
+    // 4 pots : moto/voiture × ville/circuit — moto ville au chargement
+    const models = buildModels(mats);
+    let current: ExhaustModel = models.moto.route;
     const potRoot = new THREE.Group(); // inclinaison fixe (rotate 25deg de la référence)
     const potTilt = new THREE.Group(); // suit le curseur + spin
-    potTilt.add(exhaust.root);
+    potTilt.add(current.root);
     potRoot.add(potTilt);
     potRoot.rotation.z = THREE.MathUtils.degToRad(18);
     potScene.add(potRoot);
@@ -86,20 +91,11 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
       if (env && !disposed) potScene.environment = env;
     });
     // Vis, écrous, rondelles et boulons éjectés par les sorties du pot
-    const emitter = createEmitter(potScene, partMaterial(pot.envMap, "route"), exhaust.outlets);
-    void loadExhaustModel().then((model) => {
-      if (!model || disposed) return;
-      potTilt.remove(exhaust.root);
-      potTilt.add(model);
-      const outlet = new THREE.Object3D();
-      outlet.position.set(3.1, 0, 0);
-      potTilt.add(outlet);
-      emitter.setOutlets([outlet]);
-    });
+    const emitter = createEmitter(potScene, partMaterial(pot.envMap, "route"), current.outlets);
 
     const fitCamera = () => {
       const aspect = W / H;
-      const span = 7.6 / (isMobile ? 0.9 : 0.5); // largeur de scène visible souhaitée
+      const span = 5.6 / (isMobile ? 0.66 : 0.36); // le pot occupe ~36 % de la largeur (66 % sur mobile)
       potCam.aspect = aspect;
       potCam.position.z = Math.max(10, span / (2 * Math.tan(THREE.MathUtils.degToRad(15)) * aspect));
       potCam.updateProjectionMatrix();
@@ -186,10 +182,64 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
     let switching = false;
     let switchSpin = 0;
     let finish: Finish = "route";
+    let veh: Vehicle = "moto";
 
-    apiRef.current = {
-      switchTo(next) {
-        if (switching || next === finish) return;
+    /** Spin 720° + flou ; au pic, on remplace le pot par le modèle demandé et il crache sa quincaillerie. */
+    const spinTo = (nextVeh: Vehicle, nextFinish: Finish, onDone?: () => void) => {
+      const spin = { val: 0, blur: 0 };
+      const potEl = potRef.current!;
+      gsap.to(spin, {
+        val: 360,
+        blur: 15,
+        duration: 0.6,
+        ease: "power2.in",
+        onUpdate: () => {
+          switchSpin = spin.val;
+          potEl.style.filter = `blur(${spin.blur}px)`;
+        },
+        onComplete: () => {
+          potTilt.remove(current.root);
+          current = models[nextVeh][nextFinish];
+          potTilt.add(current.root);
+          emitter.setOutlets(current.outlets);
+          emitter.setMaterial(partMaterial(pot.envMap, nextFinish));
+          if (!reduced) emitter.burst(34);
+          gsap.to(spin, {
+            val: 720,
+            blur: 0,
+            duration: 1.5,
+            ease: "back.out(0.7)",
+            onUpdate: () => {
+              switchSpin = spin.val;
+              potEl.style.filter = `blur(${spin.blur}px)`;
+            },
+            onComplete: () => {
+              switchSpin = 0;
+              potEl.style.filter = "none";
+              onDone?.();
+            },
+          });
+        },
+      });
+    };
+
+    // Cible demandée par l'interface : appliquée dès que l'animation en cours se termine
+    let wanted: { v: Vehicle; f: Finish } = { v: "moto", f: "route" };
+    const settle = () => {
+      switching = false;
+      setBusy(false);
+      if (wanted.v !== veh || wanted.f !== finish) apiRef.current?.sync(wanted.v, wanted.f);
+    };
+
+    const setVehicle = (next: Vehicle) => {
+      switching = true;
+      setBusy(true);
+      veh = next;
+      spinTo(next, finish, settle);
+    };
+
+    const switchTo = (next: Finish) => {
+      {
         switching = true;
         setBusy(true);
         finish = next;
@@ -198,40 +248,9 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
         const c = THEMES[next];
         gsap.to(section, { "--bg-inner": c.inner, "--bg-mid": c.mid, "--bg-outer": c.outer, duration: 1.5, ease: "power2.inOut" });
 
-        // 2. Spin 720° + flou, changement de matériau au pic
-        const spin = { val: 0, blur: 0 };
+        // 2. Spin + changement de pot (ville ↔ circuit) au pic
         const potEl = potRef.current!;
-        gsap.to(spin, {
-          val: 360,
-          blur: 15,
-          duration: 0.6,
-          ease: "power2.in",
-          onUpdate: () => {
-            switchSpin = spin.val;
-            potEl.style.filter = `blur(${spin.blur}px)`;
-          },
-          onComplete: () => {
-            const m = next === "circuit" ? mats.bleu : mats.titane;
-            exhaust.body.material = m;
-            exhaust.cone.material = m;
-            emitter.setMaterial(partMaterial(pot.envMap, next));
-            if (!reduced) emitter.burst(34);
-            gsap.to(spin, {
-              val: 720,
-              blur: 0,
-              duration: 1.5,
-              ease: "back.out(0.7)",
-              onUpdate: () => {
-                switchSpin = spin.val;
-                potEl.style.filter = `blur(${spin.blur}px)`;
-              },
-              onComplete: () => {
-                switchSpin = 0;
-                potEl.style.filter = "none";
-              },
-            });
-          },
-        });
+        spinTo(veh, next);
 
         // 3. Implosion vers le centre puis explosion vers de nouvelles positions
         let done = 0;
@@ -274,15 +293,22 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
                 p.baseY = ny;
                 p.rx = 0;
                 p.ry = 0;
-                if (++done === parts.length) {
-                  switching = false;
-                  setBusy(false);
-                }
+                if (++done === parts.length) settle();
               },
             });
         });
+      }
+    };
+
+    apiRef.current = {
+      sync(v, f) {
+        wanted = { v, f };
+        if (switching) return;
+        if (f !== finish) switchTo(f);
+        else if (v !== veh) setVehicle(v);
       },
     };
+    apiRef.current.sync(vehicleRef.current, modeRef.current);
 
     // --- Boucle d'animation ---
     let raf = 0;
@@ -403,15 +429,24 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
     };
   }, []);
 
-  const choose = (f: Finish) => {
-    if (busy || f === mode) return;
-    setMode(f);
-    apiRef.current?.switchTo(f);
-  };
+  // La scène 3D suit toujours la sélection de l'interface
+  const vehicleRef = useRef<Vehicle>("moto");
+  const modeRef = useRef<Finish>("route");
+  useEffect(() => {
+    vehicleRef.current = vehicle;
+    modeRef.current = mode;
+    apiRef.current?.sync(vehicle, mode);
+  }, [vehicle, mode]);
+  const choose = (f: Finish) => setMode(f);
+  const chooseVehicle = (v: Vehicle) => setVehicleState(v);
 
+  const PHOTOS: Record<Vehicle, Record<Finish, string>> = {
+    moto: { route: "/photos/spectre-s-34.jpg", circuit: "/photos/hellcat-racing-34.jpg" },
+    voiture: { route: "/photos/titan-gt-34.jpg", circuit: "/photos/inferno-r-34.jpg" },
+  };
   const cards: { f: Finish; title: string; img: string; from: number }[] = [
-    { f: "route", title: "Homologué route", img: "/photos/titan-gt-34.jpg", from: routeFrom },
-    { f: "circuit", title: "Circuit", img: "/photos/inferno-r-34.jpg", from: circuitFrom },
+    { f: "route", title: "Ville · homologué", img: PHOTOS[vehicle].route, from: prices[vehicle].route },
+    { f: "circuit", title: "Circuit", img: PHOTOS[vehicle].circuit, from: prices[vehicle].circuit },
   ];
 
   return (
@@ -484,7 +519,7 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
             homologué route ou taillé pour la piste.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <PillLink href="#voiture">Voir la gamme</PillLink>
+            <PillLink href={`#${vehicle}`}>Voir les pots {vehicle}</PillLink>
           </div>
           <div className="mt-auto hidden items-center gap-4 md:flex">
             <div className="grid h-12 w-12 place-items-center rounded-xl border border-white/15 bg-white/10 backdrop-blur">
@@ -503,7 +538,30 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
         {/* Colonne droite */}
         <div className="flex flex-col items-center gap-6 md:h-full md:w-[450px] md:items-end md:justify-between md:py-24 md:text-right">
           <div className="pointer-events-auto flex flex-col items-center gap-5 md:items-end">
-            <div className="flex gap-4 pt-16 md:pt-20">
+            {/* Choix du pot affiché : moto ou voiture */}
+            <div role="radiogroup" aria-label="Pot affiché" className="mt-2 flex rounded-full border border-white/15 bg-black/40 p-1 backdrop-blur-md">
+              {(["moto", "voiture"] as Vehicle[]).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  role="radio"
+                  aria-checked={vehicle === v}
+                  disabled={busy}
+                  onClick={() => chooseVehicle(v)}
+                  className={`flex items-center gap-2 rounded-full px-5 py-2 font-nav text-sm font-semibold capitalize transition ${
+                    vehicle === v ? "bg-bronze text-ink" : "text-white/75 hover:text-white"
+                  }`}
+                >
+                  {v === "moto" ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><circle cx="5" cy="17" r="3" /><circle cx="19" cy="17" r="3" /><path d="M5 17h4l3-6h4l3 6M12 11 10 7H7" /></svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><path d="M3 15v-3l2-5h14l2 5v3H3Z" /><circle cx="7.5" cy="16.5" r="1.8" /><circle cx="16.5" cy="16.5" r="1.8" /></svg>
+                  )}
+                  {v}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-4 pt-2 md:pt-4">
               {cards.map((c) => (
                 <button
                   key={c.f}
