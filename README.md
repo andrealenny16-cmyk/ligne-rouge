@@ -83,6 +83,10 @@ Les skills du projet sont versionnées dans `.claude/skills/` (exigence du sujet
 | `supabase-migrations` | Conventions de nommage, RLS systématique, `(select auth.uid())`, fonctions `security definer` + `search_path = ''`, process « migration → `get_advisors` » | A guidé les migrations 002 et 003 : les alertes de l'advisor (fonctions trigger exposées en RPC, policies `for all` cumulées) ont été corrigées dans des migrations dédiées |
 | `add-product` | Procédure d'ajout d'un pot : fiche, photos réelles + crédits, seed SQL, variantes, compatibilité, vérifications | Les 6 produits et leurs 18 photos ont suivi ce process ; ajouter un 7ᵉ pot est reproductible en quelques minutes |
 | `kpi-dashboard` | Chaîne vue SQL `kpi_*` → requête serveur → `KpiCard` / graphique recharts | Les 6 vues KPI et le dashboard suivent le même modèle ; ajouter un indicateur = une vue + une ligne dans `Promise.all` + un composant |
+| `supabase-postgres-best-practices` (officielle Supabase) | Règles Postgres : schéma, index, RLS, performance des requêtes | Appliquée à la migration `008_stock_alerts.sql` (index partiel, `(select auth.uid())`, contrôle dans la policy d'insert) |
+| `vercel-react-best-practices` (officielle Vercel) | Performance React / Next.js | Requêtes serveur parallèles (`Promise.all`), pas de fetch côté client |
+| `web-design-guidelines` (officielle Vercel) | Audit UI/UX et accessibilité | `aria-pressed`, libellés explicites sur les boutons d'icône |
+| `deploy-to-vercel` (officielle Vercel) | Déploiement sur Vercel | Mise en ligne du site |
 
 La **skill IA du site** est le configurateur (`/configurateur` et module sur chaque fiche produit), décrit plus haut.
 
