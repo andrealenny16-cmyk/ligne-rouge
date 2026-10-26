@@ -1,25 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { playExhaust, SOUND_EVENT } from "@/lib/sound";
+import { playExhaust, preloadExhaust, SOUND_EVENT } from "@/lib/sound";
 import type { Usage } from "@/lib/types";
 
-export default function SoundButton({ usage, vehicle = "voiture", className = "" }: { usage: Usage; vehicle?: "voiture" | "moto"; className?: string }) {
-  const [on, setOn] = useState(false);
+type Props = {
+  usage: Usage;
+  vehicle?: "voiture" | "moto";
+  label?: string;
+  /** "auto" : s'adapte au fond (texte clair sur bandeau sombre via la couleur héritée) */
+  className?: string;
+};
+
+export default function SoundButton({ usage, vehicle = "voiture", label = "Écouter", className = "" }: Props) {
+  const [state, setState] = useState<"idle" | "mine" | "other">("idle");
 
   useEffect(() => {
-    const h = (e: Event) => setOn((e as CustomEvent).detail.playing);
+    preloadExhaust(vehicle);
+    const h = (e: Event) => {
+      const d = (e as CustomEvent).detail as { playing: boolean; usage: Usage; vehicle?: string };
+      setState(!d.playing ? "idle" : d.usage === usage && (d.vehicle ?? "voiture") === vehicle ? "mine" : "other");
+    };
     window.addEventListener(SOUND_EVENT, h);
     return () => window.removeEventListener(SOUND_EVENT, h);
-  }, []);
+  }, [usage, vehicle]);
 
+  const on = state === "mine";
   return (
     <button
       type="button"
       onClick={() => void playExhaust(usage, vehicle)}
-      disabled={on}
-      aria-label={`Écouter le son ${usage === "circuit" ? "circuit" : "route"}`}
-      className={`group inline-flex items-center gap-3 rounded-full border border-black/15 bg-black/[0.04] py-2 pl-2 pr-5 text-sm font-semibold backdrop-blur transition hover:border-bronze/60 hover:bg-black/[0.04] disabled:cursor-wait ${className}`}
+      disabled={state !== "idle"}
+      aria-label={`Écouter le son ${vehicle} ${usage === "circuit" ? "sur circuit" : "en ville"}`}
+      className={`group inline-flex items-center gap-3 rounded-full border border-current/20 bg-current/[0.06] py-1.5 pl-1.5 pr-5 text-sm font-semibold backdrop-blur transition hover:border-bronze hover:bg-current/[0.1] disabled:cursor-wait disabled:opacity-60 ${on ? "!opacity-100" : ""} ${className}`}
     >
       <span className={`grid h-8 w-8 place-items-center rounded-full ${on ? "bg-heat" : "bg-bronze text-ink"}`}>
         {on ? (
@@ -36,7 +49,7 @@ export default function SoundButton({ usage, vehicle = "voiture", className = ""
           </svg>
         )}
       </span>
-      {on ? "Ça pousse…" : "Écouter"}
+      {on ? "Ça pousse…" : label}
     </button>
   );
 }

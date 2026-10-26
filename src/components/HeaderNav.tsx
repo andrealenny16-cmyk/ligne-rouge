@@ -1,35 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import Logo from "./Logo";
 
+/* Site en une page : le menu fait défiler jusqu'aux sections de l'accueil. */
 const LINKS = [
-  { href: "/", label: "Accueil" },
-  { href: "/boutique?type=voiture", label: "Voitures", type: "voiture" },
-  { href: "/boutique?type=moto", label: "Motos", type: "moto" },
-  { href: "/configurateur", label: "Configurateur" },
-  { href: "/compte", label: "Compte" },
+  { href: "/#accueil", label: "Accueil", id: "accueil" },
+  { href: "/#voiture", label: "Voiture", id: "voiture" },
+  { href: "/#moto", label: "Moto", id: "moto" },
+  { href: "/#conseil", label: "Conseil IA", id: "conseil" },
 ];
 
 type Props = { cartCount: number; loggedIn: boolean; isAdmin: boolean };
 
 export default function HeaderNav(props: Props) {
-  return (
-    <Suspense fallback={<Bar {...props} active="" />}>
-      <WithParams {...props} />
-    </Suspense>
-  );
-}
-
-function WithParams(props: Props) {
   const path = usePathname();
-  const params = useSearchParams();
-  const type = params.get("type");
-  const active =
-    LINKS.find((l) => (l.type ? path === "/boutique" && type === l.type : l.href === "/" ? path === "/" : path.startsWith(l.href)))
-      ?.href ?? "";
+  const [section, setSection] = useState("accueil");
+
+  // Section visible à l'écran (accueil uniquement) : surligne l'entrée du menu correspondante
+  useEffect(() => {
+    if (path !== "/") return;
+    const els = LINKS.map((l) => document.getElementById(l.id)).filter((e): e is HTMLElement => !!e);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const vis = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (vis) setSection(vis.target.id);
+      },
+      { rootMargin: "-35% 0px -55% 0px", threshold: [0, 0.25, 0.5] },
+    );
+    els.forEach((e) => io.observe(e));
+    return () => io.disconnect();
+  }, [path]);
+
+  const active = path === "/" ? (LINKS.find((l) => l.id === section)?.href ?? "") : "";
   return <Bar {...props} active={active} />;
 }
 
@@ -119,7 +124,7 @@ function Bar({ cartCount, loggedIn, isAdmin, active }: Props & { active: string 
 
       {open && (
         <nav className="glass-strong mx-4 mt-3 flex flex-col gap-1 rounded-3xl p-2 lg:hidden">
-          {[...LINKS, ...(isAdmin ? [{ href: "/admin", label: "Admin" }] : []), ...(!loggedIn ? [{ href: "/connexion", label: "Connexion" }] : [])].map(
+          {[...LINKS, { href: "/compte", label: "Mon compte" }, ...(isAdmin ? [{ href: "/admin", label: "Admin" }] : []), ...(!loggedIn ? [{ href: "/connexion", label: "Connexion" }] : [])].map(
             (l) => (
               <Link
                 key={l.href}

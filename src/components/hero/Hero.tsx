@@ -8,6 +8,7 @@ import SoundButton from "@/components/SoundButton";
 import { PillLink } from "@/components/ui";
 import { formatPrice } from "@/lib/format";
 import { SOUND_EVENT } from "@/lib/sound";
+import { createEmitter } from "./emitter";
 import { buildExhaust, buildPart, loadExhaustModel, loadStudio, makeRenderer, materials, partMaterial, type Finish, type PartKind } from "./scene";
 
 /* Hero LIGNE ROUGE — transposition de la référence « Soda » :
@@ -86,10 +87,16 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
     void loadStudio(pot.renderer).then((env) => {
       if (env && !disposed) potScene.environment = env;
     });
+    // Vis, écrous, rondelles et boulons éjectés par les sorties du pot
+    const emitter = createEmitter(potScene, partMaterial(pot.envMap, "route"), exhaust.outlets);
     void loadExhaustModel().then((model) => {
       if (!model || disposed) return;
       potTilt.remove(exhaust.root);
       potTilt.add(model);
+      const outlet = new THREE.Object3D();
+      outlet.position.set(3.1, 0, 0);
+      potTilt.add(outlet);
+      emitter.setOutlets([outlet]);
     });
 
     const fitCamera = () => {
@@ -185,6 +192,7 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
 
     const onSound = (e: Event) => {
       soundOn = (e as CustomEvent).detail.playing;
+      if (soundOn && !reduced) emitter.burst(26);
       restartEmbers();
     };
     window.addEventListener(SOUND_EVENT, onSound);
@@ -216,6 +224,8 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
             const m = next === "circuit" ? mats.bleu : mats.titane;
             exhaust.body.material = m;
             exhaust.cone.material = m;
+            emitter.setMaterial(partMaterial(pot.envMap, next));
+            if (!reduced) emitter.burst(34);
             gsap.to(spin, {
               val: 720,
               blur: 0,
@@ -291,10 +301,15 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
     io.observe(section);
     const pxToWorld = 5.36 / H; // approx. pour le flottement ±20 px
 
+    let last = performance.now();
     const tick = () => {
       raf = requestAnimationFrame(tick);
+      const now = performance.now();
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
       if (!visible) return;
-      const time = performance.now() * 0.001;
+      const time = now * 0.001;
+      emitter.update(dt, reduced ? 0 : soundOn ? 36 : isMobile ? 2 : 4.5);
       cur.x += (mouse.x - cur.x) * 0.05;
       cur.y += (mouse.y - cur.y) * 0.05;
 
@@ -419,6 +434,7 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
 
   return (
     <section
+      id="accueil"
       ref={sectionRef}
       className="relative h-[100svh] min-h-[640px] overflow-hidden text-white"
       style={
@@ -486,8 +502,8 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
             homologué route ou taillé pour la piste.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <PillLink href={`/boutique?usage=${mode}`}>Voir la gamme</PillLink>
-            <SoundButton usage={mode} />
+            <PillLink href="#voiture">Voir la gamme</PillLink>
+            <SoundButton usage={mode} label={mode === "circuit" ? "Écouter · circuit" : "Écouter · ville"} />
           </div>
           <div className="mt-auto hidden items-center gap-4 md:flex">
             <div className="grid h-12 w-12 place-items-center rounded-xl border border-white/15 bg-white/10 backdrop-blur">

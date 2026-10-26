@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ConfiguratorForm from "@/components/ConfiguratorForm";
+import ProductCard from "@/components/ProductCard";
 import SoundButton from "@/components/SoundButton";
 import ViewTracker from "@/components/ViewTracker";
 import BuyBox from "@/components/product/BuyBox";
@@ -30,7 +31,7 @@ export default async function ProductPage({ params }: Props) {
   if (!data) notFound();
   const p = data as unknown as Product;
 
-  const [{ data: compat }, { data: reviews }, fav, garage] = await Promise.all([
+  const [{ data: compat }, { data: reviews }, fav, garage, { data: siblings }] = await Promise.all([
     supabase
       .from("product_compatibility")
       .select("vehicle_models(id, name, generation, year_from, year_to, vehicle_makes(name))")
@@ -40,7 +41,10 @@ export default async function ProductPage({ params }: Props) {
     user
       ? supabase.from("garage_vehicles").select("id, year, nickname, model_id, vehicle_models(name, vehicle_makes(name))").eq("user_id", user.id)
       : Promise.resolve({ data: [] }),
+    supabase.from("products").select(PRODUCT_SELECT).eq("vehicle_type", p.vehicle_type).eq("is_active", true).neq("id", p.id).order("ref"),
   ]);
+  const others = (siblings ?? []) as unknown as Product[];
+  const typeLabel = p.vehicle_type === "moto" ? "Moto" : "Voiture";
 
   const vehicles = ((compat ?? []) as unknown as CompatRow[]).map((c) => c.vehicle_models);
   const avg = reviews?.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
@@ -54,15 +58,28 @@ export default async function ProductPage({ params }: Props) {
   return (
     <Page>
       <ViewTracker productId={p.id} />
-      <nav className="mb-6 font-mono text-xs text-neutral-400">
-        <Link href="/boutique" className="hover:text-bronze">Boutique</Link> /{" "}
-        <Link href={`/boutique?type=${p.vehicle_type}`} className="capitalize hover:text-bronze">{p.vehicle_type}s</Link> / {p.name}
+      <nav className="mb-6 font-mono text-xs uppercase tracking-wider text-neutral-400">
+        <Link href="/" className="hover:text-bronze">Accueil</Link> /{" "}
+        <Link href={`/#${p.vehicle_type}`} className="hover:text-bronze">Échappements {typeLabel}</Link> / <span className="text-neutral-600">{p.name}</span>
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr]">
         <Gallery images={images} name={p.name} />
 
         <div>
+          <Link
+            href={`/#${p.vehicle_type}`}
+            className="mb-4 inline-flex items-center gap-2.5 rounded-full bg-night py-1.5 pl-1.5 pr-4 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-black"
+          >
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-bronze text-ink" aria-hidden>
+              {p.vehicle_type === "moto" ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="5" cy="17" r="3" /><circle cx="19" cy="17" r="3" /><path d="M5 17h4l3-6h4l3 6M12 11 10 7H7" /></svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 15v-3l2-5h14l2 5v3H3Z" /><circle cx="7.5" cy="16.5" r="1.8" /><circle cx="16.5" cy="16.5" r="1.8" /></svg>
+              )}
+            </span>
+            Échappement {typeLabel}
+          </Link>
           <div className="flex flex-wrap items-center gap-3">
             <UsageBadge usage={p.usage} />
             <span className="font-mono text-xs tracking-wider text-neutral-500">REF. {p.ref}</span>
@@ -97,7 +114,7 @@ export default async function ProductPage({ params }: Props) {
           ) : null}
 
           <div className="mt-6">
-            <SoundButton usage={p.usage} vehicle={p.vehicle_type} />
+            <SoundButton usage={p.usage} vehicle={p.vehicle_type} label={`Écouter · ${p.usage === "circuit" ? "sur circuit" : "en ville"}`} />
           </div>
 
           <BuyBox product={p} loggedIn={!!user} isFavorite={!!fav.data} />
@@ -188,6 +205,23 @@ export default async function ProductPage({ params }: Props) {
           )}
         </div>
       </section>
+      {others.length > 0 && (
+        <section className="mt-20">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+            <h2 className="font-display text-4xl uppercase italic leading-none md:text-5xl">
+              Les autres pots <span className="text-heat">{typeLabel}</span>
+            </h2>
+            <Link href={`/#${p.vehicle_type}`} className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-neutral-600 hover:text-night">
+              Tout l&apos;univers {typeLabel} →
+            </Link>
+          </div>
+          <div className="grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {others.map((o) => (
+              <ProductCard key={o.id} product={o} />
+            ))}
+          </div>
+        </section>
+      )}
     </Page>
   );
 }

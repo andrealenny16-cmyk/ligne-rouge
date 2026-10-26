@@ -63,11 +63,22 @@ export default async function Boutique({ searchParams }: { searchParams: Promise
       <BoutiqueFilters makes={makes} models={models} current={{ ...sp, type, make: makeId ? String(makeId) : undefined }} />
 
       {products.length ? (
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        (["voiture", "moto"] as const)
+          .map((t) => ({ t, list: products.filter((p) => p.vehicle_type === t) }))
+          .filter((g) => g.list.length)
+          .map((g) => (
+            <section key={g.t} className="mt-10">
+              <h2 className="mb-5 flex items-center gap-3 font-display text-3xl uppercase italic md:text-4xl">
+                Échappements {g.t === "moto" ? "Moto" : "Voiture"}
+                <span className="font-mono text-xs not-italic tracking-widest text-neutral-400">{g.list.length} RÉF.</span>
+              </h2>
+              <div className="grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+                {g.list.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+            </section>
+          ))
       ) : (
         <div className="glass mt-8 rounded-3xl p-10 text-center">
           <p className="font-display text-3xl uppercase">Aucun pot pour ces critères</p>

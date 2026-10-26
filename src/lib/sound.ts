@@ -47,9 +47,9 @@ function audioContext() {
   return ctx;
 }
 
-function emit(isOn: boolean, usage: Usage) {
+function emit(isOn: boolean, usage: Usage, vehicle = "voiture") {
   playing = isOn;
-  window.dispatchEvent(new CustomEvent(SOUND_EVENT, { detail: { playing: isOn, usage } }));
+  window.dispatchEvent(new CustomEvent(SOUND_EVENT, { detail: { playing: isOn, usage, vehicle } }));
 }
 
 const recordings = new Map<string, Promise<AudioBuffer | null>>();
@@ -109,10 +109,10 @@ export async function playExhaust(usage: Usage, vehicle: "voiture" | "moto" = "v
   limiter.release.value = 0.1;
   src.connect(gain).connect(limiter).connect(c.destination);
   src.start();
-  emit(true, usage);
+  emit(true, usage, vehicle);
   src.onended = () => {
     limiter.disconnect();
-    emit(false, usage);
+    emit(false, usage, vehicle);
   };
   return buffer.duration;
 }

@@ -27,6 +27,7 @@
 }
 
 html {
+  scroll-behavior: smooth;
   background: var(--color-sand);
   color-scheme: light;
 }

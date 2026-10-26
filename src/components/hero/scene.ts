@@ -263,6 +263,7 @@ export function buildExhaust(m: Mats) {
   root.add(tab);
 
   // Double sortie : manchon carbone, lèvre titane, âme perforée sombre, soudure
+  const outlets: THREE.Object3D[] = [];
   [-0.24, 0.24].forEach((y, i) => {
     const r = 0.27;
     const len = 0.9;
@@ -278,11 +279,15 @@ export function buildExhaust(m: Mats) {
     lip.position.set(x + len / 2, y, z);
     root.add(lip);
     weld(m, L / 2 + 0.22, r * 0.75, root, y, z);
+    const outlet = new THREE.Object3D(); // point d'éjection de la quincaillerie
+    outlet.position.set(x + len / 2 + 0.05, y, z);
+    root.add(outlet);
+    outlets.push(outlet);
   });
 
   root.position.x = -0.1;
   // Bascule route/circuit : seul le manchon change de finition (titane brut <-> bleu chauffe)
-  return { root, body, cone: body, cap };
+  return { root, body, cone: body, cap, outlets };
 }
 
 /** Charge un vrai modèle public/models/exhaust.glb s'il existe, normalisé à la taille du pot procédural. */
@@ -307,7 +312,7 @@ export async function loadExhaustModel(): Promise<THREE.Group | null> {
 
 /* ---------------- Quincaillerie flottante ---------------- */
 
-function nutGeometry() {
+export function nutGeometry() {
   const shape = new THREE.Shape();
   for (let i = 0; i < 6; i++) {
     const a = (i / 6) * Math.PI * 2;
@@ -325,7 +330,7 @@ function nutGeometry() {
   return g;
 }
 
-function washerGeometry() {
+export function washerGeometry() {
   const shape = new THREE.Shape();
   shape.absarc(0, 0, 1, 0, Math.PI * 2, false);
   const hole = new THREE.Path();
