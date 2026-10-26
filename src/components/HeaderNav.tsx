@@ -48,8 +48,8 @@ function Bar({ cartCount, loggedIn, isAdmin, active }: Props & { active: string 
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-[200] transition-all duration-300 ${
-        scrolled ? "bg-night/70 backdrop-blur-xl border-b border-white/5 py-3" : "py-5 md:py-7"
+      className={`fixed inset-x-0 top-0 z-[200] text-white transition-all duration-300 ${
+        scrolled ? "bg-night/85 backdrop-blur-xl border-b border-white/5 py-3" : "bg-gradient-to-b from-night/85 to-night/40 backdrop-blur-md py-4 md:py-5"
       }`}
     >
       <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 md:px-[4%]">

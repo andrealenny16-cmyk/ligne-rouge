@@ -44,7 +44,7 @@ export default async function AdminDashboard() {
         <section className="glass rounded-3xl p-5">
           <div className="mb-3 flex items-baseline justify-between">
             <h2 className="font-display text-2xl uppercase">CA · 30 jours</h2>
-            <span className="font-mono text-xs text-white/45">kpi_revenue_by_day</span>
+            <span className="font-mono text-xs text-neutral-400">kpi_revenue_by_day</span>
           </div>
           <RevenueChart data={byDay.data ?? []} />
         </section>
@@ -54,7 +54,7 @@ export default async function AdminDashboard() {
           <div className="cote my-5" />
           <p className="label">Paniers en cours</p>
           <p className="font-display text-3xl">
-            {k.open_carts} <span className="text-base text-white/50">· {formatPrice(k.open_carts_value)} en attente</span>
+            {k.open_carts} <span className="text-base text-neutral-500">· {formatPrice(k.open_carts_value)} en attente</span>
           </p>
         </section>
       </div>
@@ -66,17 +66,17 @@ export default async function AdminDashboard() {
         </section>
         <section className="glass rounded-3xl p-5">
           <h2 className="mb-1 font-display text-2xl uppercase">Véhicules demandés</h2>
-          <p className="mb-4 text-xs text-white/45">Garages, configurateur et vérifications de compatibilité</p>
+          <p className="mb-4 text-xs text-neutral-400">Garages, configurateur et vérifications de compatibilité</p>
           <ul className="space-y-3">
             {topVehicles.map((v) => (
               <li key={v.model_id}>
                 <div className="flex justify-between text-sm">
                   <span>{v.vehicle}</span>
-                  <span className="font-mono text-xs text-white/50">
+                  <span className="font-mono text-xs text-neutral-500">
                     {v.garage_count} gar. · {v.search_count} IA · {v.compat_checks} compat.
                   </span>
                 </div>
-                <div className="mt-1 h-1.5 rounded-full bg-white/10">
+                <div className="mt-1 h-1.5 rounded-full bg-black/[0.04]">
                   <div className="bg-heat h-full rounded-full" style={{ width: `${(v.score / maxScore) * 100}%` }} />
                 </div>
               </li>
@@ -92,14 +92,14 @@ export default async function AdminDashboard() {
               {lowStock.data.map((s) => (
                 <li key={s.variant_id} className="flex items-center justify-between rounded-2xl border border-alert/25 bg-alert/5 px-4 py-2.5 text-sm">
                   <span>
-                    {s.name} <span className="text-white/50">· {s.color_name}</span>
+                    {s.name} <span className="text-neutral-500">· {s.color_name}</span>
                   </span>
-                  <span className={`font-mono font-bold ${s.stock === 0 ? "text-alert" : "text-[#ff9aa2]"}`}>{s.stock}</span>
+                  <span className={`font-mono font-bold ${s.stock === 0 ? "text-alert" : "text-alert"}`}>{s.stock}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-white/55">Aucune alerte.</p>
+            <p className="text-sm text-neutral-500">Aucune alerte.</p>
           )}
           <Link href="/admin/produits" className="mt-4 inline-block text-sm text-bronze underline">Gérer les stocks →</Link>
         </section>
@@ -110,13 +110,13 @@ export default async function AdminDashboard() {
           <h2 className="font-display text-2xl uppercase">Dernières commandes</h2>
           <Link href="/admin/commandes" className="text-sm text-bronze underline">Tout voir</Link>
         </div>
-        <ul className="divide-y divide-white/10 text-sm">
+        <ul className="divide-y divide-black/10 text-sm">
           {(lastOrders.data ?? []).map((o) => {
             const c = o.profiles as unknown as { full_name: string | null; email: string } | null;
             return (
               <li key={o.id} className="flex justify-between py-2.5">
                 <span>
-                  <span className="font-mono text-xs text-white/45">{o.id.slice(0, 8).toUpperCase()}</span> · {c?.full_name ?? c?.email}
+                  <span className="font-mono text-xs text-neutral-400">{o.id.slice(0, 8).toUpperCase()}</span> · {c?.full_name ?? c?.email}
                 </span>
                 <span className="font-semibold">{formatPrice(o.total, true)}</span>
               </li>

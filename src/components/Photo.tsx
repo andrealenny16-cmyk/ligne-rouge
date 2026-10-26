@@ -5,23 +5,16 @@ import { useState } from "react";
 
 export type ProductView = "34" | "profil" | "monte";
 
-/** Photo produit dans public/photos/ (voir docs/prompts-photos.md). */
+/** Photo produit réelle dans public/photos/ (crédits : public/photos/CREDITS.md). */
 export function productPhoto(slug: string, view: ProductView = "34") {
   return `/photos/${slug}-${view}.jpg`;
 }
 
-/** Visuel provisoire tant que la photo n'a pas été déposée. */
-export function photoFallback(src: string) {
-  const m = src.match(/^\/photos\/(.+)-(34|profil|monte)\.jpg$/);
-  if (!m) return null;
-  return `/products/${m[1]}-${m[2] === "profil" ? "profil" : "34"}.svg`;
-}
-
-/** Image qui bascule sur le visuel provisoire si la photo est absente. */
-export default function Photo({ src, alt, fallback, ...rest }: Omit<ImageProps, "src"> & { src: string; fallback?: string | null }) {
+/** Image qui bascule sur un repli éventuel, ou se masque, si la photo est absente. */
+export default function Photo({ src, alt, fallback = null, ...rest }: Omit<ImageProps, "src"> & { src: string; fallback?: string | null }) {
   const [current, setCurrent] = useState(src);
   const [missing, setMissing] = useState(false);
-  const backup = fallback === undefined ? photoFallback(src) : fallback;
+  const backup = fallback;
   // Pas de photo ni de repli : on n'affiche rien (le fond du conteneur reste visible)
   if (missing) return null;
   return (

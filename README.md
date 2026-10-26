@@ -81,7 +81,7 @@ Les skills Claude Code sont versionnées dans `.claude/skills/` et ont servi pen
 |---|---|---|
 | `ligne-rouge-design-system` | Ambiance racing de nuit + rigueur catalogue : tokens (bronze, dégradé titane chauffé, rouge de marque, fond photo), typos, hero 3D à conserver, `ProductCard` fiche visuelle, `Photo` avec repli | Les itérations de direction artistique (clair puis sombre) se sont faites en changeant tokens et composants communs : badges route/circuit et avertissement légal identiques partout |
 | `supabase-migrations` | Conventions de nommage, RLS systématique, `(select auth.uid())`, fonctions `security definer` + `search_path = ''`, process « migration → `get_advisors` » | A guidé les migrations 002 et 003 : les alertes de l'advisor (fonctions trigger exposées en RPC, policies `for all` cumulées) ont été corrigées dans des migrations dédiées |
-| `add-product` | Procédure d'ajout d'un pot : fiche, illustrations SVG via `scripts/gen-product-svg.mjs`, seed SQL, variantes, compatibilité, vérifications | Les 6 produits et leurs 18 visuels ont été produits avec ce process ; ajouter un 7ᵉ pot est reproductible en quelques minutes |
+| `add-product` | Procédure d'ajout d'un pot : fiche, photos réelles + crédits, seed SQL, variantes, compatibilité, vérifications | Les 6 produits et leurs 18 photos ont suivi ce process ; ajouter un 7ᵉ pot est reproductible en quelques minutes |
 | `kpi-dashboard` | Chaîne vue SQL `kpi_*` → requête serveur → `KpiCard` / graphique recharts | Les 6 vues KPI et le dashboard suivent le même modèle ; ajouter un indicateur = une vue + une ligne dans `Promise.all` + un composant |
 
 La **skill IA du site** est le configurateur (`/configurateur` et module sur chaque fiche produit), décrit plus haut.
@@ -108,7 +108,7 @@ Base de données : exécuter dans l'ordre les fichiers de `supabase/migrations/`
 Dans Supabase → Authentication → Sign In / Providers → Email, désactiver **Confirm email** pour que
 l'inscription connecte immédiatement le client.
 
-Photos produit : déposer les fichiers dans `public/photos/` (liste et prompts dans `docs/prompts-photos.md`). Tant qu'une photo manque, le site affiche un visuel provisoire généré par `node scripts/gen-product-svg.mjs`.
+Photos et sons : vraies photos libres de droits dans `public/photos/` et vrais enregistrements dans `public/sounds/` (sources et licences dans les `CREDITS.md` de chaque dossier).
 
 Identité (plaque rivetée LIGNE ROUGE) : `node scripts/gen-brand.mjs` régénère `public/brand/`.
 

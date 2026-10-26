@@ -25,7 +25,7 @@ export default async function ConfirmationPage({ params }: { params: Promise<{ i
       <h1 className="font-display text-6xl uppercase leading-none md:text-8xl">
         Ça va <span className="text-bronze">rugir</span>
       </h1>
-      <p className="mt-4 text-white/65">
+      <p className="mt-4 text-neutral-600">
         Paiement accepté. Expédition sous 48 h vers {addr.line1}, {addr.zip} {addr.city}.
       </p>
       <div className="glass mx-auto mt-8 max-w-md space-y-2 rounded-3xl p-6 text-left text-sm">

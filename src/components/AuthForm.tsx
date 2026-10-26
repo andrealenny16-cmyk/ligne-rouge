@@ -75,14 +75,14 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
           autoComplete={mode === "signup" ? "new-password" : "current-password"}
           className="field"
         />
-        {mode === "signup" && <span className="mt-1 block text-xs text-white/40">8 caractères minimum</span>}
+        {mode === "signup" && <span className="mt-1 block text-xs text-neutral-400">8 caractères minimum</span>}
       </label>
-      {error && <p role="alert" className="text-sm text-[#ff7a84]">{error}</p>}
+      {error && <p role="alert" className="text-sm text-alert">{error}</p>}
       {info && <p role="status" className="text-sm text-legal">{info}</p>}
       <button disabled={loading} className="bg-heat w-full rounded-full py-3.5 font-bold transition hover:-translate-y-0.5 disabled:opacity-60">
         {loading ? "Un instant…" : mode === "signup" ? "Créer mon compte" : "Se connecter"}
       </button>
-      <p className="text-center text-sm text-white/55">
+      <p className="text-center text-sm text-neutral-500">
         {mode === "signup" ? (
           <>Déjà client ? <Link href={`/connexion?next=${encodeURIComponent(next)}`} className="text-bronze underline">Se connecter</Link></>
         ) : (

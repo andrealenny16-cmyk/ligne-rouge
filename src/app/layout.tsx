@@ -19,7 +19,7 @@ export const viewport: Viewport = { themeColor: "#0A0A0B" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={`${anton.variable} ${inter.variable} ${manrope.variable}`}>
-      <body className="min-h-screen bg-night">
+      <body className="min-h-screen bg-sand text-night">
         <Header />
         {children}
         <Footer />

@@ -18,7 +18,7 @@ export default async function PanierPage() {
       ) : (
         <div className="glass rounded-3xl p-10 text-center">
           <p className="font-display text-4xl uppercase">Silence radio</p>
-          <p className="mb-6 mt-2 text-white/60">Ton panier est vide. Il est temps de faire du bruit.</p>
+          <p className="mb-6 mt-2 text-neutral-600">Ton panier est vide. Il est temps de faire du bruit.</p>
           <PillLink href="/boutique" className="mx-auto">Voir la boutique</PillLink>
         </div>
       )}

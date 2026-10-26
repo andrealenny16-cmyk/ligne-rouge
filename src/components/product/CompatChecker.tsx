@@ -88,7 +88,7 @@ export default function CompatChecker({ productId, compatibleIds, garage, vehicl
             Vérifier
           </button>
           {result !== null && (
-            <p role="status" className={`rounded-2xl p-4 text-sm font-semibold ${result ? "bg-legal/15 text-legal" : "bg-alert/15 text-[#ff7a84]"}`}>
+            <p role="status" className={`rounded-2xl p-4 text-sm font-semibold ${result ? "bg-legal/15 text-legal" : "bg-alert/15 text-alert"}`}>
               {result ? "✓ Compatible : montage sur fixations d'origine." : "✕ Non compatible avec ce véhicule. Essaie le configurateur pour trouver le bon pot."}
             </p>
           )}

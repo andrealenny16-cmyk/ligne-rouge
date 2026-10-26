@@ -13,7 +13,7 @@ export default function AddressForm({ compact = false }: { compact?: boolean }) 
 
   if (!open)
     return (
-      <button onClick={() => setOpen(true)} className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold hover:border-bronze/60">
+      <button onClick={() => setOpen(true)} className="rounded-full border border-black/15 px-5 py-2.5 text-sm font-semibold hover:border-bronze/60">
         + Nouvelle adresse
       </button>
     );
@@ -29,7 +29,7 @@ export default function AddressForm({ compact = false }: { compact?: boolean }) 
         <button disabled={pending} className="rounded-full bg-bronze px-6 py-2.5 font-bold text-ink disabled:opacity-50">
           {pending ? "…" : "Enregistrer l'adresse"}
         </button>
-        {state && <span className={`text-sm ${state.ok ? "text-legal" : "text-[#ff7a84]"}`}>{state.ok ? state.message : state.error}</span>}
+        {state && <span className={`text-sm ${state.ok ? "text-legal" : "text-alert"}`}>{state.ok ? state.message : state.error}</span>}
       </div>
     </form>
   );

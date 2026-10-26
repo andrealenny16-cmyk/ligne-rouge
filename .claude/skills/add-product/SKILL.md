@@ -10,14 +10,12 @@ Rassembler : nom en capitales, ref `LR-XX-NN` (XX = initiales, NN = numéro suiv
 
 Règle métier : un produit `circuit` a toujours un dB ≥ 105 et **ne doit jamais** être présenté comme homologué.
 
-## 2. Illustrations SVG
-Générer deux fichiers dans `public/products/` : `<slug>-34.svg` (vue 3/4) et `<slug>-profil.svg`.
-Utiliser le générateur `scripts/gen-product-svg.mjs` :
-```bash
-node scripts/gen-product-svg.mjs
-```
-Il lit le tableau `PRODUCTS` en tête de script : ajouter une entrée `{ slug, body: 'hex'|'oval', tips: 1|2|4, finish: 'titane'|'noir'|'bleu'|'inox', tipD }`.
-Style maison : studio sombre (`#070708`) avec une lumière d'ambiance colorée propre au produit (champ `light`), corps métallique en dégradé, embouts carbone tissés, brides titane, collier de fixation, ombre portée douce, « LIGNE ROUGE » gravé sur le corps. Pas de logo tiers.
+## 2. Photos réelles
+Trois photos par produit dans `public/photos/` : `<slug>-34.jpg` (image principale, 5:4), `<slug>-profil.jpg`,
+`<slug>-monte.jpg`. Sources autorisées : photos libres de droits (Unsplash, licence gratuite y compris commerciale)
+ou shooting maison. Télécharger en `?w=1600&q=78&fm=jpg&fit=crop&ar=5:4`, ajouter l'identifiant et l'auteur dans
+`public/photos/CREDITS.md`. Éviter les logos de marques d'échappement concurrentes bien visibles.
+Aucun visuel dessiné ou généré : le composant `Photo` n'affiche rien si le fichier manque.
 
 ## 3. Seed SQL
 Créer une migration `supabase/migrations/NNN_add_<slug>.sql` (skill `supabase-migrations`) :
@@ -32,7 +30,7 @@ with p as (
 insert into public.product_variants (product_id, color_name, color_hex, stock)
 select id, v.c, v.h, v.s from p, (values ('Titane brut', '#B8B5AE', 4), ('Noir mat', '#1A1A1A', 4)) v(c, h, s);
 ```
-Puis `product_images` (positions 0 = 3/4, 1 = profil) et `product_compatibility` en joignant `vehicle_models` par `name` + `generation` (ajouter le modèle dans `vehicle_models` s'il manque).
+Puis `product_images` (positions 0 = 3/4, 1 = profil, 2 = monté) et `product_compatibility` en joignant `vehicle_models` par `name` + `generation` (ajouter le modèle dans `vehicle_models` s'il manque).
 
 Le `stock` du produit = somme des stocks des variantes.
 

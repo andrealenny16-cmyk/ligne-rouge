@@ -50,11 +50,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
         {/* Entrées Voiture / Moto : photo plein cadre façon catalogue course */}
         <section className="mt-16 grid gap-5 md:grid-cols-2">
           {[
-            { href: "/boutique?type=voiture", title: "Voiture", sub: "Lignes cat-back, silencieux à valve, décatas", photo: "/photos/categorie-voitures.jpg", fallback: "/products/titan-gt-34.svg", n: products.filter((p) => p.vehicle_type === "voiture").length },
-            { href: "/boutique?type=moto", title: "Moto", sub: "Slip-on, double sous-selle, lignes 4-en-1", photo: "/photos/categorie-motos.jpg", fallback: "/products/hellcat-racing-34.svg", n: products.filter((p) => p.vehicle_type === "moto").length },
+            { href: "/boutique?type=voiture", title: "Voiture", sub: "Lignes cat-back, silencieux à valve, décatas", photo: "/photos/categorie-voitures.jpg", n: products.filter((p) => p.vehicle_type === "voiture").length },
+            { href: "/boutique?type=moto", title: "Moto", sub: "Slip-on, double sous-selle, lignes 4-en-1", photo: "/photos/categorie-motos.jpg", n: products.filter((p) => p.vehicle_type === "moto").length },
           ].map((c) => (
-            <Link key={c.href} href={c.href} className="photo group relative isolate flex aspect-[5/4] flex-col justify-end overflow-hidden rounded-[28px] border border-white/10 p-7 md:p-9">
-              <Photo src={c.photo} fallback={c.fallback} alt="" fill sizes="(max-width: 768px) 100vw, 50vw" className="-z-10 object-cover transition-transform duration-700 group-hover:scale-105" />
+            <Link key={c.href} href={c.href} className="photo group relative isolate flex aspect-[5/4] flex-col justify-end overflow-hidden rounded-[28px] p-7 text-white md:p-9">
+              <Photo src={c.photo} alt="" fill sizes="(max-width: 768px) 100vw, 50vw" className="-z-10 object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/40 to-transparent" />
               <span className="speed-lines absolute inset-x-0 top-1/2 -z-10 h-24 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               <p className="font-mono text-xs tracking-widest text-white/60">{c.n} RÉFÉRENCES</p>
@@ -76,7 +76,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
                 La <span className="text-heat">gamme</span>
               </h2>
             </div>
-            <p className="max-w-sm text-sm text-white/60">
+            <p className="max-w-sm text-sm text-neutral-600">
               {promos.length} offres en cours · code <span className="font-mono text-bronze">ROUGE10</span> : −10 % supplémentaires au panier.
             </p>
           </div>
@@ -88,7 +88,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
         </section>
 
         {/* Bandeau piste plein cadre */}
-        <section className="photo relative isolate mt-24 overflow-hidden rounded-[28px] border border-white/10">
+        <section className="photo relative isolate mt-24 overflow-hidden rounded-[28px] text-white">
           <Photo src="/photos/ambiance-circuit.jpg" fallback={null} alt="" fill sizes="100vw" className="-z-10 object-cover opacity-70" />
           <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-transparent" />
           <span className="speed-lines absolute inset-y-0 right-0 -z-10 w-2/3 opacity-60" />
@@ -118,7 +118,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
         </section>
 
         {/* Configurateur */}
-        <section className="mt-6 flex flex-col items-start justify-between gap-6 rounded-[28px] border border-white/10 bg-gradient-to-br from-[#1E3A8A]/40 via-night to-[#8A1E0B]/40 p-8 md:flex-row md:items-center md:p-10">
+        <section className="mt-6 flex flex-col items-start justify-between gap-6 rounded-[28px] bg-gradient-to-br text-white from-[#1E3A8A]/40 via-night to-[#8A1E0B]/40 p-8 md:flex-row md:items-center md:p-10">
           <div>
             <p className="label">Configurateur Son & Perf</p>
             <p className="font-display text-4xl uppercase italic leading-none">Pas sûr du bon choix ?</p>
@@ -140,7 +140,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
               <p className="label">{r.k}</p>
               <p className="font-display text-5xl uppercase text-bronze">{r.v}</p>
               <div className="cote my-4" />
-              <p className="text-sm text-white/60">{r.d}</p>
+              <p className="text-sm text-neutral-600">{r.d}</p>
             </div>
           ))}
         </section>

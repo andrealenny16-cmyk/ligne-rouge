@@ -21,7 +21,7 @@ export default function ReviewForm({ productId, slug }: { productId: string; slu
         ))}
       </div>
       <textarea name="comment" required minLength={3} rows={3} className="field" placeholder="Le son, le montage, les sensations…" />
-      {state && !state.ok && <p className="text-sm text-[#ff7a84]">{state.error}</p>}
+      {state && !state.ok && <p className="text-sm text-alert">{state.error}</p>}
       <button disabled={pending} className="rounded-full bg-bronze px-6 py-2.5 font-bold text-ink disabled:opacity-50">
         {pending ? "Envoi…" : "Publier"}
       </button>

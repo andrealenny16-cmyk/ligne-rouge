@@ -75,7 +75,7 @@ export default function ConfiguratorForm({ compact = false, initialVehicle = "" 
                 setWish(ex.wish);
                 void submit(undefined, ex.vehicle, ex.wish);
               }}
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-bronze/50 hover:text-white"
+              className="rounded-full border border-black/10 bg-black/[0.04] px-4 py-2 text-xs text-neutral-700 transition hover:border-bronze/50 hover:text-night"
             >
               « {ex.vehicle}, {ex.wish} »
             </button>
@@ -83,11 +83,11 @@ export default function ConfiguratorForm({ compact = false, initialVehicle = "" 
         </div>
       )}
 
-      {error && <p className="mt-4 text-sm text-[#ff7a84]">{error}</p>}
+      {error && <p className="mt-4 text-sm text-alert">{error}</p>}
 
       {res && (
         <div className="mt-6 space-y-4" aria-live="polite">
-          <p className="font-mono text-[0.65rem] tracking-widest text-white/40">
+          <p className="font-mono text-[0.65rem] tracking-widest text-neutral-400">
             {res.vehicle ? `VÉHICULE RECONNU : ${res.vehicle.toUpperCase()}` : "VÉHICULE NON RECONNU"} · USAGE {res.usage.toUpperCase()} ·{" "}
             {res.engine === "claude" ? "RECOMMANDATION CLAUDE" : "MOTEUR À RÈGLES"}
           </p>
@@ -100,15 +100,15 @@ export default function ConfiguratorForm({ compact = false, initialVehicle = "" 
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <UsageBadge usage={res.product.usage} />
-                  <span className="font-mono text-xs text-white/45">REF. {res.product.ref}</span>
+                  <span className="font-mono text-xs text-neutral-400">REF. {res.product.ref}</span>
                 </div>
                 <p className="mt-1 font-display text-4xl uppercase">{res.product.name}</p>
-                <p className="mt-2 text-sm text-white/80">{res.recommendation.pitch}</p>
+                <p className="mt-2 text-sm text-neutral-700">{res.recommendation.pitch}</p>
                 <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
                   <div><dt className="label !mb-1">Gain estimé</dt><dd className="font-semibold text-bronze">{res.recommendation.gain}</dd></div>
-                  <div className="sm:col-span-2"><dt className="label !mb-1">Le son</dt><dd className="text-white/80">{res.recommendation.sound}</dd></div>
+                  <div className="sm:col-span-2"><dt className="label !mb-1">Le son</dt><dd className="text-neutral-700">{res.recommendation.sound}</dd></div>
                 </dl>
-                <p className={`mt-4 rounded-2xl p-3 text-xs ${res.product.usage === "route" ? "bg-legal/10 text-legal" : "bg-alert/10 text-[#ff8a92]"}`}>{res.recommendation.legal}</p>
+                <p className={`mt-4 rounded-2xl p-3 text-xs ${res.product.usage === "route" ? "bg-legal/10 text-legal" : "bg-alert/10 text-alert"}`}>{res.recommendation.legal}</p>
                 <Link href={`/produit/${res.product.slug}`} className="mt-4 inline-flex items-center gap-3 rounded-full bg-black/50 py-1.5 pl-5 pr-1.5 font-bold">
                   Voir le produit · {formatPrice(finalPrice(res.product))}
                   <span className="grid h-9 w-9 place-items-center rounded-full bg-bronze text-xl text-ink">+</span>
@@ -116,19 +116,19 @@ export default function ConfiguratorForm({ compact = false, initialVehicle = "" 
               </div>
             </div>
           ) : (
-            <div className="glass rounded-3xl p-5 text-sm text-white/75">
+            <div className="glass rounded-3xl p-5 text-sm text-neutral-700">
               {res.message}{" "}
               {!res.vehicle && "Précise la marque et le modèle (ex. « BMW M240i », « Kawasaki ZX-10R »)."}
             </div>
           )}
 
           {res.blockedCircuit && (
-            <p className="text-xs text-white/50">
+            <p className="text-xs text-neutral-500">
               Une version circuit existe pour ce véhicule, mais elle n&apos;est pas proposée car tu souhaites rouler sur route.
             </p>
           )}
           {!compact && res.alternatives.length > 0 && (
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-neutral-600">
               Aussi compatible :{" "}
               {res.alternatives.map((a, i) => (
                 <span key={a.id}>

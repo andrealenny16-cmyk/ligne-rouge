@@ -1,9 +1,9 @@
 "use client";
 
 import gsap from "gsap";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import Photo from "@/components/Photo";
 import SoundButton from "@/components/SoundButton";
 import { PillLink } from "@/components/ui";
 import { formatPrice } from "@/lib/format";
@@ -390,25 +390,41 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
   };
 
   const cards: { f: Finish; title: string; img: string; from: number }[] = [
-    { f: "route", title: "Homologué route", img: "/products/titan-gt-cut.svg", from: routeFrom },
-    { f: "circuit", title: "Circuit", img: "/products/inferno-r-cut.svg", from: circuitFrom },
+    { f: "route", title: "Homologué route", img: "/photos/titan-gt-34.jpg", from: routeFrom },
+    { f: "circuit", title: "Circuit", img: "/photos/inferno-r-34.jpg", from: circuitFrom },
   ];
 
   return (
     <section
       ref={sectionRef}
-      className="relative h-[100svh] min-h-[640px] overflow-hidden"
+      className="relative h-[100svh] min-h-[640px] overflow-hidden text-white"
       style={
         {
           "--bg-inner": THEMES.route.inner,
           "--bg-mid": THEMES.route.mid,
           "--bg-outer": THEMES.route.outer,
-          background: "radial-gradient(circle at center, var(--bg-inner) 0%, var(--bg-mid) 50%, var(--bg-outer) 100%)",
+          background: "#05070d",
         } as React.CSSProperties
       }
     >
-      {/* Texture carbone discrète sur tout le hero */}
-      <div className="carbon pointer-events-none absolute inset-0 opacity-25 mix-blend-overlay" />
+      {/* Vraies photos de circuit (route / circuit) en fondu, teintées par le thème */}
+      {(["route", "circuit"] as Finish[]).map((f) => (
+        <Photo
+          key={f}
+          src={`/photos/hero-${f}.jpg`}
+          fallback={null}
+          alt=""
+          fill
+          priority={f === "route"}
+          sizes="100vw"
+          className={`pointer-events-none object-cover transition-opacity duration-[1200ms] ${mode === f ? "opacity-100" : "opacity-0"}`}
+        />
+      ))}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-70 mix-blend-multiply"
+        style={{ background: "radial-gradient(circle at center, var(--bg-inner) 0%, var(--bg-mid) 55%, var(--bg-outer) 100%)" }}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-black/45" />
 
       <canvas ref={backRef} className="pointer-events-none absolute inset-0 z-0 h-full w-full" aria-hidden />
       <canvas ref={potRef} className="pointer-events-none absolute inset-0 z-[1] h-full w-full opacity-0 [animation:fadeIn_1.5s_ease-out_0.3s_forwards]" aria-hidden />
@@ -451,7 +467,7 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
             <SoundButton usage={mode} />
           </div>
           <div className="mt-auto hidden items-center gap-4 md:flex">
-            <div className="glass grid h-12 w-12 place-items-center rounded-xl">
+            <div className="grid h-12 w-12 place-items-center rounded-xl border border-white/15 bg-white/10 backdrop-blur">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
                 <polygon points="12,2 21,7 21,17 12,22 3,17 3,7" />
                 <text x="12" y="15.5" textAnchor="middle" fontSize="7" fill="currentColor" stroke="none" fontWeight="700">Ti</text>
@@ -474,17 +490,13 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
                   type="button"
                   onClick={() => choose(c.f)}
                   aria-pressed={mode === c.f}
-                  className={`glass group relative flex w-[150px] flex-col items-center gap-5 rounded-[28px] p-4 pt-14 text-center transition-all duration-400 ease-pop hover:border-white/40 hover:bg-white/[0.12] md:w-[160px] ${
+                  className={`group relative flex w-[150px] flex-col items-center gap-3 rounded-[22px] border border-white/15 bg-white/10 p-2 pb-3 text-center backdrop-blur-md transition-all duration-400 ease-pop hover:border-white/40 hover:bg-white/[0.16] md:w-[170px] ${
                     mode === c.f ? "!border-bronze" : ""
                   }`}
                 >
-                  <Image
-                    src={c.img}
-                    alt=""
-                    width={200}
-                    height={150}
-                    className="-mt-28 w-[170px] -rotate-12 drop-shadow-[0_20px_35px_rgba(0,0,0,0.6)] transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-7 group-hover:rotate-[-24deg] group-hover:scale-110"
-                  />
+                  <span className="relative block aspect-[4/3] w-full overflow-hidden rounded-[16px]">
+                    <Photo src={c.img} alt="" fill sizes="170px" className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                  </span>
                   <span className="flex flex-col text-[0.72rem]">
                     <span className="font-semibold">{c.title}</span>
                     <span className="text-white/60">à partir de {formatPrice(c.from)}</span>
@@ -500,7 +512,7 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
                   type="button"
                   onClick={() => choose(mode === "route" ? "circuit" : "route")}
                   aria-label={i ? "Gamme suivante" : "Gamme précédente"}
-                  className="glass grid h-9 w-9 place-items-center rounded-full transition hover:bg-white/10"
+                  className="grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-white/10 backdrop-blur transition hover:bg-white/20"
                 >
                   {i ? "→" : "←"}
                 </button>

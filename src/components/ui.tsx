@@ -8,7 +8,7 @@ type PillProps = { children: ReactNode; variant?: "dark" | "heat"; plus?: boolea
 
 function pillClass(variant: PillProps["variant"], className = "") {
   return `group inline-flex w-fit items-center gap-5 rounded-full py-1.5 pl-6 pr-1.5 font-bold transition-all duration-300 hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-50 ${
-    variant === "heat" ? "bg-heat text-white shadow-[0_10px_40px_-10px_rgba(139,92,246,0.6)]" : "bg-black/50 text-white hover:bg-black/70"
+    variant === "heat" ? "bg-heat text-white shadow-[0_10px_40px_-10px_rgba(139,92,246,0.6)]" : "bg-night text-white hover:bg-black"
   } ${className}`;
 }
 
@@ -50,7 +50,7 @@ export function UsageBadge({ usage, className = "" }: { usage: Usage; className?
       <span className="h-1.5 w-1.5 rounded-full bg-legal" /> Homologué
     </span>
   ) : (
-    <span className={`inline-flex items-center gap-1.5 rounded-full border border-alert/50 bg-alert/15 px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-wider text-[#ff5a66] ${className}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-full border border-alert/50 bg-alert/15 px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-wider text-alert ${className}`}>
       <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-alert" /> Circuit
     </span>
   );
@@ -58,7 +58,7 @@ export function UsageBadge({ usage, className = "" }: { usage: Usage; className?
 
 export function CircuitWarning({ className = "" }: { className?: string }) {
   return (
-    <div role="note" className={`flex gap-3 rounded-2xl border border-alert/40 bg-alert/10 p-4 text-sm text-white/90 ${className}`}>
+    <div role="note" className={`flex gap-3 rounded-2xl border border-alert/40 bg-alert/10 p-4 text-sm text-neutral-700 ${className}`}>
       <span aria-hidden className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-alert text-xs font-black">!</span>
       <p>{CIRCUIT_WARNING}</p>
     </div>
@@ -72,10 +72,10 @@ export function Gauge({ label, value, max, unit, display }: { label: string; val
       <div className="mb-1.5 flex items-baseline justify-between">
         <span className="label !mb-0">{label}</span>
         <span className="font-mono text-sm font-semibold">
-          {display ?? value} <span className="text-white/50">{unit}</span>
+          {display ?? value} <span className="text-neutral-500">{unit}</span>
         </span>
       </div>
-      <div className="relative h-2 overflow-hidden rounded-full bg-white/10">
+      <div className="relative h-2 overflow-hidden rounded-full bg-black/[0.04]">
         <div className="bg-heat absolute inset-y-0 left-0 rounded-full" style={{ width: `${pct}%` }} />
         {[25, 50, 75].map((t) => (
           <span key={t} className="absolute inset-y-0 w-px bg-night/70" style={{ left: `${t}%` }} />
@@ -92,7 +92,7 @@ export function PageTitle({ kicker, title, accent, children }: { kicker?: string
       <h1 className="font-display text-5xl uppercase italic leading-[0.9] md:text-7xl">
         {title} {accent && <span className="text-bronze">{accent}</span>}
       </h1>
-      {children && <div className="mt-4 max-w-2xl text-white/60">{children}</div>}
+      {children && <div className="mt-4 max-w-2xl text-neutral-600">{children}</div>}
     </div>
   );
 }

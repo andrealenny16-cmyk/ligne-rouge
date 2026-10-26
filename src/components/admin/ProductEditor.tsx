@@ -16,7 +16,7 @@ export default function ProductEditor({ product: p }: { product: Product }) {
           <Photo src={productPhoto(p.slug)} alt="" fill sizes="96px" className="object-cover" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-mono text-xs text-white/45">REF. {p.ref}</p>
+          <p className="font-mono text-xs text-neutral-400">REF. {p.ref}</p>
           <p className="font-display text-2xl uppercase leading-none">{p.name}</p>
           <UsageBadge usage={p.usage} className="mt-1" />
         </div>
@@ -40,7 +40,7 @@ export default function ProductEditor({ product: p }: { product: Product }) {
         <button disabled={pending} className="rounded-full bg-bronze px-5 py-2.5 text-sm font-bold text-ink disabled:opacity-50">
           {pending ? "…" : "Enregistrer"}
         </button>
-        {state && <span className={`text-sm ${state.ok ? "text-legal" : "text-[#ff7a84]"}`}>{state.ok ? state.message : state.error}</span>}
+        {state && <span className={`text-sm ${state.ok ? "text-legal" : "text-alert"}`}>{state.ok ? state.message : state.error}</span>}
       </div>
     </form>
   );

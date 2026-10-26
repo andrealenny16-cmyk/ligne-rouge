@@ -3,7 +3,7 @@ import Logo from "./Logo";
 
 export default function Footer() {
   return (
-    <footer className="carbon relative mt-24 border-t border-white/10">
+    <footer className="carbon relative mt-24 border-t border-white/10 text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-4 md:px-8">
         <div className="md:col-span-2">
           <Logo className="h-16" />
@@ -15,7 +15,7 @@ export default function Footer() {
           </p>
         </div>
         <div>
-          <p className="label">Boutique</p>
+          <p className="label !text-white/50">Boutique</p>
           <ul className="space-y-2 text-sm text-white/70">
             <li><Link className="hover:text-bronze" href="/boutique?type=voiture">Voitures</Link></li>
             <li><Link className="hover:text-bronze" href="/boutique?type=moto">Motos</Link></li>
@@ -24,7 +24,7 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <p className="label">Service</p>
+          <p className="label !text-white/50">Service</p>
           <ul className="space-y-2 text-sm text-white/70">
             <li>Livraison offerte dès 500 €</li>
             <li>Garantie 2 ans</li>

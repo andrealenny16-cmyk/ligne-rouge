@@ -49,13 +49,13 @@ export default function CartView({ lines, subtotal, hasCircuit }: { lines: CartL
                   <span className="font-display text-2xl uppercase leading-none">{l.product.name}</span>
                   <UsageBadge usage={l.product.usage} />
                 </div>
-                <p className="mt-1 flex items-center gap-2 text-sm text-white/60">
-                  <span className="h-3 w-3 rounded-full border border-white/30" style={{ background: l.variant.color_hex }} /> {l.variant.color_name}
-                  <span className="font-mono text-xs text-white/35">· {l.product.ref}</span>
+                <p className="mt-1 flex items-center gap-2 text-sm text-neutral-600">
+                  <span className="h-3 w-3 rounded-full border border-black/25" style={{ background: l.variant.color_hex }} /> {l.variant.color_name}
+                  <span className="font-mono text-xs text-neutral-400">· {l.product.ref}</span>
                 </p>
               </div>
               <div className="flex items-center justify-between gap-5">
-                <div className="flex items-center rounded-full border border-white/15">
+                <div className="flex items-center rounded-full border border-black/15">
                   <button aria-label="Diminuer" onClick={() => start(() => updateCartItem(l.id, l.quantity - 1))} className="h-9 w-9 text-lg">−</button>
                   <span className="w-6 text-center font-mono">{l.quantity}</span>
                   <button
@@ -68,7 +68,7 @@ export default function CartView({ lines, subtotal, hasCircuit }: { lines: CartL
                   </button>
                 </div>
                 <span className="w-24 text-right font-bold text-bronze">{formatPrice(finalPrice(l.product) * l.quantity)}</span>
-                <button aria-label={`Retirer ${l.product.name}`} onClick={() => start(() => removeCartItem(l.id))} className="text-white/40 hover:text-alert">
+                <button aria-label={`Retirer ${l.product.name}`} onClick={() => start(() => removeCartItem(l.id))} className="text-neutral-400 hover:text-alert">
                   ✕
                 </button>
               </div>
@@ -83,22 +83,22 @@ export default function CartView({ lines, subtotal, hasCircuit }: { lines: CartL
           <span className="label">Code promo</span>
           <div className="flex gap-2">
             <input className="field uppercase" value={code} onChange={(e) => setCode(e.target.value)} placeholder="ROUGE10" />
-            <button onClick={apply} disabled={!code.trim()} className="rounded-2xl bg-white/10 px-4 font-semibold disabled:opacity-40">
+            <button onClick={apply} disabled={!code.trim()} className="rounded-2xl bg-black/[0.04] px-4 font-semibold disabled:opacity-40">
               OK
             </button>
           </div>
-          {promoError && <p className="mt-1 text-xs text-[#ff7a84]">{promoError}</p>}
+          {promoError && <p className="mt-1 text-xs text-alert">{promoError}</p>}
           {promo && <p className="mt-1 text-xs text-legal">{promo.code} appliqué : −{promo.percent} %</p>}
         </div>
         <div className="cote" />
         <dl className="space-y-2 text-sm">
-          <div className="flex justify-between"><dt className="text-white/60">Sous-total</dt><dd>{formatPrice(subtotal, true)}</dd></div>
+          <div className="flex justify-between"><dt className="text-neutral-600">Sous-total</dt><dd>{formatPrice(subtotal, true)}</dd></div>
           {t.discount > 0 && <div className="flex justify-between text-legal"><dt>Remise</dt><dd>−{formatPrice(t.discount, true)}</dd></div>}
           <div className="flex justify-between">
-            <dt className="text-white/60">Livraison</dt>
+            <dt className="text-neutral-600">Livraison</dt>
             <dd>{t.shipping ? formatPrice(t.shipping, true) : "Offerte"}</dd>
           </div>
-          {t.shipping > 0 && <p className="text-xs text-white/40">Offerte dès {SHIPPING_FREE_FROM} €</p>}
+          {t.shipping > 0 && <p className="text-xs text-neutral-400">Offerte dès {SHIPPING_FREE_FROM} €</p>}
           <div className="flex justify-between pt-2 text-lg font-bold"><dt>Total TTC</dt><dd className="text-bronze">{formatPrice(t.total, true)}</dd></div>
         </dl>
         {hasCircuit && (

@@ -24,7 +24,7 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
           <Link
             key={k}
             href={k ? `/admin/commandes?statut=${k}` : "/admin/commandes"}
-            className={`rounded-full border px-4 py-2 text-sm ${(statut ?? "") === k ? "border-bronze bg-bronze text-ink font-semibold" : "border-white/15 text-white/70 hover:border-white/40"}`}
+            className={`rounded-full border px-4 py-2 text-sm ${(statut ?? "") === k ? "border-bronze bg-bronze text-ink font-semibold" : "border-black/15 text-neutral-700 hover:border-black/25"}`}
           >
             {label}
           </Link>
@@ -32,8 +32,8 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
       </div>
       <div className="glass overflow-x-auto rounded-3xl">
         <table className="w-full min-w-[760px] text-left text-sm">
-          <thead className="font-mono text-[0.65rem] uppercase tracking-wider text-white/45">
-            <tr className="border-b border-white/10">
+          <thead className="font-mono text-[0.65rem] uppercase tracking-wider text-neutral-400">
+            <tr className="border-b border-black/10">
               <th className="p-4">Commande</th>
               <th className="p-4">Client</th>
               <th className="p-4">Articles</th>
@@ -46,18 +46,18 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
               const c = o.profiles as unknown as { full_name: string | null; email: string } | null;
               const a = o.address_snapshot as { city: string };
               return (
-                <tr key={o.id} className="border-b border-white/5 align-top">
+                <tr key={o.id} className="border-b border-black/10 align-top">
                   <td className="p-4">
                     <p className="font-mono text-xs">{o.id.slice(0, 8).toUpperCase()}</p>
-                    <p className="text-xs text-white/45">{formatDate(o.created_at)}</p>
+                    <p className="text-xs text-neutral-400">{formatDate(o.created_at)}</p>
                   </td>
                   <td className="p-4">
                     <p>{c?.full_name ?? "—"}</p>
-                    <p className="text-xs text-white/45">{c?.email} · {a?.city}</p>
+                    <p className="text-xs text-neutral-400">{c?.email} · {a?.city}</p>
                   </td>
-                  <td className="p-4 text-white/75">
+                  <td className="p-4 text-neutral-700">
                     {o.order_items.map((i, k) => (
-                      <p key={k}>{i.quantity} × {i.product_name} <span className="text-white/40">({i.color_name})</span></p>
+                      <p key={k}>{i.quantity} × {i.product_name} <span className="text-neutral-400">({i.color_name})</span></p>
                     ))}
                   </td>
                   <td className="p-4 font-semibold">
@@ -72,7 +72,7 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
             })}
           </tbody>
         </table>
-        {!orders?.length && <p className="p-6 text-white/55">Aucune commande.</p>}
+        {!orders?.length && <p className="p-6 text-neutral-500">Aucune commande.</p>}
       </div>
     </div>
   );

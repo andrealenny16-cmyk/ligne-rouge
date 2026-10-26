@@ -32,7 +32,7 @@ export default function VehicleSelector({ makes, models, compact = false }: Prop
     <form onSubmit={submit} className={`grid gap-3 ${compact ? "" : "md:grid-cols-[auto_1fr_1fr_0.7fr_auto]"} md:items-end`}>
       <div>
         <span className="label">Type</span>
-        <div className="flex rounded-full border border-white/10 bg-white/5 p-1">
+        <div className="flex rounded-full border border-black/10 bg-black/[0.04] p-1">
           {(["voiture", "moto"] as VehicleType[]).map((t) => (
             <button
               key={t}
@@ -44,7 +44,7 @@ export default function VehicleSelector({ makes, models, compact = false }: Prop
                 setYear("");
               }}
               className={`flex-1 rounded-full px-5 py-2.5 text-sm font-semibold capitalize transition ${
-                type === t ? "bg-bronze text-ink" : "text-white/70 hover:text-white"
+                type === t ? "bg-bronze text-ink" : "text-neutral-700 hover:text-night"
               }`}
             >
               {t}
