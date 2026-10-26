@@ -6,27 +6,29 @@ ou `https://www.pexels.com/photo/<id>/`.
 
 Règles : sur les fiches produit, **le pot est le sujet** de la photo (pas le véhicule) et aucun logo de marque
 d'échappement concurrente ne doit être lisible.
+Les 3 vues d'un produit montrent **le même pot** (même photo recadrée ou même série) ; les logos
+constructeur gravés sur les embouts ont été floutés.
 
 | Fichier | Source |
 |---|---|
-| titan-gt-34 | Unsplash 1770327714984-de951cc48692 |
-| titan-gt-profil | Unsplash 1791419502372-24e4e5d10c97 |
-| titan-gt-monte | Unsplash 1779263450175-dbd8771edc44 |
-| carbon-fury-34 | Unsplash 1791824085864-2ff8742a0ce6 |
-| carbon-fury-profil | Unsplash 1785448212806-3ef61c26f395 |
-| carbon-fury-monte | Unsplash 1645534680500-1356df6e3831 |
-| inferno-r-34 | Unsplash 1750507237773-08c1c9655126 |
-| inferno-r-profil | Unsplash 1692309175422-b9d614f4764e |
-| inferno-r-monte | Unsplash 1760448970487-a3c6ff323b0a |
+| titan-gt-34 | Unsplash 1783739486822-29569e1942f5 |
+| titan-gt-profil | Unsplash 1783739486822-29569e1942f5 (gros plan recadré) |
+| titan-gt-monte | Unsplash 1783739486822-29569e1942f5 (gros plan recadré) |
+| carbon-fury-34 | Unsplash 1675574697371-93409a25257c |
+| carbon-fury-profil | Unsplash 1675574697371-93409a25257c (gros plan recadré) |
+| carbon-fury-monte | Unsplash 1675574697371-93409a25257c (gros plan recadré) |
+| inferno-r-34 | Unsplash 1760449072812-9f6030afcee5 |
+| inferno-r-profil | Unsplash 1760449072788-8ace021a956b (même voiture, même série) |
+| inferno-r-monte | Unsplash 1760449072812-9f6030afcee5 (gros plan recadré) |
 | spectre-s-34 | Pexels 12970254 |
-| spectre-s-profil | Pexels 38300775 |
-| spectre-s-monte | Unsplash 1759419281419-b04552b2691a |
-| viper-twin-34 | Unsplash 1787421208286-bacd80fa45f5 |
-| viper-twin-profil | Unsplash 1786011625634-872c2772b79b |
-| viper-twin-monte | Pexels 25753520 |
+| spectre-s-profil | Pexels 12970254 (gros plan recadré) |
+| spectre-s-monte | Pexels 12970254 (gros plan recadré) |
+| viper-twin-34 | Unsplash 1672626923169-dae917c72864 |
+| viper-twin-profil | Unsplash 1672626923169-dae917c72864 (gros plan recadré) |
+| viper-twin-monte | Unsplash 1672626923169-dae917c72864 (gros plan recadré) |
 | hellcat-racing-34 | Unsplash 1719078143091-9eb1810293e9 |
-| hellcat-racing-profil | Unsplash 1765903916132-7d2fa8ad4c66 |
-| hellcat-racing-monte | Pexels 29342768 |
+| hellcat-racing-profil | Unsplash 1719078143091-9eb1810293e9 (gros plan recadré) |
+| hellcat-racing-monte | Unsplash 1719078143091-9eb1810293e9 (gros plan recadré) |
 | hero-route | Unsplash 1779885529717-952eb9a81849 |
 | hero-circuit | Unsplash 1759169955381-0d930b1b2067 |
 | categorie-voitures | Unsplash 1503221507150-dcb5a13416ca |
