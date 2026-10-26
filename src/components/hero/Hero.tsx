@@ -8,7 +8,7 @@ import SoundButton from "@/components/SoundButton";
 import { PillLink } from "@/components/ui";
 import { formatPrice } from "@/lib/format";
 import { SOUND_EVENT } from "@/lib/sound";
-import { buildExhaust, buildPart, makeRenderer, materials, partMaterial, type Finish, type PartKind } from "./scene";
+import { buildExhaust, buildPart, loadExhaustModel, loadStudio, makeRenderer, materials, partMaterial, type Finish, type PartKind } from "./scene";
 
 /* Hero LIGNE ROUGE — transposition de la référence « Soda » :
    fond radial, pot 3D qui suit le curseur, quincaillerie repoussée par la souris,
@@ -78,10 +78,23 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
     potRoot.add(potTilt);
     potRoot.rotation.z = THREE.MathUtils.degToRad(18);
     potScene.add(potRoot);
+    potScene.environment = pot.envMap;
+    potScene.environmentIntensity = 2.4;
+    potScene.environmentRotation.set(0, Math.PI * 0.55, 0); // softbox du studio face caméra
+    let disposed = false;
+    // Vraie photo HDRI de studio pour l'éclairage, puis vrai modèle 3D s'il est fourni
+    void loadStudio(pot.renderer).then((env) => {
+      if (env && !disposed) potScene.environment = env;
+    });
+    void loadExhaustModel().then((model) => {
+      if (!model || disposed) return;
+      potTilt.remove(exhaust.root);
+      potTilt.add(model);
+    });
 
     const fitCamera = () => {
       const aspect = W / H;
-      const span = 7.4 / (isMobile ? 0.95 : 0.6); // largeur de scène visible souhaitée
+      const span = 7.6 / (isMobile ? 0.9 : 0.5); // largeur de scène visible souhaitée
       potCam.aspect = aspect;
       potCam.position.z = Math.max(10, span / (2 * Math.tan(THREE.MathUtils.degToRad(15)) * aspect));
       potCam.updateProjectionMatrix();
@@ -96,6 +109,15 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
     const frontCam = makeOrtho();
     const backScene = new THREE.Scene();
     const frontScene = new THREE.Scene();
+    backScene.environment = back.envMap;
+    frontScene.environment = front.envMap;
+    backScene.environmentIntensity = frontScene.environmentIntensity = 1.4;
+    void loadStudio(back.renderer).then((env) => {
+      if (env && !disposed) backScene.environment = env;
+    });
+    void loadStudio(front.renderer).then((env) => {
+      if (env && !disposed) frontScene.environment = env;
+    });
     for (const s of [backScene, frontScene]) {
       const l = new THREE.DirectionalLight("#ffffff", 2);
       l.position.set(300, 500, 800);
@@ -371,6 +393,7 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
     restartEmbers();
 
     return () => {
+      disposed = true;
       cancelAnimationFrame(raf);
       window.clearInterval(emberTimer);
       io.disconnect();
@@ -421,10 +444,10 @@ export default function Hero({ routeFrom, circuitFrom }: { routeFrom: number; ci
         />
       ))}
       <div
-        className="pointer-events-none absolute inset-0 opacity-70 mix-blend-multiply"
+        className="pointer-events-none absolute inset-0 opacity-45 mix-blend-multiply"
         style={{ background: "radial-gradient(circle at center, var(--bg-inner) 0%, var(--bg-mid) 55%, var(--bg-outer) 100%)" }}
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-black/45" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/30" />
 
       <canvas ref={backRef} className="pointer-events-none absolute inset-0 z-0 h-full w-full" aria-hidden />
       <canvas ref={potRef} className="pointer-events-none absolute inset-0 z-[1] h-full w-full opacity-0 [animation:fadeIn_1.5s_ease-out_0.3s_forwards]" aria-hidden />

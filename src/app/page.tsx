@@ -58,7 +58,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/40 to-transparent" />
               <span className="speed-lines absolute inset-x-0 top-1/2 -z-10 h-24 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               <p className="font-mono text-xs tracking-widest text-white/60">{c.n} RÉFÉRENCES</p>
-              <h3 className="font-display text-6xl uppercase italic leading-[0.85] md:text-8xl">Échappements {c.title}</h3>
+              <h3 className="font-display text-5xl uppercase italic leading-[0.85] md:text-6xl xl:text-7xl">Échappements {c.title}</h3>
               <p className="mt-2 text-white/70">{c.sub}</p>
               <span className="mt-6 inline-flex w-fit items-center gap-3 border border-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] transition group-hover:bg-white group-hover:text-night">
                 Trouver mon système <span aria-hidden>→</span>
