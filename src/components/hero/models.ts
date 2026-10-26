@@ -3,7 +3,8 @@ import type { materials } from "./scene";
 
 /* Les 4 pots 3D du hero, tous différents et marqués LIGNE ROUGE :
    moto ville (slip-on hexagonal), moto circuit (ligne 4-en-1 type MotoGP),
-   voiture ville (cat-back à valve, 4 sorties carbone), voiture circuit (ligne course bleuie, X-pipe).
+   voiture ville (cat-back titane à valve, silencieux transversal, 2 × 2 sorties carbone),
+   voiture circuit (ligne décatalysée bleuie, X-pipe, 2 × 2 sorties titane brûlé).
    Axe d'écoulement = +X. Chaque modèle est recentré et normalisé à la même taille. */
 
 export type Vehicle = "moto" | "voiture";
@@ -43,6 +44,8 @@ function extraMaterials(m: Mats) {
     rainbowTube: new THREE.MeshPhysicalMaterial({ ...base, roughness: 0.26, iridescence: 0.9, map: gradientTexture(rainbowStops) }),
     titaneSmooth: Object.assign(m.titane.clone(), { flatShading: false }),
     bleuSmooth: Object.assign(m.bleu.clone(), { flatShading: false }),
+    // titane brossé (silencieux voiture) : assez rugueux pour ne pas refléter les zones noires du studio
+    brushed: Object.assign(m.titane.clone(), { flatShading: false, roughness: 0.42, metalness: 0.95 }),
     ceramic: new THREE.MeshPhysicalMaterial({ color: "#141416", metalness: 0.4, roughness: 0.55, clearcoat: 0.4 }),
     burntBox: new THREE.MeshPhysicalMaterial({
       color: "#a7acc4",
@@ -226,92 +229,124 @@ function motoCircuit(k: Kit): ExhaustModel {
   return { root: normalize(g, 5.2), outlets: [out] };
 }
 
-/* ---------- Silencieux arrière voiture (section rectangle arrondi, extrudé selon X) ---------- */
+/* ---------- Pièces de ligne voiture ---------- */
 
-function rearBox(w: number, h: number, depth: number, mat: THREE.Material) {
-  const r = h * 0.45;
+/** Silencieux arrière transversal : section ovale (vue de côté) extrudée sur la largeur de la voiture (Z). */
+function ovalCan(depth: number, h: number, width: number, mat: THREE.Material) {
+  const r = h / 2;
+  const hl = depth / 2 - r;
   const s = new THREE.Shape();
-  const hw = w / 2;
-  const hh = h / 2;
-  s.moveTo(-hw + r, -hh);
-  s.lineTo(hw - r, -hh);
-  s.quadraticCurveTo(hw, -hh, hw, -hh + r);
-  s.lineTo(hw, hh - r);
-  s.quadraticCurveTo(hw, hh, hw - r, hh);
-  s.lineTo(-hw + r, hh);
-  s.quadraticCurveTo(-hw, hh, -hw, hh - r);
-  s.lineTo(-hw, -hh + r);
-  s.quadraticCurveTo(-hw, -hh, -hw + r, -hh);
-  const geo = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.05, bevelSegments: 6, curveSegments: 32 });
-  geo.translate(0, 0, -depth / 2);
-  geo.rotateY(Math.PI / 2); // largeur selon Z, profondeur selon X
+  s.moveTo(-hl, -r);
+  s.lineTo(hl, -r);
+  s.absarc(hl, 0, r, -Math.PI / 2, Math.PI / 2, false);
+  s.lineTo(-hl, r);
+  s.absarc(-hl, 0, r, Math.PI / 2, (Math.PI * 3) / 2, false);
+  const geo = new THREE.ExtrudeGeometry(s, { depth: width, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.03, bevelSegments: 6, curveSegments: 48 });
+  geo.translate(0, 0, -width / 2);
   return new THREE.Mesh(geo, mat);
 }
 
-/* ---------- Voiture ville : cat-back à valve, double résonateur, 4 sorties carbone ---------- */
+/** Résonateur cylindrique enfilé sur un tube, avec cônes soudés. */
+function resonator(k: Kit, g: THREE.Group, x: number, z: number, len: number, r: number, pipeR: number, mat: THREE.Material) {
+  const body = new THREE.Mesh(along(new THREE.CylinderGeometry(r, r, len, 64)), mat);
+  body.position.set(x, 0, z);
+  g.add(body);
+  for (const sgn of [-1, 1]) {
+    const cone = new THREE.Mesh(along(new THREE.CylinderGeometry(sgn < 0 ? r : pipeR, sgn < 0 ? pipeR : r, 0.22, 48)), mat);
+    cone.rotation.z = sgn < 0 ? Math.PI : 0;
+    cone.position.set(x + sgn * (len / 2 + 0.11), 0, z);
+    g.add(cone);
+    weldX(k, g, x + sgn * (len / 2), r, 0, z);
+  }
+}
+
+/** Collier à bride entre deux tronçons. */
+function clamp(k: Kit, g: THREE.Group, x: number, y: number, z: number, r: number) {
+  const band = new THREE.Mesh(along(new THREE.CylinderGeometry(r * 1.25, r * 1.25, 0.09, 48)), k.satin);
+  band.position.set(x, y, z);
+  const bolt = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.06), k.satin);
+  bolt.position.set(x, y + r * 1.3, z);
+  g.add(band, bolt);
+}
+
+/** Patte de suspension : tige + silent-bloc caoutchouc. */
+function hanger(k: Kit, g: THREE.Group, x: number, y: number, z: number) {
+  const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.28, 12), k.satin);
+  rod.position.set(x, y + 0.14, z);
+  const rubber = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.035, 12, 24), k.ceramic);
+  rubber.position.set(x, y + 0.3, z);
+  g.add(rod, rubber);
+}
+
+/** Tracé d'un tube principal : départ derrière les catas, passage au-dessus du pont, entrée dans le silencieux. */
+function mainPath(s: number, xIn: number, cross = false) {
+  const pts = [V(-7.4, 0, s * 0.3), V(-6.2, 0, s * 0.3)];
+  if (cross) pts.push(V(-4.9, 0, s * 0.11), V(-4.4, 0, s * 0.11));
+  else pts.push(V(-4.6, 0, s * 0.3));
+  pts.push(V(-3.3, 0.04, s * 0.32), V(-2.6, 0.34, s * 0.36), V(-1.9, 0.34, s * 0.42), V(-1.2, 0.05, s * 0.55), V(xIn, 0, s * 0.58));
+  return pts;
+}
+
+const CAN = { x: 0.3, depth: 1.0, h: 0.44 };
+
+/* ---------- Voiture ville : cat-back titane, résonateurs, silencieux à valve, 2 × 2 sorties carbone ---------- */
 
 function voitureVille(k: Kit): ExhaustModel {
   const g = new THREE.Group();
-  for (const z of [-0.36, 0.36]) {
-    g.add(tube([V(-3.6, 0.05, z * 0.8), V(-3.0, 0, z), V(-2.4, 0, z)], 0.16, k.heatTube));
-    const res = new THREE.Mesh(along(new THREE.CylinderGeometry(0.3, 0.3, 1.3, 96)), k.titaneSmooth);
-    res.position.set(-1.7, 0, z);
-    g.add(res);
-    for (const x of [-2.35, -1.05]) {
-      const cone = new THREE.Mesh(along(new THREE.CylinderGeometry(x < -2 ? 0.3 : 0.17, x < -2 ? 0.17 : 0.3, 0.12, 64)), k.titaneSmooth);
-      cone.position.set(x + (x < -2 ? 0 : 0), 0, z);
-      g.add(cone);
-      weldX(k, g, x, 0.3, 0, z);
-    }
-    g.add(tube([V(-1.0, 0, z), V(-0.6, 0, z * 1.15), V(-0.25, 0, z * 1.35)], 0.16, k.heatTube));
+  const xIn = CAN.x - CAN.depth / 2 + 0.05;
+  for (const s of [-1, 1]) {
+    g.add(tube(mainPath(s, xIn), 0.11, k.brushed));
+    const flange = new THREE.Mesh(along(new THREE.CylinderGeometry(0.2, 0.2, 0.05, 48)), k.satin);
+    flange.position.set(-7.4, 0, s * 0.3);
+    g.add(flange);
+    resonator(k, g, -5.35, s * 0.3, 1.1, 0.2, 0.11, k.brushed);
+    clamp(k, g, -3.45, 0.02, s * 0.32, 0.11);
+    hanger(k, g, -6.6, 0.1, s * 0.3);
+    hanger(k, g, -2.2, 0.44, s * 0.39);
   }
-  // silencieux arrière transversal + valve pilotée
-  const box = rearBox(2.5, 0.72, 1.0, k.titaneSmooth);
-  box.position.x = 0.35;
-  g.add(box);
-  const valve = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.22, 0.28), k.ceramic);
-  valve.position.set(0.05, 0.47, 0.7);
-  const motor = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.22, 24).rotateX(Math.PI / 2), k.ceramic);
-  motor.position.set(0.05, 0.47, 0.95);
-  g.add(valve, motor, tube([V(0.05, 0.55, 1.0), V(-0.4, 0.75, 1.1), V(-1.0, 0.7, 1.15)], 0.022, k.ceramic));
-  // plaque de marque sur le dessus du silencieux (face visible en vue plongeante)
-  plate(k, g, 1.1, V(0.35, 0.425, -0.35), Math.PI / 2, -Math.PI / 2);
-  // 4 sorties carbone Ø 102
-  const outs = [-0.92, -0.42, 0.42, 0.92].map((z) => tipX(k, g, 0.9, 0.62, 0.2, -0.04, z, k.carbon, k.heatTube));
-  return { root: normalize(g, 5.6), outlets: outs };
+  const can = ovalCan(CAN.depth, CAN.h, 2.6, k.brushed);
+  can.position.x = CAN.x;
+  g.add(can);
+  hanger(k, g, CAN.x - 0.15, CAN.h / 2, -1.05);
+  hanger(k, g, CAN.x - 0.15, CAN.h / 2, 1.05);
+  // valve pilotée sur l'entrée gauche
+  const valve = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.16, 0.2), k.ceramic);
+  valve.position.set(-0.75, 0.2, -0.57);
+  g.add(valve, tube([V(-0.75, 0.28, -0.57), V(-1.3, 0.4, -0.5), V(-2.0, 0.5, -0.45)], 0.018, k.ceramic));
+  plate(k, g, 1.1, V(CAN.x, CAN.h / 2 + 0.056, 0), Math.PI / 2, -Math.PI / 2);
+  const x0 = CAN.x + CAN.depth / 2 - 0.12;
+  const outs = [-1.0, -0.66, 0.66, 1.0].map((z) => tipX(k, g, x0, 0.55, 0.15, -0.02, z, k.carbon, k.titaneSmooth));
+  return { root: normalize(g, 7.2), outlets: outs };
 }
 
-/* ---------- Voiture circuit : ligne course bleuie, X-pipe, bouclier carbone, 4 sorties titane ---------- */
+/* ---------- Voiture circuit : ligne décatalysée bleuie, X-pipe, silencieux course, 2 × 2 sorties titane brûlé ---------- */
 
 function voitureCircuit(k: Kit): ExhaustModel {
   const g = new THREE.Group();
-  // X-pipe
-  g.add(tube([V(-3.6, 0, 0.36), V(-3.0, 0, 0.36), V(-2.55, 0, 0), V(-2.1, 0, -0.36), V(-0.6, 0, -0.4), V(-0.25, 0, -0.5)], 0.19, k.rainbowTube));
-  g.add(tube([V(-3.6, 0, -0.36), V(-3.0, 0, -0.36), V(-2.55, 0, 0), V(-2.1, 0, 0.36), V(-0.6, 0, 0.4), V(-0.25, 0, 0.5)], 0.19, k.rainbowTube));
-  const xclamp = new THREE.Mesh(new THREE.SphereGeometry(0.24, 32, 16), k.burntBox);
-  xclamp.position.set(-2.55, 0, 0);
-  xclamp.scale.set(1.2, 0.9, 1.1);
-  g.add(xclamp);
-  for (const z of [-0.4, 0.4]) {
-    const vb = new THREE.Mesh(new THREE.TorusGeometry(0.23, 0.045, 14, 48).rotateY(Math.PI / 2), k.satin);
-    vb.position.set(-1.4, 0, z);
-    g.add(vb);
+  const xIn = CAN.x - CAN.depth / 2 + 0.05;
+  for (const s of [-1, 1]) {
+    g.add(tube(mainPath(s, xIn, true), 0.12, k.rainbowTube));
+    const flange = new THREE.Mesh(along(new THREE.CylinderGeometry(0.21, 0.21, 0.05, 48)), k.satin);
+    flange.position.set(-7.4, 0, s * 0.3);
+    g.add(flange);
+    clamp(k, g, -3.45, 0.02, s * 0.32, 0.12);
+    hanger(k, g, -6.6, 0.1, s * 0.3);
+    hanger(k, g, -2.2, 0.45, s * 0.39);
   }
-  // silencieux course bleui + bouclier thermique carbone riveté
-  const box = rearBox(2.6, 0.66, 0.85, k.burntBox);
-  box.position.x = 0.3;
-  const shield = rearBox(2.75, 0.08, 1.0, k.carbon);
-  shield.position.set(0.3, 0.42, 0);
-  g.add(box, shield);
-  for (let i = 0; i < 8; i++) {
-    const rv = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 8), k.titane);
-    rv.position.set(i % 2 ? -0.12 : 0.72, 0.47, -1.15 + Math.floor(i / 2) * 0.77);
-    g.add(rv);
-  }
-  plate(k, g, 1.1, V(0.3, 0.535, 0.2), Math.PI / 2, -Math.PI / 2); // sur le bouclier carbone
-  // 4 grosses sorties titane brûlé Ø 115
-  const outs = [-0.95, -0.42, 0.42, 0.95].map((z) => tipX(k, g, 0.78, 0.6, 0.24, -0.02, z, k.burntTip, k.titaneSmooth));
-  return { root: normalize(g, 5.6), outlets: outs };
+  // jonction X-pipe
+  const x = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 16), k.burntBox);
+  x.position.set(-4.65, 0, 0);
+  x.scale.set(1.9, 0.55, 0.85);
+  g.add(x);
+  const can = ovalCan(CAN.depth * 0.9, CAN.h, 2.7, Object.assign(k.burntBox.clone(), { roughness: 0.48, color: new THREE.Color("#c2c6dc") }));
+  can.position.x = CAN.x;
+  g.add(can);
+  hanger(k, g, CAN.x - 0.15, CAN.h / 2, -1.1);
+  hanger(k, g, CAN.x - 0.15, CAN.h / 2, 1.1);
+  plate(k, g, 1.1, V(CAN.x, CAN.h / 2 + 0.056, 0), Math.PI / 2, -Math.PI / 2);
+  const x0 = CAN.x + (CAN.depth * 0.9) / 2 - 0.12;
+  const outs = [-1.06, -0.66, 0.66, 1.06].map((z) => tipX(k, g, x0, 0.6, 0.19, -0.02, z, k.burntTip, k.titaneSmooth));
+  return { root: normalize(g, 7.2), outlets: outs };
 }
 
 /** Construit les 4 modèles. Les pots voiture sont présentés de 3/4 arrière pour montrer les sorties. */
@@ -319,7 +354,7 @@ export function buildModels(m: Mats): Record<Vehicle, Record<Finish, ExhaustMode
   const k: Kit = { ...m, ...extraMaterials(m) };
   const wrapCar = (model: ExhaustModel): ExhaustModel => {
     const holder = new THREE.Group();
-    model.root.rotation.set(0.95, -0.5, 0); // vue plongeante 3/4 arrière : toute la ligne et les 4 sorties
+    model.root.rotation.set(0.42, -1.0, 0); // 3/4 arrière légèrement plongeant : toute la ligne et les 4 sorties
     holder.add(model.root);
     return { root: holder, outlets: model.outlets };
   };
