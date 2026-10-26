@@ -13,7 +13,7 @@ const ERRORS: Record<string, string> = {
 
 export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
-  const next = useSearchParams().get("next") || "/compte";
+  const nextParam = useSearchParams().get("next");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
@@ -49,7 +49,14 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
         return setError(ERRORS[error.message] ?? error.message);
       }
     }
-    router.replace(next);
+    // Un admin arrive directement sur son tableau de bord
+    let dest = nextParam || "/compte";
+    if (!nextParam) {
+      const { data: u } = await supabase.auth.getUser();
+      const { data: prof } = u.user ? await supabase.from("profiles").select("role").eq("id", u.user.id).single() : { data: null };
+      if (prof?.role === "admin") dest = "/admin";
+    }
+    router.replace(dest);
     router.refresh();
   };
 
@@ -84,9 +91,9 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
       </button>
       <p className="text-center text-sm text-neutral-500">
         {mode === "signup" ? (
-          <>Déjà client ? <Link href={`/connexion?next=${encodeURIComponent(next)}`} className="text-bronze underline">Se connecter</Link></>
+          <>Déjà client ? <Link href={`/connexion?next=${encodeURIComponent(nextParam || "/compte")}`} className="text-bronze underline">Se connecter</Link></>
         ) : (
-          <>Nouveau ? <Link href={`/inscription?next=${encodeURIComponent(next)}`} className="text-bronze underline">Créer un compte</Link></>
+          <>Nouveau ? <Link href={`/inscription?next=${encodeURIComponent(nextParam || "/compte")}`} className="text-bronze underline">Créer un compte</Link></>
         )}
       </p>
     </form>
