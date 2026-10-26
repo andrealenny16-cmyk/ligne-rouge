@@ -2,17 +2,28 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { addToCart, toggleFavorite } from "@/app/actions";
+import { addToCart, toggleFavorite, toggleStockAlert } from "@/app/actions";
 import { PillButton } from "@/components/ui";
 import { discountPercent, finalPrice, formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
-export default function BuyBox({ product: p, loggedIn, isFavorite }: { product: Product; loggedIn: boolean; isFavorite: boolean }) {
+export default function BuyBox({
+  product: p,
+  loggedIn,
+  isFavorite,
+  alertVariantIds = [],
+}: {
+  product: Product;
+  loggedIn: boolean;
+  isFavorite: boolean;
+  alertVariantIds?: string[];
+}) {
   const router = useRouter();
   const variants = p.product_variants ?? [];
   const [variantId, setVariantId] = useState(variants.find((v) => v.stock > 0)?.id ?? variants[0]?.id);
   const [fav, setFav] = useState(isFavorite);
-  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [alerts, setAlerts] = useState(() => new Set(alertVariantIds));
+  const [msg, setMsg] = useState<{ ok: boolean; text: string; cart?: boolean } | null>(null);
   const [pending, start] = useTransition();
   const variant = variants.find((v) => v.id === variantId);
   const off = discountPercent(p);
@@ -24,7 +35,7 @@ export default function BuyBox({ product: p, loggedIn, isFavorite }: { product: 
       if (!variantId) return;
       const r = await addToCart(variantId);
       if (!r.ok && r.error === "auth") return needLogin();
-      setMsg(r.ok ? { ok: true, text: r.message ?? "Ajouté" } : { ok: false, text: r.error });
+      setMsg(r.ok ? { ok: true, text: r.message ?? "Ajouté", cart: true } : { ok: false, text: r.error });
     });
 
   const favorite = () =>
@@ -33,6 +44,23 @@ export default function BuyBox({ product: p, loggedIn, isFavorite }: { product: 
       if (!r.ok && r.error === "auth") return needLogin();
       setFav((f) => !f);
     });
+
+  const toggleAlert = () =>
+    start(async () => {
+      if (!variantId) return;
+      const r = await toggleStockAlert(variantId);
+      if (!r.ok && r.error === "auth") return needLogin();
+      if (r.ok)
+        setAlerts((s) => {
+          const next = new Set(s);
+          if (next.has(variantId)) next.delete(variantId);
+          else next.add(variantId);
+          return next;
+        });
+      setMsg(r.ok ? { ok: true, text: r.message ?? "" } : { ok: false, text: r.error });
+    });
+  const soldOut = variant?.stock === 0;
+  const watching = !!variantId && alerts.has(variantId);
 
   return (
     <div className="mt-6">
@@ -52,23 +80,39 @@ export default function BuyBox({ product: p, loggedIn, isFavorite }: { product: 
         {variants.map((v) => (
           <button
             key={v.id}
-            onClick={() => setVariantId(v.id)}
-            disabled={v.stock === 0}
+            onClick={() => {
+              setVariantId(v.id);
+              setMsg(null);
+            }}
+            aria-pressed={v.id === variantId}
             aria-label={`${v.color_name}${v.stock === 0 ? " (épuisé)" : ""}`}
-            title={`${v.color_name} · ${v.stock} en stock`}
-            className={`relative h-11 w-11 rounded-full border-2 transition disabled:opacity-30 ${v.id === variantId ? "scale-110 border-bronze" : "border-black/15 hover:border-black/25"}`}
+            title={`${v.color_name} · ${v.stock === 0 ? "épuisé" : `${v.stock} en stock`}`}
+            className={`relative h-11 w-11 overflow-hidden rounded-full border-2 transition ${v.stock === 0 ? "opacity-40" : ""} ${v.id === variantId ? "scale-110 border-bronze" : "border-black/15 hover:border-black/25"}`}
             style={{ background: `radial-gradient(circle at 35% 30%, #ffffff55, ${v.color_hex} 55%)` }}
-          />
+          >
+            {v.stock === 0 && <span aria-hidden className="absolute left-1/2 top-[-10%] h-[120%] w-0.5 -translate-x-1/2 rotate-45 bg-alert" />}
+          </button>
         ))}
       </div>
+      {soldOut && (
+        <p className="mt-2 text-xs font-semibold text-alert">
+          Coloris épuisé{watching ? " · alerte activée, on te prévient dès son retour" : ""}
+        </p>
+      )}
       {variant && variant.stock <= 3 && variant.stock > 0 && (
         <p className="mt-2 text-xs font-semibold text-alert">Plus que {variant.stock} en stock dans ce coloris</p>
       )}
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        <PillButton variant="heat" onClick={add} disabled={pending || !variant || variant.stock === 0}>
-          {variant?.stock === 0 ? "Épuisé" : pending ? "Ajout…" : loggedIn ? "Ajouter au panier" : "Se connecter pour acheter"}
-        </PillButton>
+        {soldOut ? (
+          <PillButton variant={watching ? "dark" : "heat"} plus={!watching} onClick={toggleAlert} disabled={pending} aria-pressed={watching} className={watching ? "pr-6" : ""}>
+            {pending ? "…" : watching ? "✓ Alerte activée · Annuler" : loggedIn ? "Me prévenir du retour" : "Se connecter pour être prévenu"}
+          </PillButton>
+        ) : (
+          <PillButton variant="heat" onClick={add} disabled={pending || !variant}>
+            {pending ? "Ajout…" : loggedIn ? "Ajouter au panier" : "Se connecter pour acheter"}
+          </PillButton>
+        )}
         <button
           onClick={favorite}
           aria-pressed={fav}
@@ -83,7 +127,7 @@ export default function BuyBox({ product: p, loggedIn, isFavorite }: { product: 
       {msg && (
         <p role="status" className={`mt-3 text-sm ${msg.ok ? "text-legal" : "text-alert"}`}>
           {msg.text}
-          {msg.ok && (
+          {msg.cart && (
             <a href="/panier" className="ml-2 underline">
               Voir le panier →
             </a>
