@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Dashboard admin" };
 /* KPI : vues SQL kpi_* (security_invoker + is_admin()) — voir .claude/skills/kpi-dashboard */
 export default async function AdminDashboard() {
   const supabase = await createClient();
-  const [overview, byDay, top, usage, vehicles, lowStock, lastOrders] = await Promise.all([
+  const [overview, byDay, top, usage, vehicles, lowStock, lastOrders, demand] = await Promise.all([
     supabase.from("kpi_overview").select("*").single(),
     supabase.from("kpi_revenue_by_day").select("*"),
     supabase.from("kpi_top_products").select("*"),
@@ -18,6 +18,7 @@ export default async function AdminDashboard() {
     supabase.from("kpi_top_vehicles").select("*"),
     supabase.from("kpi_low_stock").select("*"),
     supabase.from("orders").select("id, total, status, created_at, profiles(full_name, email)").order("created_at", { ascending: false }).limit(5),
+    supabase.from("kpi_stock_demand").select("*"),
   ]);
 
   const k = overview.data ?? { revenue: 0, orders_count: 0, avg_basket: 0, customers: 0, conversion_rate: 0, open_carts: 0, open_carts_value: 0 };
@@ -27,6 +28,10 @@ export default async function AdminDashboard() {
     .sort((a, b) => b.score - a.score)
     .slice(0, 6);
   const maxScore = topVehicles[0]?.score || 1;
+  const demandRows = demand.data ?? [];
+  const waitingTotal = demandRows.reduce((s, d) => s + Number(d.waiting), 0);
+  const notifiedTotal = demandRows.reduce((s, d) => s + Number(d.notified), 0);
+  const maxWaiting = Math.max(1, ...demandRows.map((d) => Number(d.waiting)));
 
   return (
     <div className="space-y-6">
@@ -104,6 +109,39 @@ export default async function AdminDashboard() {
           <Link href="/admin/produits" className="mt-4 inline-block text-sm text-bronze underline">Gérer les stocks →</Link>
         </section>
       </div>
+
+      <section className="glass rounded-3xl p-5">
+        <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="font-display text-2xl uppercase">
+            Demande en <span className="text-alert">rupture</span>
+          </h2>
+          <span className="font-mono text-xs text-neutral-400">kpi_stock_demand</span>
+        </div>
+        <p className="mb-4 text-xs text-neutral-400">
+          Clients abonnés à « Me prévenir du retour » · <span className="font-semibold text-night">{formatNumber(waitingTotal)} en attente</span> · {formatNumber(notifiedTotal)} prévenus après réassort
+        </p>
+        {demandRows.length ? (
+          <ul className="grid gap-x-8 gap-y-3 md:grid-cols-2">
+            {demandRows.map((d) => (
+              <li key={d.variant_id}>
+                <div className="flex justify-between gap-3 text-sm">
+                  <span>
+                    {d.name} <span className="text-neutral-500">· {d.color_name}</span>
+                  </span>
+                  <span className="shrink-0 font-mono text-xs text-neutral-500">
+                    <span className="font-bold text-alert">{d.waiting}</span> en attente · stock {d.stock}
+                  </span>
+                </div>
+                <div className="mt-1 h-1.5 rounded-full bg-black/[0.04]">
+                  <div className="bg-heat h-full rounded-full" style={{ width: `${(Number(d.waiting) / maxWaiting) * 100}%` }} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-neutral-500">Aucune alerte client pour l&apos;instant.</p>
+        )}
+      </section>
 
       <section className="glass rounded-3xl p-5">
         <div className="mb-3 flex justify-between">
