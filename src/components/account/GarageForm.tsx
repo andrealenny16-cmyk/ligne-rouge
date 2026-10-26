@@ -41,10 +41,10 @@ export default function GarageForm({ makes, models }: { makes: VehicleMake[]; mo
         <span className="label">Surnom</span>
         <input name="nickname" className="field" placeholder="ex. La grise" maxLength={40} />
       </label>
-      <button disabled={pending || !modelId} className="h-[48px] rounded-md bg-rouge px-6 font-semibold text-white disabled:opacity-40">
+      <button disabled={pending || !modelId} className="h-[50px] rounded-full bg-bronze px-6 font-bold text-ink disabled:opacity-40">
         {pending ? "…" : "Ajouter"}
       </button>
-      {state && !state.ok && <p className="text-sm text-rouge sm:col-span-2">{state.error}</p>}
+      {state && !state.ok && <p className="text-sm text-[#ff7a84] sm:col-span-2">{state.error}</p>}
     </form>
   );
 }

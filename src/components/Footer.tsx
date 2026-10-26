@@ -3,38 +3,40 @@ import Logo from "./Logo";
 
 export default function Footer() {
   return (
-    <footer className="mt-20 bg-ink text-white">
+    <footer className="carbon relative mt-24 border-t border-white/10">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-4 md:px-8">
         <div className="md:col-span-2">
           <Logo className="h-16" />
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-neutral-400">
-            Échappements titane, inox et carbone conçus et soudés en France pour voitures et motos. Homologués route ou réservés au circuit.
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/55">
+            Échappements titane, inox et carbone conçus en France pour voitures et motos. Homologués route ou pensés pour la piste.
+          </p>
+          <p className="mt-6 font-mono text-[0.65rem] tracking-widest text-white/35">
+            PROJET ÉTUDIANT · MARQUE FICTIVE · PAIEMENT SIMULÉ
           </p>
         </div>
         <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-neutral-500">Boutique</p>
-          <ul className="space-y-2 text-sm text-neutral-300">
-            <li><Link className="hover:text-white" href="/boutique?type=voiture">Échappements voiture</Link></li>
-            <li><Link className="hover:text-white" href="/boutique?type=moto">Échappements moto</Link></li>
-            <li><Link className="hover:text-white" href="/boutique?usage=circuit">Gamme circuit</Link></li>
-            <li><Link className="hover:text-white" href="/configurateur">Conseil sur mesure</Link></li>
+          <p className="label">Boutique</p>
+          <ul className="space-y-2 text-sm text-white/70">
+            <li><Link className="hover:text-bronze" href="/boutique?type=voiture">Voitures</Link></li>
+            <li><Link className="hover:text-bronze" href="/boutique?type=moto">Motos</Link></li>
+            <li><Link className="hover:text-bronze" href="/boutique?usage=circuit">Gamme circuit</Link></li>
+            <li><Link className="hover:text-bronze" href="/configurateur">Configurateur Son & Perf</Link></li>
           </ul>
         </div>
         <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-neutral-500">Service client</p>
-          <ul className="space-y-2 text-sm text-neutral-300">
+          <p className="label">Service</p>
+          <ul className="space-y-2 text-sm text-white/70">
             <li>Livraison offerte dès 500 €</li>
-            <li>Garantie 2 ans pièces et soudures</li>
-            <li>Paiement en 4x sans frais</li>
-            <li><Link className="hover:text-white" href="/compte">Mon compte</Link></li>
+            <li>Garantie 2 ans</li>
+            <li>Paiement en 4x</li>
+            <li><Link className="hover:text-bronze" href="/compte">Mon compte</Link></li>
           </ul>
         </div>
       </div>
-      <div className="border-t border-white/10">
-        <p className="mx-auto max-w-7xl px-4 py-6 text-xs text-neutral-500 md:px-8">
-          © 2026 LIGNE ROUGE · Projet étudiant : marque fictive, paiement simulé. Les produits « Circuit uniquement » sont réservés à un usage sur circuit fermé.
-        </p>
-      </div>
+      <div className="cote mx-4 md:mx-8" />
+      <p className="mx-auto max-w-7xl px-4 py-6 text-xs text-white/35 md:px-8">
+        © 2026 LIGNE ROUGE. Les produits « Circuit » sont réservés à un usage sur circuit fermé.
+      </p>
     </footer>
   );
 }

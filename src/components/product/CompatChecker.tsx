@@ -40,10 +40,10 @@ export default function CompatChecker({ productId, compatibleIds, garage, vehicl
   };
 
   return (
-    <div className="glass rounded-md p-6">
+    <div className="glass rounded-3xl p-6">
       <p className="label">Compatibilité</p>
       {!open ? (
-        <button onClick={() => setOpen(true)} className="w-full rounded-md border border-rouge/50 bg-rouge/10 px-5 py-4 text-left font-semibold transition hover:bg-rouge/20">
+        <button onClick={() => setOpen(true)} className="w-full rounded-2xl border border-bronze/50 bg-bronze/10 px-5 py-4 text-left font-semibold transition hover:bg-bronze/20">
           Vérifier la compatibilité avec mon véhicule →
         </button>
       ) : (
@@ -83,12 +83,12 @@ export default function CompatChecker({ productId, compatibleIds, garage, vehicl
           <button
             disabled={!modelId}
             onClick={() => modelId && check(modelId)}
-            className="bg-heat w-full rounded-md py-3 font-semibold transition disabled:opacity-40"
+            className="bg-heat w-full rounded-full py-3 font-bold transition disabled:opacity-40"
           >
             Vérifier
           </button>
           {result !== null && (
-            <p role="status" className={`rounded-md p-4 text-sm font-semibold ${result ? "bg-legal/15 text-legal" : "bg-alert/15 text-rouge"}`}>
+            <p role="status" className={`rounded-2xl p-4 text-sm font-semibold ${result ? "bg-legal/15 text-legal" : "bg-alert/15 text-[#ff7a84]"}`}>
               {result ? "✓ Compatible : montage sur fixations d'origine." : "✕ Non compatible avec ce véhicule. Essaie le configurateur pour trouver le bon pot."}
             </p>
           )}

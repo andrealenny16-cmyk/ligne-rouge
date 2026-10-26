@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Photo, { productPhoto } from "@/components/Photo";
 import { useActionState } from "react";
 import { updateProduct } from "@/app/actions";
 import { UsageBadge } from "@/components/ui";
@@ -9,19 +9,19 @@ import type { Product } from "@/lib/types";
 export default function ProductEditor({ product: p }: { product: Product }) {
   const [state, action, pending] = useActionState(updateProduct, null);
   return (
-    <form action={action} className={`glass rounded-md p-5 ${p.is_active ? "" : "opacity-60"}`}>
+    <form action={action} className={`glass rounded-3xl p-5 ${p.is_active ? "" : "opacity-60"}`}>
       <input type="hidden" name="id" value={p.id} />
       <div className="flex items-center gap-4">
-        <div className="relative aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-md bg-paper">
-          <Image src={`/products/${p.slug}-34.svg`} alt="" fill sizes="96px" className="object-contain" />
+        <div className="relative aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-2xl photo">
+          <Photo src={productPhoto(p.slug)} alt="" fill sizes="96px" className="object-cover" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-mono text-xs text-neutral-400">REF. {p.ref}</p>
-          <p className="font-display font-semibold text-2xl uppercase leading-none">{p.name}</p>
+          <p className="font-mono text-xs text-white/45">REF. {p.ref}</p>
+          <p className="font-display text-2xl uppercase leading-none">{p.name}</p>
           <UsageBadge usage={p.usage} className="mt-1" />
         </div>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="is_active" defaultChecked={p.is_active} className="h-5 w-5 accent-[#C8102E]" /> Actif
+          <input type="checkbox" name="is_active" defaultChecked={p.is_active} className="h-5 w-5 accent-[#E8A36B]" /> Actif
         </label>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-3">
@@ -37,10 +37,10 @@ export default function ProductEditor({ product: p }: { product: Product }) {
         ))}
       </div>
       <div className="mt-4 flex items-center gap-3">
-        <button disabled={pending} className="rounded-md bg-rouge px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">
+        <button disabled={pending} className="rounded-full bg-bronze px-5 py-2.5 text-sm font-bold text-ink disabled:opacity-50">
           {pending ? "…" : "Enregistrer"}
         </button>
-        {state && <span className={`text-sm ${state.ok ? "text-legal" : "text-rouge"}`}>{state.ok ? state.message : state.error}</span>}
+        {state && <span className={`text-sm ${state.ok ? "text-legal" : "text-[#ff7a84]"}`}>{state.ok ? state.message : state.error}</span>}
       </div>
     </form>
   );

@@ -1,109 +1,208 @@
 @import "tailwindcss";
 
-/* Tokens LIGNE ROUGE — voir .claude/skills/ligne-rouge-design-system/SKILL.md
-   Boutique claire et sobre : blanc, noir, rouge de marque, photos sur gris studio. */
+/* Tokens LIGNE ROUGE — voir .claude/skills/ligne-rouge-design-system/SKILL.md */
 @theme {
-  --color-ink: #111111;
-  --color-mute: #6b6b6b;
-  --color-line: #e5e3df;
-  --color-paper: #0d0d0f;
-  --color-cream: #f7f6f3;
-  --color-rouge: #c8102e;
-  --color-rouge-dark: #9e0b23;
-  --color-legal: #15803d;
-  --color-alert: #c8102e;
+  --color-night: #0a0a0b;
+  --color-night-2: #121214;
+  --color-bronze: #e8a36b;
+  --color-bronze-dark: #c08457;
+  --color-alert: #e11d2e;
+  --color-legal: #22c55e;
+  --color-titane: #3b82f6;
+  --color-ink: #1a0f07;
+  --color-paper: #0d0d0f; /* fond des photos produit (studio sombre) */
+  --color-rouge: #d7192e;
+  --color-rouge-dark: #a8101f;
+  --color-mute: #8f8f95;
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-cream: #141416;
 
-  --font-display: var(--font-barlow), "Arial Narrow", sans-serif;
+  --font-display: var(--font-anton), "Impact", sans-serif;
   --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-nav: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-inter), system-ui, sans-serif;
+  --font-nav: var(--font-manrope), system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 
-  --ease-pop: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-pop: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 html {
-  background: #fff;
-  color-scheme: light;
+  background: var(--color-night);
+  color-scheme: dark;
 }
 
 body {
-  background: #fff;
-  color: var(--color-ink);
+  background: var(--color-night);
+  color: #fff;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
 ::selection {
-  background: var(--color-rouge);
-  color: #fff;
+  background: var(--color-bronze);
+  color: var(--color-ink);
 }
 
 @layer components {
-  /* Carte : fond blanc, filet gris */
-  .glass,
+  .photo {
+    background: var(--color-paper);
+  }
+
+  /* Traînées de vitesse (décor statique, révélé au survol) */
+  .speed-lines {
+    background-image: repeating-linear-gradient(
+      180deg,
+      transparent 0 9px,
+      rgba(255, 255, 255, 0.07) 9px 10px,
+      transparent 10px 23px,
+      rgba(215, 25, 46, 0.25) 23px 24px
+    );
+    mask-image: linear-gradient(90deg, transparent, #000 40%, #000 70%, transparent);
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
   .glass-strong {
-    background: #fff;
-    border: 1px solid var(--color-line);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
-  /* Fond de section discret */
+  /* Tissage carbone 2x2 subtil */
   .carbon {
-    background: var(--color-cream);
+    background-color: #0d0d0f;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 6px),
+      repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.5) 0 2px, transparent 2px 6px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.2));
   }
 
-  /* Accent principal : rouge plein */
+  /* Dégradé « titane chauffé » */
   .bg-heat {
-    background: var(--color-rouge);
-    color: #fff;
-  }
-  .bg-heat:hover {
-    background: var(--color-rouge-dark);
+    background-image: linear-gradient(90deg, #3b82f6, #8b5cf6, #c08457);
   }
   .text-heat {
-    color: var(--color-rouge);
+    background-image: linear-gradient(90deg, #3b82f6, #8b5cf6, #e8a36b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
+  /* Reflet métallique qui balaie la carte au survol */
   .sheen {
     position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .sheen::after {
+    content: "";
+    position: absolute;
+    inset: -50% auto -50% -60%;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transform: skewX(-20deg) translateX(-150%);
+    transition: transform 0.9s ease;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .sheen:hover::after {
+    transform: skewX(-20deg) translateX(520%);
   }
 
-  /* Filet de séparation */
+  /* Ligne de cote technique |——————| */
   .cote {
+    position: relative;
     height: 1px;
-    background: var(--color-line);
+    background: rgba(255, 255, 255, 0.14);
   }
+  .cote::before,
+  .cote::after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    width: 1px;
+    height: 9px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  .cote::before { left: 0; }
+  .cote::after { right: 0; }
 
   .field {
     width: 100%;
-    border-radius: 6px;
-    background: #fff;
-    border: 1px solid #d6d3ce;
-    padding: 0.75rem 0.9rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.8rem 1rem;
     font-size: 0.95rem;
-    color: var(--color-ink);
+    color: #fff;
     outline: none;
-    transition: border-color 0.15s;
+    transition: border-color 0.2s, background 0.2s;
   }
   .field:focus {
-    border-color: var(--color-ink);
+    border-color: var(--color-bronze);
+    background: rgba(255, 255, 255, 0.08);
   }
-  .field:disabled {
-    background: var(--color-cream);
+  .field option {
+    background: #121214;
   }
-
   .label {
     display: block;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-mute);
+    color: rgba(255, 255, 255, 0.55);
     margin-bottom: 0.4rem;
   }
+}
 
-  /* Fond des photos produit : studio sombre, comme les visuels de la marque */
-  .photo {
-    background: #0d0d0f;
+@keyframes rise {
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 0.8; }
+  100% { transform: translate3d(var(--drift, 20px), -105vh, 0) scale(0.3); opacity: 0; }
+}
+
+@keyframes flicker {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.8); }
+}
+
+@keyframes smoke {
+  0% { transform: translate3d(0, 0, 0) scale(0.6); opacity: 0; }
+  20% { opacity: 0.18; }
+  100% { transform: translate3d(var(--drift, 40px), -40vh, 0) scale(2.4); opacity: 0; }
+}
+
+@keyframes fadeIn { to { opacity: 1; } }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes rumble {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(1.5px, -1px); }
+  50% { transform: translate(-1px, 1.5px); }
+  75% { transform: translate(1px, 1px); }
+}
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

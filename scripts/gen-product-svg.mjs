@@ -221,7 +221,11 @@ for (const p of PRODUCTS) {
   // Version détourée (sans fond ni ombre) pour les cartes du hero
   writeFileSync(
     join(out, `${p.slug}-cut.svg`),
-    tq.replace(/<rect width="800" height="600" fill="url\(#bg\)"\/>/, "").replace(/<ellipse[^>]*url\(#shadow\)[^>]*\/>/, ""),
+    tq
+      .replace(/<rect width="800" height="600" fill="url\(#bg\)"\/>/, "")
+      .replace(/<ellipse[^>]*url\(#(shadow|glow)\)[^>]*\/>/g, "")
+      .replace(/<rect y="430"[^>]*url\(#floor\)[^>]*\/>/, "")
+      .replace(/<line x1="0" y1="470"[^>]*\/>/, ""),
   );
 }
 console.log(`${PRODUCTS.length * 2} illustrations générées dans public/products/`);

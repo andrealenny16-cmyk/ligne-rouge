@@ -54,9 +54,9 @@ export default async function ProductPage({ params }: Props) {
   return (
     <Page>
       <ViewTracker productId={p.id} />
-      <nav className="mb-6 font-mono text-xs text-neutral-400">
-        <Link href="/boutique" className="hover:text-rouge">Boutique</Link> /{" "}
-        <Link href={`/boutique?type=${p.vehicle_type}`} className="capitalize hover:text-rouge">{p.vehicle_type}s</Link> / {p.name}
+      <nav className="mb-6 font-mono text-xs text-white/45">
+        <Link href="/boutique" className="hover:text-bronze">Boutique</Link> /{" "}
+        <Link href={`/boutique?type=${p.vehicle_type}`} className="capitalize hover:text-bronze">{p.vehicle_type}s</Link> / {p.name}
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr]">
@@ -65,20 +65,20 @@ export default async function ProductPage({ params }: Props) {
         <div>
           <div className="flex flex-wrap items-center gap-3">
             <UsageBadge usage={p.usage} />
-            <span className="font-mono text-xs tracking-wider text-neutral-500">REF. {p.ref}</span>
-            <span className="font-mono text-xs text-neutral-500">· {p.categories?.name}</span>
+            <span className="font-mono text-xs tracking-wider text-white/50">REF. {p.ref}</span>
+            <span className="font-mono text-xs text-white/50">· {p.categories?.name}</span>
           </div>
-          <h1 className="mt-3 font-display font-semibold text-5xl uppercase leading-[0.95] md:text-6xl">{p.name}</h1>
-          <p className="mt-2 text-neutral-600">{p.tagline}</p>
-          <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-md border border-line bg-line text-sm sm:grid-cols-4">
+          <h1 className="mt-3 font-display text-6xl uppercase italic leading-[0.85] md:text-8xl">{p.name}</h1>
+          <p className="mt-2 text-white/65">{p.tagline}</p>
+          <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-4">
             {[
               ["Sortie", p.tip_diameter_mm ? `Ø ${p.tip_diameter_mm} mm` : "—"],
               ["Matériau", p.material],
               ["Puissance", `+${p.hp_gain} ch`],
               ["Niveau", `${p.db_level}${p.db_level_max ? `–${p.db_level_max}` : ""} dB`],
             ].map(([k, v]) => (
-              <div key={k} className="bg-white px-3 py-2.5">
-                <dt className="text-[0.65rem] font-semibold uppercase tracking-wider text-mute">{k}</dt>
+              <div key={k} className="bg-night px-3 py-2.5">
+                <dt className="font-mono text-[0.6rem] uppercase tracking-widest text-white/45">{k}</dt>
                 <dd className="font-semibold capitalize">{v}</dd>
               </div>
             ))}
@@ -86,13 +86,13 @@ export default async function ProductPage({ params }: Props) {
           {p.features.length > 0 && (
             <ul className="mt-3 flex flex-wrap gap-2">
               {p.features.map((f) => (
-                <li key={f} className="rounded-sm bg-cream px-2.5 py-1 text-xs font-medium">{f}</li>
+                <li key={f} className="border-l-2 border-rouge bg-white/5 px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-wider text-white/80">{f}</li>
               ))}
             </ul>
           )}
           {reviews?.length ? (
             <a href="#avis" className="mt-3 inline-flex items-center gap-2 text-sm">
-              <Stars rating={avg} /> <span className="text-neutral-500">{avg.toFixed(1)} · {reviews.length} avis</span>
+              <Stars rating={avg} /> <span className="text-white/55">{avg.toFixed(1)} · {reviews.length} avis</span>
             </a>
           ) : null}
 
@@ -104,7 +104,7 @@ export default async function ProductPage({ params }: Props) {
 
           {p.usage === "circuit" && <CircuitWarning className="mt-5" />}
 
-          <div className="glass mt-6 space-y-5 rounded-md p-6">
+          <div className="glass mt-6 space-y-5 rounded-3xl p-6">
             <Gauge
               label="Niveau sonore"
               value={p.db_level_max ?? p.db_level}
@@ -134,18 +134,18 @@ export default async function ProductPage({ params }: Props) {
 
       <section className="mt-16 grid gap-10 lg:grid-cols-2">
         <div>
-          <h2 className="font-display font-semibold text-4xl uppercase">Le son, <span className="text-rouge">en mots</span></h2>
-          <p className="mt-4 leading-relaxed text-neutral-700">{p.description}</p>
+          <h2 className="font-display text-4xl uppercase">Le son, <span className="text-bronze">en mots</span></h2>
+          <p className="mt-4 leading-relaxed text-white/75">{p.description}</p>
 
-          <h3 className="mt-10 font-display font-semibold text-3xl uppercase">Véhicules compatibles</h3>
-          <ul className="mt-4 divide-y divide-line rounded-md border border-line">
+          <h3 className="mt-10 font-display text-3xl uppercase">Véhicules compatibles</h3>
+          <ul className="mt-4 divide-y divide-white/10 rounded-3xl border border-white/10">
             {vehicles.map((v) => (
               <li key={v.id} className="flex items-center justify-between px-5 py-3.5">
                 <span>
                   {v.vehicle_makes.name} <span className="font-semibold">{v.name}</span>{" "}
-                  {v.generation && <span className="font-mono text-xs text-neutral-400">{v.generation}</span>}
+                  {v.generation && <span className="font-mono text-xs text-white/45">{v.generation}</span>}
                 </span>
-                <span className="font-mono text-xs text-neutral-500">
+                <span className="font-mono text-xs text-white/55">
                   {v.year_from}–{v.year_to ?? "auj."}
                 </span>
               </li>
@@ -155,26 +155,26 @@ export default async function ProductPage({ params }: Props) {
 
         <div className="space-y-6">
           <CompatChecker productId={p.id} compatibleIds={vehicles.map((v) => v.id)} garage={garageList} vehicleType={p.vehicle_type} />
-          <div className="glass rounded-md p-6">
+          <div className="glass rounded-3xl p-6">
             <p className="label">Configurateur Son & Perf</p>
-            <p className="mb-4 font-display font-semibold text-2xl uppercase">Un doute ? Demande à l&apos;IA</p>
+            <p className="mb-4 font-display text-2xl uppercase">Un doute ? Demande à l&apos;IA</p>
             <ConfiguratorForm compact />
           </div>
         </div>
       </section>
 
       <section id="avis" className="mt-16">
-        <h2 className="font-display font-semibold text-4xl uppercase">Avis <span className="text-rouge">pilotes</span></h2>
-        <p className="mt-1 font-mono text-[0.65rem] tracking-wider text-neutral-400">AVIS MARQUÉS « DÉMO » : DONNÉES FICTIVES DE DÉMONSTRATION</p>
+        <h2 className="font-display text-4xl uppercase">Avis <span className="text-bronze">pilotes</span></h2>
+        <p className="mt-1 font-mono text-[0.65rem] tracking-wider text-white/35">AVIS MARQUÉS « DÉMO » : DONNÉES FICTIVES DE DÉMONSTRATION</p>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {(reviews ?? []).map((r) => (
-            <article key={r.id} className="glass rounded-md p-5">
+            <article key={r.id} className="glass rounded-3xl p-5">
               <div className="flex items-center justify-between">
                 <span className="font-semibold">{r.author_name}</span>
                 <Stars rating={r.rating} />
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-neutral-700">{r.comment}</p>
-              <p className="mt-4 font-mono text-[0.65rem] text-neutral-400">
+              <p className="mt-3 text-sm leading-relaxed text-white/75">{r.comment}</p>
+              <p className="mt-4 font-mono text-[0.65rem] text-white/40">
                 {formatDate(r.created_at)} {r.is_demo && "· DÉMO"}
               </p>
             </article>
@@ -182,8 +182,8 @@ export default async function ProductPage({ params }: Props) {
         </div>
         <div className="mt-6 max-w-xl">
           {user ? <ReviewForm productId={p.id} slug={p.slug} /> : (
-            <p className="text-sm text-neutral-500">
-              <Link href={`/connexion?next=/produit/${p.slug}`} className="text-rouge underline">Connecte-toi</Link> pour laisser un avis.
+            <p className="text-sm text-white/55">
+              <Link href={`/connexion?next=/produit/${p.slug}`} className="text-bronze underline">Connecte-toi</Link> pour laisser un avis.
             </p>
           )}
         </div>

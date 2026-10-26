@@ -38,9 +38,9 @@
     </radialGradient>
   </defs>
   
-  <ellipse cx="420" cy="290" rx="380" ry="230" fill="url(#glow)"/>
-  <rect y="430" width="800" height="170" fill="url(#floor)"/>
-  <line x1="0" y1="470" x2="800" y2="470" stroke="#E8DCC8" stroke-opacity="0.18"/>
+  
+  
+  
   
      <g transform="translate(390 300) rotate(-14) skewX(-6)"><g transform="translate(0 0)"><rect x="-340" y="-20" width="170" height="40" rx="8" fill="url(#ti)"/><rect x="-340" y="-20" width="170" height="40" rx="8" fill="url(#heat)"/><ellipse cx="-184" cy="0" rx="10" ry="34" fill="url(#ti)" stroke="#7e7a72"/><rect x="-190" y="-85" width="380" height="170" rx="51" fill="url(#metal)"/><rect x="-190" y="-85" width="380" height="170" rx="51" fill="url(#gloss)"/><rect x="-140" y="-92" width="22" height="184" rx="5" fill="url(#ti)"/>
   <g transform="translate(-10 17) rotate(0)" font-family="Arial Black, Arial, sans-serif" font-weight="900"

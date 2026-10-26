@@ -1,53 +1,52 @@
 ---
 name: ligne-rouge-design-system
-description: Charte visuelle LIGNE ROUGE (boutique claire et sobre, photos réelles, rouge de marque). À charger avant de créer ou modifier toute page ou composant UI du site.
+description: Charte visuelle LIGNE ROUGE (atelier racing la nuit + rigueur catalogue Akrapovič : sombre, vitesse, performance). À charger avant de créer ou modifier toute page ou composant UI du site.
 ---
 
 # LIGNE ROUGE — Design system
 
-Le site doit **vendre** et ressembler à la boutique d'un vrai fabricant : fond clair, photos produit réelles,
-typographie nette, un seul accent rouge. **Pas d'animation décorative, pas de 3D, pas d'effet verre ni de dégradé.**
+Ambiance : **atelier racing premium, la nuit**, croisée avec la rigueur des catalogues d'échappements de course
+(grandes photos plein cadre étalonnées sombres, titres en capitales, un bouton blanc net avec flèche).
+Mots-clés : sombre, vitesse, performance.
 
-## Tokens (définis dans `src/app/globals.css` via `@theme`)
+## Tokens (`src/app/globals.css`, `@theme`)
 
 | Token Tailwind | Valeur | Usage |
 |---|---|---|
-| `bg-white` / `text-ink` | `#FFFFFF` / `#111111` | fond et texte |
-| `text-mute` | `#6B6B6B` | textes secondaires |
-| `border-line` | `#E5E3DF` | filets, bordures de cartes |
-| `bg-paper` (`.photo`) | `#EDEBE7` | fond de toutes les photos produit (même gris que les prompts studio) |
-| `bg-cream` | `#F7F6F3` | sections et encarts discrets |
-| `bg-rouge` / `text-rouge` | `#C8102E` | CTA principal, prix promo, badge circuit, état actif |
-| `text-legal` | `#15803D` | badge homologué |
-
-Ne jamais coder une couleur en dur dans un composant : passer par ces tokens.
+| `bg-night` / `bg-night-2` | `#0A0A0B` / `#121214` | fonds |
+| `text-bronze` / `bg-bronze` | `#E8A36B` | accent : nav active, pastille « + », prix |
+| `bg-heat` / `.text-heat` | `#3B82F6 → #8B5CF6 → #C08457` | dégradé « titane chauffé » : CTA d'achat, jauges, mots-clés de titres |
+| `text-rouge` / `bg-rouge` | `#D7192E` | marque, badge circuit, filet des points forts |
+| `text-alert` | `#E11D2E` | promos, erreurs |
+| `.photo` (`bg-paper`) | `#0D0D0F` | fond de toutes les photos produit |
+| `.glass` | verre dépoli `white/5` + bordure `white/10` | cartes, panneaux |
+| `.carbon` | tissage CSS | fonds de section, footer |
+| `.speed-lines` | traînées horizontales | décor de vitesse derrière les tuiles et bandeaux |
 
 ## Typographie
-- Titres : `font-display font-semibold uppercase` (Barlow Condensed), `leading-[0.95]`.
-- Texte et interface : Inter (`font-sans`). Labels de formulaire : classe `.label`.
-- Pas de police monospace.
+- Titres : `font-display` (Anton), capitales, **italique** pour les titres de section et de fiche (effet vitesse),
+  `leading-[0.85–0.9]`.
+- Texte : Inter. Nav : Manrope. Références et micro-libellés : `font-mono` en capitales espacées.
+
+## Composants
+- **Hero d'accueil** (`src/components/hero/`) : pot 3D Three.js au centre qui suit le curseur, quincaillerie
+  repoussée par la souris, braises et fumée, bascule route/circuit chorégraphiée (GSAP), bouton « Écouter »
+  (`src/lib/sound.ts`, Web Audio). **À conserver tel quel.**
+- `PillLink` / `PillButton` : pilule noire + pastille bronze « + » ; `variant="heat"` pour l'achat.
+- **Bouton catalogue** (style course) : rectangle blanc ou contour blanc, `text-xs uppercase tracking-[0.2em]`,
+  flèche `→` — pour « Trouver mon système », « Gamme circuit ».
+- `ProductCard` : fiche visuelle sombre plein cadre — « Ligne Rouge · Échappement voiture », nom, modèles
+  compatibles, points forts (filet rouge), bandeau bas catégorie · dB · Ø · matériau ; prix et badge dessous.
+- `Photo` (`src/components/Photo.tsx`) : vraie photo de `public/photos/` ou visuel provisoire de repli.
+- `UsageBadge`, `CircuitWarning` (texte légal exact), `Gauge` (barre `bg-heat`).
 
 ## Photos
-- Toujours via `src/components/Photo.tsx` : `<Photo src="/photos/…jpg" />` bascule sur le visuel provisoire de
-  `public/products/` si la photo n'existe pas encore, ou ne rend rien avec `fallback={null}`.
-- Fichiers attendus, formats et prompts : `docs/prompts-photos.md`. Produit = 3 vues (`-34`, `-profil`, `-monte`).
-- Conteneurs photo : `photo relative aspect-[4/3] overflow-hidden rounded-md` + `object-cover`.
-
-## Composants (`src/components/ui.tsx`)
-- `PillLink` / `PillButton` : boutons rectangulaires `rounded-md`, majuscules. `variant="heat"` = rouge (action
-  principale, une seule par écran), `dark` = noir, `outline` = contour.
-- `UsageBadge` : « Homologué route » (contour vert) ou « Circuit uniquement » (rouge plein). Sur chaque carte et fiche.
-- `CircuitWarning` : texte légal exact, obligatoire sur fiche produit circuit et au panier.
-- `Gauge` : barre fine noire sur gris, valeur à droite. dB, ch, Nm, kg.
-- `ProductCard` : photo 3/4, la vue de profil apparaît au survol (fondu simple), catégorie · matériau, nom, specs, prix.
-
-## Mouvement
-- Autorisé : changements de couleur au survol, fondu d'image, zoom très léger (≤ 3 %) sur les grandes tuiles.
-- Interdit : particules, objets qui flottent, rotations, parallaxe, animations en boucle.
+Direction et prompts : `docs/prompts-photos.md` (pot au premier plan, véhicule derrière, néon de couleur par
+produit). Jamais de logo de constructeur ni de texte dans l'image.
 
 ## Checklist nouvelle page
-1. Contenu dans `Page` (`max-w-7xl`, marges latérales 16 px mobile).
-2. Titre `PageTitle` ; au plus un mot en rouge.
-3. Cartes : `bg-white border border-line rounded-md` (ou classe `.glass`, équivalente).
-4. Mobile d'abord : tester à 375 px, aucun scroll horizontal.
+1. Fond `bg-night`, contenu dans `Page`.
+2. Titre `PageTitle` (italique), au plus un mot en accent.
+3. Cartes `.glass rounded-[28px]` ; photos dans `.photo`.
+4. Mobile 375 px sans scroll horizontal ; animations coupées avec `prefers-reduced-motion`.
 5. Badges route/circuit partout où un produit apparaît.

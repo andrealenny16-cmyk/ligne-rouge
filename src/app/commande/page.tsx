@@ -28,9 +28,9 @@ export default async function CommandePage({ searchParams }: { searchParams: Pro
       <PageTitle kicker="Étape finale" title="Livraison &" accent="paiement" />
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <div className="space-y-6">
-          <section className="glass rounded-md p-6">
-            <p className="font-display font-semibold text-2xl uppercase">1. Adresse de livraison</p>
-            {addresses?.length ? null : <p className="mt-2 text-sm text-neutral-600">Ajoute ta première adresse.</p>}
+          <section className="glass rounded-3xl p-6">
+            <p className="font-display text-2xl uppercase">1. Adresse de livraison</p>
+            {addresses?.length ? null : <p className="mt-2 text-sm text-white/60">Ajoute ta première adresse.</p>}
             <div className="mt-4">
               <AddressForm compact />
             </div>
@@ -43,22 +43,22 @@ export default async function CommandePage({ searchParams }: { searchParams: Pro
           />
         </div>
 
-        <aside className="glass h-fit space-y-3 rounded-md p-6">
-          <p className="font-display font-semibold text-2xl uppercase">Ta commande</p>
+        <aside className="glass h-fit space-y-3 rounded-3xl p-6">
+          <p className="font-display text-2xl uppercase">Ta commande</p>
           {cart.lines.map((l) => (
             <div key={l.id} className="flex justify-between gap-3 text-sm">
               <span>
-                {l.quantity} × {l.product.name} <span className="text-neutral-400">· {l.variant.color_name}</span>
+                {l.quantity} × {l.product.name} <span className="text-white/45">· {l.variant.color_name}</span>
               </span>
               <span>{formatPrice(finalPrice(l.product) * l.quantity)}</span>
             </div>
           ))}
           <div className="cote my-2" />
           <dl className="space-y-1.5 text-sm">
-            <div className="flex justify-between"><dt className="text-neutral-600">Sous-total</dt><dd>{formatPrice(cart.subtotal, true)}</dd></div>
+            <div className="flex justify-between"><dt className="text-white/60">Sous-total</dt><dd>{formatPrice(cart.subtotal, true)}</dd></div>
             {t.discount > 0 && <div className="flex justify-between text-legal"><dt>{sp.promo?.toUpperCase()}</dt><dd>−{formatPrice(t.discount, true)}</dd></div>}
-            <div className="flex justify-between"><dt className="text-neutral-600">Livraison</dt><dd>{t.shipping ? formatPrice(t.shipping, true) : "Offerte"}</dd></div>
-            <div className="flex justify-between pt-1 text-lg font-semibold"><dt>Total</dt><dd className="text-rouge">{formatPrice(t.total, true)}</dd></div>
+            <div className="flex justify-between"><dt className="text-white/60">Livraison</dt><dd>{t.shipping ? formatPrice(t.shipping, true) : "Offerte"}</dd></div>
+            <div className="flex justify-between pt-1 text-lg font-bold"><dt>Total</dt><dd className="text-bronze">{formatPrice(t.total, true)}</dd></div>
           </dl>
         </aside>
       </div>

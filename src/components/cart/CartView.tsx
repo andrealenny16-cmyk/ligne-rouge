@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Photo, { productPhoto } from "@/components/Photo";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -39,23 +39,23 @@ export default function CartView({ lines, subtotal, hasCircuit }: { lines: CartL
     <div className={`grid gap-8 lg:grid-cols-[1fr_380px] ${pending ? "opacity-80" : ""}`}>
       <ul className="space-y-3">
         {lines.map((l) => (
-          <li key={l.id} className="glass flex gap-4 rounded-md p-3 md:items-center md:p-4">
-            <Link href={`/produit/${l.product.slug}`} className="relative aspect-[4/3] w-28 shrink-0 overflow-hidden rounded-md bg-paper md:w-36">
-              <Image src={`/products/${l.product.slug}-34.svg`} alt={l.product.name} fill sizes="144px" className="object-contain" />
+          <li key={l.id} className="glass flex gap-4 rounded-3xl p-3 md:items-center md:p-4">
+            <Link href={`/produit/${l.product.slug}`} className="relative aspect-[4/3] w-28 shrink-0 overflow-hidden rounded-2xl photo md:w-36">
+              <Photo src={productPhoto(l.product.slug)} alt={l.product.name} fill sizes="144px" className="object-cover" />
             </Link>
             <div className="flex min-w-0 flex-1 flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-display font-semibold text-2xl uppercase leading-none">{l.product.name}</span>
+                  <span className="font-display text-2xl uppercase leading-none">{l.product.name}</span>
                   <UsageBadge usage={l.product.usage} />
                 </div>
-                <p className="mt-1 flex items-center gap-2 text-sm text-neutral-600">
-                  <span className="h-3 w-3 rounded-full border border-neutral-400" style={{ background: l.variant.color_hex }} /> {l.variant.color_name}
-                  <span className="font-mono text-xs text-neutral-400">· {l.product.ref}</span>
+                <p className="mt-1 flex items-center gap-2 text-sm text-white/60">
+                  <span className="h-3 w-3 rounded-full border border-white/30" style={{ background: l.variant.color_hex }} /> {l.variant.color_name}
+                  <span className="font-mono text-xs text-white/35">· {l.product.ref}</span>
                 </p>
               </div>
               <div className="flex items-center justify-between gap-5">
-                <div className="flex items-center rounded-full border border-neutral-300">
+                <div className="flex items-center rounded-full border border-white/15">
                   <button aria-label="Diminuer" onClick={() => start(() => updateCartItem(l.id, l.quantity - 1))} className="h-9 w-9 text-lg">−</button>
                   <span className="w-6 text-center font-mono">{l.quantity}</span>
                   <button
@@ -67,8 +67,8 @@ export default function CartView({ lines, subtotal, hasCircuit }: { lines: CartL
                     +
                   </button>
                 </div>
-                <span className="w-24 text-right font-semibold text-rouge">{formatPrice(finalPrice(l.product) * l.quantity)}</span>
-                <button aria-label={`Retirer ${l.product.name}`} onClick={() => start(() => removeCartItem(l.id))} className="text-neutral-400 hover:text-alert">
+                <span className="w-24 text-right font-bold text-bronze">{formatPrice(finalPrice(l.product) * l.quantity)}</span>
+                <button aria-label={`Retirer ${l.product.name}`} onClick={() => start(() => removeCartItem(l.id))} className="text-white/40 hover:text-alert">
                   ✕
                 </button>
               </div>
@@ -77,35 +77,35 @@ export default function CartView({ lines, subtotal, hasCircuit }: { lines: CartL
         ))}
       </ul>
 
-      <aside className="glass h-fit space-y-4 rounded-md p-6 lg:sticky lg:top-28">
-        <p className="font-display font-semibold text-3xl uppercase">Récapitulatif</p>
+      <aside className="glass h-fit space-y-4 rounded-3xl p-6 lg:sticky lg:top-28">
+        <p className="font-display text-3xl uppercase">Récapitulatif</p>
         <div>
           <span className="label">Code promo</span>
           <div className="flex gap-2">
             <input className="field uppercase" value={code} onChange={(e) => setCode(e.target.value)} placeholder="ROUGE10" />
-            <button onClick={apply} disabled={!code.trim()} className="rounded-md bg-cream px-4 font-semibold disabled:opacity-40">
+            <button onClick={apply} disabled={!code.trim()} className="rounded-2xl bg-white/10 px-4 font-semibold disabled:opacity-40">
               OK
             </button>
           </div>
-          {promoError && <p className="mt-1 text-xs text-rouge">{promoError}</p>}
+          {promoError && <p className="mt-1 text-xs text-[#ff7a84]">{promoError}</p>}
           {promo && <p className="mt-1 text-xs text-legal">{promo.code} appliqué : −{promo.percent} %</p>}
         </div>
         <div className="cote" />
         <dl className="space-y-2 text-sm">
-          <div className="flex justify-between"><dt className="text-neutral-600">Sous-total</dt><dd>{formatPrice(subtotal, true)}</dd></div>
+          <div className="flex justify-between"><dt className="text-white/60">Sous-total</dt><dd>{formatPrice(subtotal, true)}</dd></div>
           {t.discount > 0 && <div className="flex justify-between text-legal"><dt>Remise</dt><dd>−{formatPrice(t.discount, true)}</dd></div>}
           <div className="flex justify-between">
-            <dt className="text-neutral-600">Livraison</dt>
+            <dt className="text-white/60">Livraison</dt>
             <dd>{t.shipping ? formatPrice(t.shipping, true) : "Offerte"}</dd>
           </div>
-          {t.shipping > 0 && <p className="text-xs text-neutral-400">Offerte dès {SHIPPING_FREE_FROM} €</p>}
-          <div className="flex justify-between pt-2 text-lg font-semibold"><dt>Total TTC</dt><dd className="text-rouge">{formatPrice(t.total, true)}</dd></div>
+          {t.shipping > 0 && <p className="text-xs text-white/40">Offerte dès {SHIPPING_FREE_FROM} €</p>}
+          <div className="flex justify-between pt-2 text-lg font-bold"><dt>Total TTC</dt><dd className="text-bronze">{formatPrice(t.total, true)}</dd></div>
         </dl>
         {hasCircuit && (
           <>
             <CircuitWarning />
             <label className="flex cursor-pointer gap-3 text-sm">
-              <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} className="mt-0.5 h-5 w-5 accent-[#C8102E]" />
+              <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} className="mt-0.5 h-5 w-5 accent-[#E8A36B]" />
               <span>Je reconnais que les produits « Circuit » de mon panier sont destinés à un usage exclusif sur circuit fermé.</span>
             </label>
           </>
