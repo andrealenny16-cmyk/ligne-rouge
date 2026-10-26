@@ -1,34 +1,37 @@
 # Photos — LIGNE ROUGE
 
-Photos réelles issues d'Unsplash (licence Unsplash : utilisation gratuite, commerciale comprise, sans attribution
-obligatoire). Identifiants Unsplash pour retrouver chaque auteur : `https://unsplash.com/photos/<id>` ou
-`https://images.unsplash.com/photo-<id>`.
+Photos réelles libres de droits : **Unsplash** (licence Unsplash) et **Pexels** (licence Pexels) — utilisation
+gratuite, commerciale comprise, sans attribution obligatoire. Retrouver l'auteur : `https://unsplash.com/photos/<id>`
+ou `https://www.pexels.com/photo/<id>/`.
 
-| Fichier | Photo Unsplash |
+Règles : sur les fiches produit, **le pot est le sujet** de la photo (pas le véhicule) et aucun logo de marque
+d'échappement concurrente ne doit être lisible.
+
+| Fichier | Source |
 |---|---|
-| titan-gt-34 | 1779263449938-172ee5e61db6 |
-| titan-gt-profil | 1692309175422-b9d614f4764e |
-| titan-gt-monte | 1789179974735-83c58d4bbcc6 |
-| carbon-fury-34 | 1760821388066-a7c910bc39bd |
-| carbon-fury-profil | 1765604911465-42efa3b1a361 |
-| carbon-fury-monte | 1556783151-c6d5e7d296bb |
-| inferno-r-34 | 1760449072812-9f6030afcee5 |
-| inferno-r-profil | 1760448970487-a3c6ff323b0a |
-| inferno-r-monte | 1760449072788-8ace021a956b |
-| spectre-s-34 | 1773114975602-f4d25cb110d1 |
-| spectre-s-profil | 1786011625634-872c2772b79b |
-| spectre-s-monte | 1785515567337-f4de74ac54f0 |
-| viper-twin-34 | 1785100304380-6284a9e4de2d |
-| viper-twin-profil | 1595691403533-7f4a52a5b189 |
-| viper-twin-monte | 1673154549769-1b7dd74003ae |
-| hellcat-racing-34 | 1766820758907-3ce28e4e9625 |
-| hellcat-racing-profil | 1767275090329-331c0ffb1005 |
-| hellcat-racing-monte | 1726663780295-89be7a1d0bd9 |
-| hero-route | 1779885529717-952eb9a81849 |
-| hero-circuit | 1759169955381-0d930b1b2067 |
-| categorie-voitures | 1503221507150-dcb5a13416ca |
-| categorie-motos | 1775433415766-064f9203b46c |
-| ambiance-circuit | 1740784771841-6d2188d21f20 |
-| ambiance-atelier | 1758739956757-c697fd0585bc |
+| titan-gt-34 | Unsplash 1770327714984-de951cc48692 |
+| titan-gt-profil | Unsplash 1791419502372-24e4e5d10c97 |
+| titan-gt-monte | Unsplash 1779263450175-dbd8771edc44 |
+| carbon-fury-34 | Unsplash 1791824085864-2ff8742a0ce6 |
+| carbon-fury-profil | Unsplash 1785448212806-3ef61c26f395 |
+| carbon-fury-monte | Unsplash 1645534680500-1356df6e3831 |
+| inferno-r-34 | Unsplash 1750507237773-08c1c9655126 |
+| inferno-r-profil | Unsplash 1692309175422-b9d614f4764e |
+| inferno-r-monte | Unsplash 1760448970487-a3c6ff323b0a |
+| spectre-s-34 | Pexels 12970254 |
+| spectre-s-profil | Pexels 38300775 |
+| spectre-s-monte | Unsplash 1759419281419-b04552b2691a |
+| viper-twin-34 | Unsplash 1787421208286-bacd80fa45f5 |
+| viper-twin-profil | Unsplash 1786011625634-872c2772b79b |
+| viper-twin-monte | Pexels 25753520 |
+| hellcat-racing-34 | Unsplash 1719078143091-9eb1810293e9 |
+| hellcat-racing-profil | Unsplash 1765903916132-7d2fa8ad4c66 |
+| hellcat-racing-monte | Pexels 29342768 |
+| hero-route | Unsplash 1779885529717-952eb9a81849 |
+| hero-circuit | Unsplash 1759169955381-0d930b1b2067 |
+| categorie-voitures | Unsplash 1503221507150-dcb5a13416ca |
+| categorie-motos | Unsplash 1775433415766-064f9203b46c |
+| ambiance-circuit | Unsplash 1740784771841-6d2188d21f20 |
+| ambiance-atelier | Unsplash 1758739956757-c697fd0585bc |
 
-Ce sont des photos d'illustration de véhicules et d'échappements réels, pas des produits LIGNE ROUGE (marque fictive).
+Ce sont des photos d'illustration d'échappements réels, pas des produits LIGNE ROUGE (marque fictive).
