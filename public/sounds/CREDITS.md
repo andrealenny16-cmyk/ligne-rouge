@@ -7,5 +7,7 @@ Si un fichier manque, le site joue un son synthétisé en secours.
 |---|---|---|---|
 | `moto-route.mp3` | Mixkit (assets.mixkit.co, sfx 2728) | Sports bike engine | Mixkit Sound Effects Free License (usage commercial, sans attribution) |
 | `moto-circuit.mp3` | Mixkit (assets.mixkit.co, sfx 2723) | Racing motorcycle engine speeding up | Mixkit Sound Effects Free License |
-| `voiture-route.mp3` | À ajouter — Pixabay « Car Engine Roaring » (DRAGON-STUDIO) | | Pixabay Content License |
-| `voiture-circuit.mp3` | À ajouter — Pixabay « Aggressive Supercar Engine Throttle Revs » (Chrysalyn) | | Pixabay Content License |
+| Voiture (route et circuit) | Synthèse Web Audio (`playSynth` dans `src/lib/sound.ts`) | Démarrage + coup de gaz + pleine charge, pétarades en circuit | Création maison |
+
+Pour passer les voitures en vrais enregistrements, déposer `voiture-route.mp3` et `voiture-circuit.mp3` ici :
+aucune modification de code n'est nécessaire.
