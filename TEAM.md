@@ -22,7 +22,7 @@ Projet réalisé à trois. Chaque membre commite sur le dépôt partagé avec so
 
 ## Membre C — Timothé (alertes stock & skills officiels)
 
-- Alertes « Me prévenir du retour » : migration `008_stock_alerts.sql` (table, RLS, trigger `notify_stock_alerts()`, vue `kpi_stock_demand`)
+- Alertes « Me prévenir du retour » : migration `009_stock_alerts.sql` (table, RLS, trigger `notify_stock_alerts()`, vue `kpi_stock_demand`)
 - Fiche produit (bouton sur coloris épuisé), section « Mes alertes stock » dans `/compte`, carte « Demande en rupture » dans `/admin`
 - Skills officiels : `supabase-postgres-best-practices`, `vercel-react-best-practices`, `web-design-guidelines`, `deploy-to-vercel`
 

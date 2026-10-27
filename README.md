@@ -29,7 +29,7 @@ Next.js 15 (App Router, TypeScript) · Tailwind CSS 4 · Supabase (Postgres, Aut
 
 Migrations : `supabase/migrations/001_init.sql` (schéma, RLS, fonctions, vues KPI, seed catalogue),
 `002_harden_functions.sql`, `003_split_write_policies.sql` (corrections issues de `get_advisors`),
-`004_rebrand_ligne_rouge.sql` (changement de marque), `005_product_photos.sql` (3 photos par produit), `006_product_specs.sql` (diamètre de sortie et points forts), `008_stock_alerts.sql` (alertes retour en stock).
+`004_rebrand_ligne_rouge.sql` (changement de marque), `005_product_photos.sql` (3 photos par produit), `006_product_specs.sql` (diamètre de sortie et points forts), `007_single_product_photo.sql` (une photo par produit), `008_auto_confirm_email.sql` (inscription sans vérification par email), `009_stock_alerts.sql` (alertes retour en stock).
 
 ```mermaid
 erDiagram
@@ -88,7 +88,7 @@ Les skills du projet sont versionnées dans `.claude/skills/` (exigence du sujet
 | `supabase-migrations` | Conventions de nommage, RLS systématique, `(select auth.uid())`, fonctions `security definer` + `search_path = ''`, process « migration → `get_advisors` » | A guidé les migrations 002 et 003 : les alertes de l'advisor (fonctions trigger exposées en RPC, policies `for all` cumulées) ont été corrigées dans des migrations dédiées |
 | `add-product` | Procédure d'ajout d'un pot : fiche, photos réelles + crédits, seed SQL, variantes, compatibilité, vérifications | Les 6 produits et leurs 18 photos ont suivi ce process ; ajouter un 7ᵉ pot est reproductible en quelques minutes |
 | `kpi-dashboard` | Chaîne vue SQL `kpi_*` → requête serveur → `KpiCard` / graphique recharts | Les 6 vues KPI et le dashboard suivent le même modèle ; ajouter un indicateur = une vue + une ligne dans `Promise.all` + un composant |
-| `supabase-postgres-best-practices` (officielle Supabase) | Règles Postgres : schéma, index, RLS, performance des requêtes | Appliquée à la migration `008_stock_alerts.sql` (index partiel, `(select auth.uid())`, contrôle dans la policy d'insert) |
+| `supabase-postgres-best-practices` (officielle Supabase) | Règles Postgres : schéma, index, RLS, performance des requêtes | Appliquée à la migration `009_stock_alerts.sql` (index partiel, `(select auth.uid())`, contrôle dans la policy d'insert) |
 | `vercel-react-best-practices` (officielle Vercel) | Performance React / Next.js | Requêtes serveur parallèles (`Promise.all`), pas de fetch côté client |
 | `web-design-guidelines` (officielle Vercel) | Audit UI/UX et accessibilité | `aria-pressed`, libellés explicites sur les boutons d'icône |
 | `deploy-to-vercel` (officielle Vercel) | Déploiement sur Vercel | Mise en ligne du site |
