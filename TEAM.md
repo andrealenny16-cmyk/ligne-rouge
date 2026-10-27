@@ -24,6 +24,7 @@ Projet réalisé à trois. Chaque membre commite sur le dépôt partagé avec so
 
 - Alertes « Me prévenir du retour » : migration `009_stock_alerts.sql` (table, RLS, trigger `notify_stock_alerts()`, vue `kpi_stock_demand`)
 - Fiche produit (bouton sur coloris épuisé), section « Mes alertes stock » dans `/compte`, carte « Demande en rupture » dans `/admin`
+- Entonnoir de conversion : migration `010_kpi_conversion_funnel.sql` (vues `kpi_conversion_funnel`, `kpi_conversion_by_product`), cartes dans `/admin`
 - Skills officiels : `supabase-postgres-best-practices`, `vercel-react-best-practices`, `web-design-guidelines`, `deploy-to-vercel`
 
 ## Règles communes

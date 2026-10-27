@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Dashboard admin" };
 /* KPI : vues SQL kpi_* (security_invoker + is_admin()) — voir .claude/skills/kpi-dashboard */
 export default async function AdminDashboard() {
   const supabase = await createClient();
-  const [overview, byDay, top, usage, vehicles, lowStock, lastOrders, statuses, sold, reviews, favs, demand] = await Promise.all([
+  const [overview, byDay, top, usage, vehicles, lowStock, lastOrders, statuses, sold, reviews, favs, demand, funnel, byProduct] = await Promise.all([
     supabase.from("kpi_overview").select("*").single(),
     supabase.from("kpi_revenue_by_day").select("*"),
     supabase.from("kpi_top_products").select("*"),
@@ -23,6 +23,8 @@ export default async function AdminDashboard() {
     supabase.from("reviews").select("rating"),
     supabase.from("favorites").select("product_id", { count: "exact", head: true }),
     supabase.from("kpi_stock_demand").select("*"),
+    supabase.from("kpi_conversion_funnel").select("*"),
+    supabase.from("kpi_conversion_by_product").select("*"),
   ]);
 
   // Statuts des commandes (pipeline logistique)
@@ -56,6 +58,8 @@ export default async function AdminDashboard() {
   const waitingTotal = demandRows.reduce((s, d) => s + Number(d.waiting), 0);
   const notifiedTotal = demandRows.reduce((s, d) => s + Number(d.notified), 0);
   const maxWaiting = Math.max(1, ...demandRows.map((d) => Number(d.waiting)));
+  const funnelRows = funnel.data ?? [];
+  const funnelMax = Math.max(1, ...funnelRows.map((f) => Number(f.total)));
 
   return (
     <div className="space-y-6">
@@ -188,6 +192,73 @@ export default async function AdminDashboard() {
           <p className="mt-3 text-xs text-neutral-500">{favs.count ?? 0} produits mis en favoris</p>
         </section>
       </div>
+
+      {funnelRows.length > 0 && (
+        <section className="glass rounded-3xl p-5">
+          <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="font-display text-2xl uppercase">
+              Entonnoir de <span className="text-heat">conversion</span>
+            </h2>
+            <span className="font-mono text-xs text-neutral-400">kpi_conversion_funnel</span>
+          </div>
+          <p className="mb-4 text-xs text-neutral-400">30 derniers jours · taux calculé par rapport à l&apos;étape précédente</p>
+          <ol className="space-y-3">
+            {funnelRows.map((f) => (
+              <li key={f.step}>
+                <div className="flex justify-between gap-3 text-sm">
+                  <span className="font-semibold">
+                    {f.step}. {f.label}
+                  </span>
+                  <span className="font-mono text-xs text-neutral-500">
+                    <span className="font-bold text-night">{formatNumber(Number(f.total))}</span>
+                    {f.rate_from_previous !== null && <> · {formatNumber(Number(f.rate_from_previous))} %</>}
+                  </span>
+                </div>
+                <div className="mt-1 h-3 rounded-full bg-black/[0.04]">
+                  <div className="bg-heat h-full rounded-full" style={{ width: `${(Number(f.total) / funnelMax) * 100}%` }} />
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {(byProduct.data ?? []).length > 0 && (
+        <section className="glass rounded-3xl p-5">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="font-display text-2xl uppercase">Conversion par pot</h2>
+            <span className="font-mono text-xs text-neutral-400">kpi_conversion_by_product</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="font-mono text-[0.65rem] uppercase tracking-wider text-neutral-500">
+                <tr>
+                  <th scope="col" className="py-2 pr-4">Pot</th>
+                  <th scope="col" className="py-2 pr-4 text-right">Vues</th>
+                  <th scope="col" className="py-2 pr-4 text-right">Paniers</th>
+                  <th scope="col" className="py-2 pr-4 text-right">Vendus</th>
+                  <th scope="col" className="py-2 pr-4 text-right">Vue → panier</th>
+                  <th scope="col" className="py-2 text-right">Panier → achat</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/10">
+                {(byProduct.data ?? []).map((r) => (
+                  <tr key={r.product_id}>
+                    <td className="py-2.5 pr-4">
+                      <Link href={`/produit/${r.slug}`} className="hover:text-bronze">{r.name}</Link>
+                    </td>
+                    <td className="py-2.5 pr-4 text-right font-mono">{formatNumber(Number(r.views))}</td>
+                    <td className="py-2.5 pr-4 text-right font-mono">{formatNumber(Number(r.add_to_cart))}</td>
+                    <td className="py-2.5 pr-4 text-right font-mono">{formatNumber(Number(r.units_sold))}</td>
+                    <td className="py-2.5 pr-4 text-right font-mono">{r.view_to_cart_rate === null ? "—" : `${formatNumber(Number(r.view_to_cart_rate))} %`}</td>
+                    <td className="py-2.5 text-right font-mono">{r.cart_to_order_rate === null ? "—" : `${formatNumber(Number(r.cart_to_order_rate))} %`}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <section className="glass rounded-3xl p-5">
         <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2">
