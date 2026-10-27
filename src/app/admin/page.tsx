@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Dashboard admin" };
 /* KPI : vues SQL kpi_* (security_invoker + is_admin()) — voir .claude/skills/kpi-dashboard */
 export default async function AdminDashboard() {
   const supabase = await createClient();
-  const [overview, byDay, top, usage, vehicles, lowStock, lastOrders, statuses, sold, reviews, favs, demand, funnel] = await Promise.all([
+  const [overview, byDay, top, usage, vehicles, lowStock, lastOrders, statuses, sold, reviews, favs, demand, funnel, byProduct] = await Promise.all([
     supabase.from("kpi_overview").select("*").single(),
     supabase.from("kpi_revenue_by_day").select("*"),
     supabase.from("kpi_top_products").select("*"),
@@ -24,6 +24,7 @@ export default async function AdminDashboard() {
     supabase.from("favorites").select("product_id", { count: "exact", head: true }),
     supabase.from("kpi_stock_demand").select("*"),
     supabase.from("kpi_conversion_funnel").select("*"),
+    supabase.from("kpi_conversion_by_product").select("*"),
   ]);
 
   // Statuts des commandes (pipeline logistique)
@@ -219,6 +220,43 @@ export default async function AdminDashboard() {
               </li>
             ))}
           </ol>
+        </section>
+      )}
+
+      {(byProduct.data ?? []).length > 0 && (
+        <section className="glass rounded-3xl p-5">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="font-display text-2xl uppercase">Conversion par pot</h2>
+            <span className="font-mono text-xs text-neutral-400">kpi_conversion_by_product</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="font-mono text-[0.65rem] uppercase tracking-wider text-neutral-500">
+                <tr>
+                  <th scope="col" className="py-2 pr-4">Pot</th>
+                  <th scope="col" className="py-2 pr-4 text-right">Vues</th>
+                  <th scope="col" className="py-2 pr-4 text-right">Paniers</th>
+                  <th scope="col" className="py-2 pr-4 text-right">Vendus</th>
+                  <th scope="col" className="py-2 pr-4 text-right">Vue → panier</th>
+                  <th scope="col" className="py-2 text-right">Panier → achat</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/10">
+                {(byProduct.data ?? []).map((r) => (
+                  <tr key={r.product_id}>
+                    <td className="py-2.5 pr-4">
+                      <Link href={`/produit/${r.slug}`} className="hover:text-bronze">{r.name}</Link>
+                    </td>
+                    <td className="py-2.5 pr-4 text-right font-mono">{formatNumber(Number(r.views))}</td>
+                    <td className="py-2.5 pr-4 text-right font-mono">{formatNumber(Number(r.add_to_cart))}</td>
+                    <td className="py-2.5 pr-4 text-right font-mono">{formatNumber(Number(r.units_sold))}</td>
+                    <td className="py-2.5 pr-4 text-right font-mono">{r.view_to_cart_rate === null ? "—" : `${formatNumber(Number(r.view_to_cart_rate))} %`}</td>
+                    <td className="py-2.5 text-right font-mono">{r.cart_to_order_rate === null ? "—" : `${formatNumber(Number(r.cart_to_order_rate))} %`}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
       )}
 
