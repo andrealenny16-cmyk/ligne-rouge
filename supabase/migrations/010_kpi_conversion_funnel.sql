@@ -26,3 +26,35 @@ select step,
   from steps
  where public.is_admin()
  order by step;
+
+-- Conversion par produit : où le client décroche-t-il ?
+create or replace view public.kpi_conversion_by_product with (security_invoker = true) as
+with ev as (
+  select product_id,
+         count(*) filter (where type = 'view_product') as views,
+         count(*) filter (where type = 'add_to_cart')  as add_to_cart
+    from public.events
+   where product_id is not null
+     and created_at >= now() - interval '30 days'
+   group by product_id
+), sold as (
+  select oi.product_id, sum(oi.quantity) as units_sold
+    from public.order_items oi
+    join public.orders o on o.id = oi.order_id
+   where o.status <> 'annulee'
+     and o.created_at >= now() - interval '30 days'
+   group by oi.product_id
+)
+select p.id as product_id,
+       p.name,
+       p.slug,
+       coalesce(ev.views, 0)        as views,
+       coalesce(ev.add_to_cart, 0)  as add_to_cart,
+       coalesce(sold.units_sold, 0) as units_sold,
+       round(100.0 * coalesce(ev.add_to_cart, 0) / nullif(ev.views, 0), 1)          as view_to_cart_rate,
+       round(100.0 * coalesce(sold.units_sold, 0) / nullif(ev.add_to_cart, 0), 1)   as cart_to_order_rate
+  from public.products p
+  left join ev   on ev.product_id = p.id
+  left join sold on sold.product_id = p.id
+ where p.is_active and public.is_admin()
+ order by views desc, p.name;
