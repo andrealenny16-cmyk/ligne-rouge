@@ -16,8 +16,8 @@ lignes complètes, silencieux et embouts en titane, inox et carbone. Deux gammes
 | Espace | Ce qu'on peut faire |
 |---|---|
 | Public | **Site en une page qui défile** (menu = ancres : Accueil, Voiture, Moto, Conseil IA, section active surlignée) : hero 3D photoréaliste (sélecteur Moto/Voiture et Ville/Circuit : 4 pots 3D différents marqués LIGNE ROUGE qui suivent le curseur, vis et écrous éjectés par les sorties, quincaillerie repoussée par la souris, vraie photo de circuit), recherche « Trouve le pot de ta caisse », univers **Voiture** puis **Moto** séparés, la piste, conseil IA intégré, avis. Fiches produit (photos du pot, jauges, compatibilité, avis, autres pots du même univers), boutique filtrable (filtres dans l'URL) |
-| Client | Inscription / connexion Supabase Auth, panier **persisté en base**, code promo, case obligatoire « usage circuit », commande via la fonction SQL `checkout()`, suivi des commandes, **Mon garage**, favoris, adresses |
-| Admin | Accès protégé (middleware + vérification serveur du rôle), KPIs (CA, commandes, panier moyen, clients, conversion, paniers en cours), courbe CA 30 j, top produits, route vs circuit, véhicules les plus demandés, stock bas, gestion des statuts de commande, des prix/promos/stocks |
+| Client | Inscription / connexion Supabase Auth, panier **persisté en base**, code promo, case obligatoire « usage circuit », commande via la fonction SQL `checkout()`, suivi des commandes, **Mon garage**, favoris, adresses, **alertes « Me prévenir du retour »** sur les coloris épuisés |
+| Admin | Accès protégé (middleware + vérification serveur du rôle), KPIs (CA, commandes, panier moyen, clients, conversion, paniers en cours), courbe CA 30 j, top produits, route vs circuit, véhicules les plus demandés, stock bas, demande en rupture (alertes clients par coloris), gestion des statuts de commande, des prix/promos/stocks |
 | IA | Configurateur « Son & Perf » : reconnaissance du véhicule en base, filtrage des pots compatibles, recommandation par IA (ou moteur à règles sans clé), règle « jamais de circuit pour un usage route » contrôlée côté serveur, journalisation |
 
 ## Stack
@@ -29,7 +29,7 @@ Next.js 15 (App Router, TypeScript) · Tailwind CSS 4 · Supabase (Postgres, Aut
 
 Migrations : `supabase/migrations/001_init.sql` (schéma, RLS, fonctions, vues KPI, seed catalogue),
 `002_harden_functions.sql`, `003_split_write_policies.sql` (corrections issues de `get_advisors`),
-`004_rebrand_ligne_rouge.sql` (changement de marque), `005_product_photos.sql` (3 photos par produit), `006_product_specs.sql` (diamètre de sortie et points forts).
+`004_rebrand_ligne_rouge.sql` (changement de marque), `005_product_photos.sql` (3 photos par produit), `006_product_specs.sql` (diamètre de sortie et points forts), `008_stock_alerts.sql` (alertes retour en stock).
 
 ```mermaid
 erDiagram
@@ -39,6 +39,7 @@ erDiagram
   profiles ||--o{ cart_items : "panier"
   profiles ||--o{ orders : passe
   profiles ||--o{ favorites : aime
+  profiles ||--o{ stock_alerts : attend
   profiles ||--o{ reviews : écrit
   profiles ||--o{ events : génère
   profiles ||--o{ ai_configurator_logs : interroge
@@ -52,6 +53,7 @@ erDiagram
   products ||--o{ reviews : ""
   products ||--o{ favorites : ""
   product_variants ||--o{ cart_items : ""
+  product_variants ||--o{ stock_alerts : "retour en stock"
   orders ||--o{ order_items : contient
   product_variants ||--o{ order_items : "prix figé"
   promo_codes ||..o{ orders : "appliqué via checkout()"
@@ -68,8 +70,11 @@ Points clés :
   livraison (offerte dès 500 €), crée la commande et ses lignes à prix figé, décrémente les variantes, vide le
   panier et logue l'event.
 - **`products.stock`** est maintenu par trigger comme somme des stocks variantes.
+- **Alertes retour en stock** (`stock_alerts`) : un client ne peut s'abonner qu'à un coloris épuisé (contrôle
+  dans la policy d'insert) ; le trigger `notify_stock_alerts()` renseigne `notified_at` quand le stock du
+  coloris repasse de 0 à plus de 0. Index partiel sur les alertes en attente.
 - **Vues KPI** `kpi_overview`, `kpi_revenue_by_day`, `kpi_top_products`, `kpi_route_vs_circuit`,
-  `kpi_top_vehicles`, `kpi_low_stock` : `security_invoker = true` + filtre `is_admin()`.
+  `kpi_top_vehicles`, `kpi_low_stock`, `kpi_stock_demand` : `security_invoker = true` + filtre `is_admin()`.
 - **Tracking** : `events` (vues produit, ajouts/retraits panier, checkout, vérifications de compatibilité) et
   `ai_configurator_logs` alimentent la conversion et les « véhicules les plus demandés ».
 

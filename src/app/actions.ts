@@ -89,6 +89,30 @@ export async function toggleFavorite(productId: string): Promise<Result> {
   return { ok: true, message: data ? "Retiré des favoris" : "Ajouté aux favoris" };
 }
 
+/* ---------- Alertes retour en stock ---------- */
+
+export async function toggleStockAlert(variantId: string): Promise<Result> {
+  const { supabase, user } = await getSession();
+  if (!user) return { ok: false, error: "auth" };
+  const { data } = await supabase.from("stock_alerts").select("id").eq("user_id", user.id).eq("variant_id", variantId).maybeSingle();
+  if (data) {
+    await supabase.from("stock_alerts").delete().eq("id", data.id);
+    revalidatePath("/compte");
+    return { ok: true, message: "Alerte supprimée" };
+  }
+  // la policy d'insert refuse un coloris qui n'est pas épuisé
+  const { error } = await supabase.from("stock_alerts").insert({ user_id: user.id, variant_id: variantId });
+  if (error) return { ok: false, error: "Ce coloris est de nouveau disponible" };
+  revalidatePath("/compte");
+  return { ok: true, message: "C'est noté : on te prévient dès son retour" };
+}
+
+export async function deleteStockAlert(id: string) {
+  const { supabase } = await authed();
+  await supabase.from("stock_alerts").delete().eq("id", id);
+  revalidatePath("/compte");
+}
+
 /* ---------- Avis ---------- */
 
 export async function addReview(_: unknown, form: FormData): Promise<Result> {

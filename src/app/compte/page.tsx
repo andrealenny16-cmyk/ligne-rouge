@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { deleteAddress, deleteGarageVehicle, signOut } from "@/app/actions";
+import { deleteAddress, deleteGarageVehicle, deleteStockAlert, signOut } from "@/app/actions";
 import AddressForm from "@/components/account/AddressForm";
 import GarageForm from "@/components/account/GarageForm";
 import ProductCard from "@/components/ProductCard";
@@ -27,9 +27,16 @@ type GarageRow = {
   };
 };
 
+type AlertRow = {
+  id: string;
+  created_at: string;
+  notified_at: string | null;
+  product_variants: { color_name: string; color_hex: string; stock: number; products: { name: string; slug: string } };
+};
+
 export default async function ComptePage() {
   const { supabase, user, profile } = await requireUser("/compte");
-  const [{ data: orders }, { data: garage }, { data: favs }, { data: addresses }, vehicles] = await Promise.all([
+  const [{ data: orders }, { data: garage }, { data: favs }, { data: addresses }, vehicles, { data: alertRows }] = await Promise.all([
     supabase
       .from("orders")
       .select("id, status, total, created_at, order_items(product_name, color_name, quantity)")
@@ -43,8 +50,15 @@ export default async function ComptePage() {
     supabase.from("favorites").select(`products(${PRODUCT_SELECT})`).eq("user_id", user.id),
     supabase.from("addresses").select("id, label, line1, city, zip, country, is_default").eq("user_id", user.id).order("created_at"),
     getVehicles(),
+    supabase
+      .from("stock_alerts")
+      .select("id, created_at, notified_at, product_variants(color_name, color_hex, stock, products(name, slug))")
+      .eq("user_id", user.id)
+      .order("notified_at", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false }),
   ]);
 
+  const alerts = (alertRows ?? []) as unknown as AlertRow[];
   const favorites = ((favs ?? []) as unknown as { products: Product }[]).map((f) => f.products).filter(Boolean);
   const firstName = profile?.full_name?.split(" ")[0] ?? user.email;
 
@@ -163,6 +177,46 @@ export default async function ComptePage() {
           </div>
         ) : (
           <p className="text-sm text-neutral-500">Clique sur le ♥ d&apos;une fiche produit pour la retrouver ici.</p>
+        )}
+      </section>
+
+      {/* Alertes retour en stock */}
+      <section className="mb-14">
+        <h2 className="font-display text-3xl uppercase">Mes alertes <span className="text-heat">stock</span></h2>
+        <p className="mb-4 text-sm text-neutral-500">Les coloris épuisés que tu attends. Dès qu&apos;un pot revient en stock, il passe en tête de liste.</p>
+        {alerts.length ? (
+          <ul className="grid gap-3 md:grid-cols-2">
+            {alerts.map((a) => {
+              const v = a.product_variants;
+              const back = !!a.notified_at && v.stock > 0;
+              return (
+                <li key={a.id} className={`flex items-center justify-between gap-3 rounded-3xl p-5 ${back ? "border border-legal/40 bg-legal/10" : "glass"}`}>
+                  <div className="flex items-center gap-3">
+                    <span className="h-8 w-8 shrink-0 rounded-full border border-black/15" style={{ background: `radial-gradient(circle at 35% 30%, #ffffff55, ${v.color_hex} 55%)` }} aria-hidden />
+                    <div>
+                      <Link href={`/produit/${v.products.slug}`} className="font-semibold hover:text-bronze">{v.products.name}</Link>
+                      <p className="text-xs text-neutral-500">{v.color_name}</p>
+                      {back ? (
+                        <p className="mt-1 text-xs font-semibold text-legal">De retour en stock depuis le {formatDate(a.notified_at!)} · {v.stock} dispo</p>
+                      ) : (
+                        <p className="mt-1 font-mono text-[0.65rem] uppercase tracking-wider text-neutral-400">En attente · depuis le {formatDate(a.created_at)}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-3">
+                    {back && (
+                      <Link href={`/produit/${v.products.slug}`} className="rounded-full bg-heat px-4 py-2 text-sm font-bold text-white">Acheter</Link>
+                    )}
+                    <form action={deleteStockAlert.bind(null, a.id)}>
+                      <button aria-label="Supprimer l'alerte" className="text-neutral-400 hover:text-alert">✕</button>
+                    </form>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="text-sm text-neutral-500">Sur une fiche produit, choisis un coloris épuisé puis « Me prévenir du retour ».</p>
         )}
       </section>
 

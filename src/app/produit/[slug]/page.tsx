@@ -31,7 +31,8 @@ export default async function ProductPage({ params }: Props) {
   if (!data) notFound();
   const p = data as unknown as Product;
 
-  const [{ data: compat }, { data: reviews }, fav, garage, { data: siblings }] = await Promise.all([
+  const variantIds = (p.product_variants ?? []).map((v) => v.id);
+  const [{ data: compat }, { data: reviews }, fav, garage, { data: siblings }, alerts] = await Promise.all([
     supabase
       .from("product_compatibility")
       .select("vehicle_models(id, name, generation, year_from, year_to, vehicle_makes(name))")
@@ -42,6 +43,9 @@ export default async function ProductPage({ params }: Props) {
       ? supabase.from("garage_vehicles").select("id, year, nickname, model_id, vehicle_models(name, vehicle_makes(name))").eq("user_id", user.id)
       : Promise.resolve({ data: [] }),
     supabase.from("products").select(PRODUCT_SELECT).eq("vehicle_type", p.vehicle_type).eq("is_active", true).neq("id", p.id).order("ref"),
+    user && variantIds.length
+      ? supabase.from("stock_alerts").select("variant_id").eq("user_id", user.id).in("variant_id", variantIds)
+      : Promise.resolve({ data: [] as { variant_id: string }[] }),
   ]);
   const others = (siblings ?? []) as unknown as Product[];
   const typeLabel = p.vehicle_type === "moto" ? "Moto" : "Voiture";
@@ -117,7 +121,7 @@ export default async function ProductPage({ params }: Props) {
 
           <SoundButton vehicle={p.vehicle_type} usage={p.usage} className="mt-5 text-night" />
 
-          <BuyBox product={p} loggedIn={!!user} isFavorite={!!fav.data} />
+          <BuyBox product={p} loggedIn={!!user} isFavorite={!!fav.data} alertVariantIds={(alerts.data ?? []).map((a) => a.variant_id)} />
 
           {p.usage === "circuit" && <CircuitWarning className="mt-5" />}
 
