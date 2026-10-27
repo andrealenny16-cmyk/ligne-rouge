@@ -17,7 +17,7 @@ lignes complètes, silencieux et embouts en titane, inox et carbone. Deux gammes
 |---|---|
 | Public | **Site en une page qui défile** (menu = ancres : Accueil, Voiture, Moto, Conseil IA, section active surlignée) : hero 3D photoréaliste (sélecteur Moto/Voiture et Ville/Circuit : 4 pots 3D différents marqués LIGNE ROUGE qui suivent le curseur, vis et écrous éjectés par les sorties, quincaillerie repoussée par la souris, vraie photo de circuit), recherche « Trouve le pot de ta caisse », univers **Voiture** puis **Moto** séparés, la piste, conseil IA intégré, avis. Fiches produit (photos du pot, jauges, compatibilité, avis, autres pots du même univers), boutique filtrable (filtres dans l'URL) |
 | Client | Inscription / connexion Supabase Auth, panier **persisté en base**, code promo, case obligatoire « usage circuit », commande via la fonction SQL `checkout()`, suivi des commandes, **Mon garage**, favoris, adresses, **alertes « Me prévenir du retour »** sur les coloris épuisés |
-| Admin | Accès protégé (middleware + vérification serveur du rôle), KPIs (CA, commandes, panier moyen, clients, conversion, paniers en cours), courbe CA 30 j, top produits, route vs circuit, véhicules les plus demandés, stock bas, demande en rupture (alertes clients par coloris), gestion des statuts de commande, des prix/promos/stocks |
+| Admin | Accès protégé (middleware + vérification serveur du rôle), KPIs (CA, commandes, panier moyen, clients, conversion, paniers en cours), courbe CA 30 j, top produits, route vs circuit, véhicules les plus demandés, stock bas, demande en rupture (alertes clients par coloris), **entonnoir de conversion** global et par pot, gestion des statuts de commande, des prix/promos/stocks |
 | IA | Configurateur « Son & Perf » : reconnaissance du véhicule en base, filtrage des pots compatibles, recommandation par IA (ou moteur à règles sans clé), règle « jamais de circuit pour un usage route » contrôlée côté serveur, journalisation |
 
 ## Stack
@@ -29,7 +29,7 @@ Next.js 15 (App Router, TypeScript) · Tailwind CSS 4 · Supabase (Postgres, Aut
 
 Migrations : `supabase/migrations/001_init.sql` (schéma, RLS, fonctions, vues KPI, seed catalogue),
 `002_harden_functions.sql`, `003_split_write_policies.sql` (corrections issues de `get_advisors`),
-`004_rebrand_ligne_rouge.sql` (changement de marque), `005_product_photos.sql` (3 photos par produit), `006_product_specs.sql` (diamètre de sortie et points forts), `007_single_product_photo.sql` (une photo par produit), `008_auto_confirm_email.sql` (inscription sans vérification par email), `009_stock_alerts.sql` (alertes retour en stock).
+`004_rebrand_ligne_rouge.sql` (changement de marque), `005_product_photos.sql` (3 photos par produit), `006_product_specs.sql` (diamètre de sortie et points forts), `007_single_product_photo.sql` (une photo par produit), `008_auto_confirm_email.sql` (inscription sans vérification par email), `009_stock_alerts.sql` (alertes retour en stock), `010_kpi_conversion_funnel.sql` (entonnoir de conversion).
 
 ```mermaid
 erDiagram
@@ -74,7 +74,10 @@ Points clés :
   dans la policy d'insert) ; le trigger `notify_stock_alerts()` renseigne `notified_at` quand le stock du
   coloris repasse de 0 à plus de 0. Index partiel sur les alertes en attente.
 - **Vues KPI** `kpi_overview`, `kpi_revenue_by_day`, `kpi_top_products`, `kpi_route_vs_circuit`,
-  `kpi_top_vehicles`, `kpi_low_stock`, `kpi_stock_demand` : `security_invoker = true` + filtre `is_admin()`.
+  `kpi_top_vehicles`, `kpi_low_stock`, `kpi_stock_demand`, `kpi_conversion_funnel`, `kpi_conversion_by_product` : `security_invoker = true` + filtre `is_admin()`.
+- **Entonnoir de conversion** : `kpi_conversion_funnel` (une ligne par étape, taux calculés avec les fonctions
+  de fenêtre `lag()` et `first_value()`) et `kpi_conversion_by_product` (CTE sur `events` et `order_items`,
+  `left join` pour garder les pots sans visite) montrent où le client décroche.
 - **Tracking** : `events` (vues produit, ajouts/retraits panier, checkout, vérifications de compatibilité) et
   `ai_configurator_logs` alimentent la conversion et les « véhicules les plus demandés ».
 
