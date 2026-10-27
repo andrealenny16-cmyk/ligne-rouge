@@ -61,7 +61,9 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
     const section = sectionRef.current!;
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const pr = Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2);
+    // 3 canvas plein écran : on plafonne la densité de pixels (le coût GPU monte au carré)
+    const pr = Math.min(window.devicePixelRatio, isMobile ? 1.25 : 1.5);
+    const prParts = Math.min(window.devicePixelRatio, 1.25); // quincaillerie décorative
     let W = section.clientWidth;
     let H = section.clientHeight;
 
@@ -105,8 +107,8 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
     fitCamera();
 
     // --- Quincaillerie (orthographique, unités = pixels) ---
-    const back = makeRenderer(backRef.current!, pr);
-    const front = makeRenderer(frontRef.current!, pr);
+    const back = makeRenderer(backRef.current!, prParts);
+    const front = makeRenderer(frontRef.current!, prParts);
     const makeOrtho = () => new THREE.OrthographicCamera(0, W, 0, -H, -2000, 2000);
     const backCam = makeOrtho();
     const frontCam = makeOrtho();
@@ -192,7 +194,7 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
       const potEl = potRef.current!;
       gsap.to(spin, {
         val: 360,
-        blur: 15,
+        blur: 6,
         duration: 0.6,
         ease: "power2.in",
         onUpdate: () => {
@@ -418,7 +420,7 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
       const color = blue ? "#6EA8FF" : Math.random() < 0.5 ? "#FF8A3D" : "#FFC27A";
       const size = Math.random() * 4 + 2;
       const dur = Math.random() * 5 + 4;
-      s.style.cssText = `position:absolute;bottom:-10px;left:${Math.random() * 100}%;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 ${size * 3}px ${size}px ${color}88;--drift:${(Math.random() - 0.5) * 80}px;animation:rise ${dur}s linear forwards, flicker ${0.2 + Math.random() * 0.4}s ease-in-out infinite;pointer-events:none;`;
+      s.style.cssText = `position:absolute;bottom:-10px;left:${Math.random() * 100}%;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 ${size * 3}px ${size}px ${color}88;--drift:${(Math.random() - 0.5) * 80}px;animation:rise ${dur}s linear forwards, flicker ${0.2 + Math.random() * 0.4}s ease-in-out infinite;will-change:transform,opacity;pointer-events:none;`;
       embers.appendChild(s);
       window.setTimeout(() => s.remove(), dur * 1000);
     };
@@ -504,8 +506,8 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
             style={
               {
                 left: `${i * 18 - 5}%`,
-                background: "radial-gradient(circle, rgba(200,200,210,0.35) 0%, transparent 65%)",
-                filter: "blur(18px)",
+                background: "radial-gradient(circle, rgba(200,200,210,0.3) 0%, rgba(200,200,210,0.12) 35%, transparent 70%)",
+                willChange: "transform, opacity",
                 "--drift": `${(i % 2 ? 1 : -1) * 60}px`,
                 animation: `smoke ${9 + i * 1.3}s ease-out ${i * 1.4}s infinite`,
               } as React.CSSProperties
@@ -533,7 +535,7 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
             <SoundButton vehicle={vehicle} usage={mode} className="text-white" />
           </div>
           <div className="mt-auto hidden items-center gap-4 md:flex">
-            <div className="grid h-12 w-12 place-items-center rounded-xl border border-white/15 bg-white/10 backdrop-blur">
+            <div className="grid h-12 w-12 place-items-center rounded-xl border border-white/15 bg-white/10">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
                 <polygon points="12,2 21,7 21,17 12,22 3,17 3,7" />
                 <text x="12" y="15.5" textAnchor="middle" fontSize="7" fill="currentColor" stroke="none" fontWeight="700">Ti</text>
@@ -550,7 +552,7 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
         <div className="flex flex-col items-center gap-6 md:h-full md:w-[450px] md:items-end md:justify-between md:py-24 md:text-right">
           <div className="pointer-events-auto flex flex-col items-center gap-5 md:items-end">
             {/* Choix du pot affiché : moto ou voiture */}
-            <div role="radiogroup" aria-label="Pot affiché" className="mt-2 flex rounded-full border border-white/15 bg-black/40 p-1 backdrop-blur-md">
+            <div role="radiogroup" aria-label="Pot affiché" className="mt-2 flex rounded-full border border-white/15 bg-black/55 p-1">
               {(["moto", "voiture"] as Vehicle[]).map((v) => (
                 <button
                   key={v}
@@ -579,7 +581,7 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
                   type="button"
                   onClick={() => choose(c.f)}
                   aria-pressed={mode === c.f}
-                  className={`group relative flex w-[150px] flex-col items-center gap-3 rounded-[22px] border border-white/15 bg-white/10 p-2 pb-3 text-center backdrop-blur-md transition-all duration-400 ease-pop hover:border-white/40 hover:bg-white/[0.16] md:w-[170px] ${
+                  className={`group relative flex w-[150px] flex-col items-center gap-3 rounded-[22px] border border-white/15 bg-black/45 p-2 pb-3 text-center transition-[border-color,background-color] duration-300 ease-pop hover:border-white/40 hover:bg-black/60 md:w-[170px] ${
                     mode === c.f ? "!border-bronze" : ""
                   }`}
                 >
@@ -601,7 +603,7 @@ export default function Hero({ prices }: { prices: HeroPrices }) {
                   type="button"
                   onClick={() => choose(mode === "route" ? "circuit" : "route")}
                   aria-label={i ? "Gamme suivante" : "Gamme précédente"}
-                  className="grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-white/10 backdrop-blur transition hover:bg-white/20"
+                  className="grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-black/45 transition hover:bg-black/65"
                 >
                   {i ? "→" : "←"}
                 </button>

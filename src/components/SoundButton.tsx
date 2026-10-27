@@ -27,7 +27,7 @@ export default function SoundButton({ vehicle, usage, label = "Écouter le son",
       onClick={() => void playExhaust(vehicle, usage)}
       aria-pressed={on}
       aria-label={`${on ? "Couper" : "Écouter"} le son ${vehicle} ${usage === "circuit" ? "circuit" : "ville"}`}
-      className={`inline-flex items-center gap-3 rounded-full border border-current/20 bg-current/[0.06] py-1.5 pl-1.5 pr-5 text-sm font-semibold backdrop-blur transition hover:border-bronze ${className}`}
+      className={`inline-flex items-center gap-3 rounded-full border border-current/20 bg-current/[0.06] py-1.5 pl-1.5 pr-5 text-sm font-semibold transition hover:border-bronze ${className}`}
     >
       <span className={`grid h-8 w-8 place-items-center rounded-full ${on ? "bg-heat text-white" : "bg-bronze text-ink"}`}>
         {on ? (
